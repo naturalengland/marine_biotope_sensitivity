@@ -10,7 +10,7 @@ The purpose of the code is to develop spatial layers indicating the sensitivitie
 ## Data sources:
 GIS habitat map based on JNCC collaborative MESH which has been updated from a variety of sources. The EUNIS levels included in this map range from 1 to 6.
 
-Natural England's conservation advice - sensitivity assessmetns. The benthic biotopes are EUNIS level 4 - 6.
+Natural England's conservation advice - sensitivity assessments. The benthic biotopes are EUNIS level 4 - 6.
 
 ## Crux of the methods
 The mismatch between the EUNIS levels that have been assessed and those that appear on the map is addressed within the code. It uses probaboility of occurence (based on a biogeographical regioanl assessment by Keith Hiscock) of fine-scale EUNIS levels (4-6) within broadscale EUNIs levels (1 - 3). The code assigns the all matching fine-scale habitats to polygons tha tare mapped at broad-scale, then obtains their sensitivty scores. Each braodscale polygon will therefore have a number of sensitivty scores associated with it. The code tehn selects the maximum sensitivity wihtin each polygon, and drops the rest. This decision was based on a precautionary principle, given that spatially explicit consevation advice will be based on the outcome.
