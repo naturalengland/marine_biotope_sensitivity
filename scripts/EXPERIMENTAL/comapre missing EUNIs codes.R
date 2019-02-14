@@ -19,3 +19,9 @@ missing.matrix <- as.data.frame(table(tblEUNISPressure$EUNISCode, tblEUNISPressu
         group_by(Var1) %>%
         summarise(sum(Freq)) # 355 EUNIS codes with 36 pressures each
 
+
+active_vs_inactive_eunis_codes <- setdiff(tblEUNISLUT,tbl_ia_eunis_lut)
+active_inactive_join <- left_join(tblEUNISLUT,tbl_ia_eunis_lut, by = "EUNISCode")
+inactive_active_join <- right_join(tblEUNISLUT,tbl_ia_eunis_lut, by = "EUNISCode")
+
+active_inactive_gi_join <- left_join(active_inactive_join, hab.eunis.codes, by = "EUNISCode")
