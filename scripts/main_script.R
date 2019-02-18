@@ -118,10 +118,10 @@ rm(db.path,drv.path)
 
 #--------------------------------
 #02
-#List of sensitivity_per_pressure for each assessed EUNIs code (biotope) (from Access database)
+#List of sensitivity_per_pressure for each assessed EUNIS code (biotope) (from Access database)
 
 # add ranking of sensitivity to access database-object
-source("./scripts/09_sensitivity_rank.R")
+source("./functions/09_sensitivity_rank.R")
 sens.act.rank <- left_join(qryEUNIS_ActPressSens,sens.rank, by = "ActSensRank")
 sens.act.rank$EUNISCode <- as.character(sens.act.rank$EUNISCode)# ensure EUNIS codes are character not factors!
 
