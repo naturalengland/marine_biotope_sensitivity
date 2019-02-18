@@ -148,7 +148,7 @@ rm(qryEUNIS_ActPressSens, sens.rank)
 source(file = "./functions/read_gis_hab_lr_fn.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea)
-hab.map <- read.network.geodatabase() 
+#hab.map <- read.network.geodatabase()  #temporarily disabled to avoid reading in the GIs file - remove the "#" to reactivate this cammand, and change top command rm...so taht the habitat map is removed ....
 
 
 #------------------------------
