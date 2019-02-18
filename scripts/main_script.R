@@ -35,7 +35,8 @@
 
 # START
 #clear workspace
-rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+#rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+rm(list=setdiff(ls(), "hab.map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
 #-----
 # R libraries
 ## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
