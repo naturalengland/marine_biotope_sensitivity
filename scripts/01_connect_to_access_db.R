@@ -12,7 +12,7 @@
 
 
 
-rm(list = ls())
+#rm(list = ls())
 #-----
 # R libraries
 library(RODBC)
