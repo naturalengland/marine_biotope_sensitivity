@@ -138,7 +138,7 @@ eunis.lvl.assessed$EUNISCode <- as.character(eunis.lvl.assessed$EUNISCode) # ens
 source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 
 # housekeeping: remove the initial database query, and keep only the last R object
-rm(qryEUNIS_ActPressSens, sens.rank)
+#rm(qryEUNIS_ActPressSens, sens.rank)
 
 #-------------------------------
 #03#Read GIS habitat map file
@@ -245,10 +245,11 @@ rm(mainDir, subDir)
 #07 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the assessmsnets include eunis levels 6,5,4 only.
 # loads and runs the function: read in all the restuls generated in a single file as lists of dataframes: r object output name: results.files
 source(file = "./functions/read_temporary_sbgr_results_fn.R")
-#stored as result.files
+# Outstored as result.files
 
 #Take each dataframe in the list, and split it again according the finest eunis level that has been assessed (high level indicates this, or h.lvl), then amalgamate the h level resutls keeping onl;y the highest level
 source(file = "./functions/sqntl_eunis_lvl_code_replacement_fn.R")
+# Output stored as: sbgr.matched.btpt.w.rpl
 
 #CAUTION: THIS WILL REMOVE ALL FILES IN THE SPECIFIED DIRECTORY!!! remove all the csv files written - this is a temporary work-around. If the results table can be stored as a R object rather than tables, this would not be neccessary
 do.call(file.remove, list(list.files(paste(getwd(),folder, sep = "/"), full.names = TRUE)))
@@ -258,28 +259,34 @@ rm(results.files, folder)
 #08
 #loads and runs script to join pressures to sbgr generated above
 source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
+# Output stored as xap.ls
 
 #housekeeping: remove objects no longer required
-rm(sbgr.matched.btpt.w.rpl)
+#rm(sbgr.matched.btpt.w.rpl)
 
 #--------------
 #09 Reads a file which generate a table of sensitivities scored 1 to 5, as values are needed to obtain and compare a MAXIMUM value where more than one fine-scale biotope occurs within a broader biotope.
-source(file = "./scripts/09_sensitivity_rank.R")
+#source(file = "./scripts/09_sensitivity_rank.R")
+# Allready read in earlier - remove
 
 #----------------
 #10
-#compare and keep only maximum values for each biotope-pressure-activity-subbiogrographic region combination.
+#compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
 #rreads and runs the function
 source(file = "./functions/min_max_sbgr_bap_fn.R")
+# Output stored as: sbgr.BAP.max.sens
+
 #housekeeping - remove temporary object (list) now
-rm(xap.ls)
+#rm(xap.ls)
 
 #--------------
 #11 assocaite maximum sensitivity with gis polygon Ids
 
 source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
+# Output stored as: act.sbgr.bps.gis
+
 #housekeeping
-rm(hab.types)
+#rm(hab.types)
 
 
 #--------------
@@ -287,6 +294,11 @@ rm(hab.types)
 #save singel GIS file as final output
 # attach sensitivity results to the habitat map's geodatabase
 hab.map@data <- cbind(hab.map@data, act.sbgr.bps.gis) 
+
+#Check missing habs
+mssing.eunis <- as.data.frame(as.matrix(as.character(hab.map@data$HAB_TYPE[is.na(hab.map@data$Z10_5_D6)] %>% unique())))
+names(mssing.eunis) <- "EUNISCode"
+missing.eunis <- left_join(mssing.eunis, tblEUNISLUT, by = "EUNISCode")
 
 # write the sensitivity data to the geodatabase/geopackage
 #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
