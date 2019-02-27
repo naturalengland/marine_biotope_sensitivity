@@ -296,28 +296,6 @@ source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 hab.map@data <- cbind(hab.map@data, act.sbgr.bps.gis) 
 
 
-#area and nuber of polys
-gis.hab.types.tmp <- as.data.frame(as.matrix(as.character(hab.map@data$HAB_TYPE)))
-names(gis.hab.types.tmp) <- "HAB_TYPE"
-
-poly.area <- as.data.frame(as.matrix(sapply(slot(hab.map, "polygons"), slot, "area")))
-names(poly.area) <- "area"
-
-polys.n.area <- dplyr::bind_cols(gis.hab.types.tmp, poly.area)
- 
-
-#Check missing habs
-total.n.polys.area <- polys.n.area %>%
-        group_by(HAB_TYPE) %>%
-        summarise(total.area = sum(area), n.ploys =n())
-
-
-mssing.eunis <- as.data.frame(as.matrix(as.character(hab.map@data$HAB_TYPE[is.na(hab.map@data$Z10_5_D6)] %>% unique())))
-names(mssing.eunis) <- "EUNISCode"
-missing.eunis <- left_join(mssing.eunis, tblEUNISLUT, by = "EUNISCode")
-write.csv(missing.eunis, "./outputs/missing_eunis.csv")
-
-
 # write the sensitivity data to the geodatabase/geopackage
 #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
 writeOGR(hab.map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = TRUE)
