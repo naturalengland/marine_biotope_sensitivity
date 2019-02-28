@@ -35,8 +35,8 @@
 
 # START
 #clear workspace
-#rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-rm(list=setdiff(ls(), "hab.map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+#rm(list=setdiff(ls(), "hab.map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
 #-----
 # R libraries
 ## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
@@ -69,7 +69,7 @@ folder <- "tmp_output/"
 group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
 
 #  USER: Give the final output folder for GIS geopackage a name.
-final_output <- "output"
+final_output <- "outputs"
 
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
@@ -148,7 +148,7 @@ source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 source(file = "./functions/read_gis_hab_lr_fn.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea)
-#hab.map <- read.network.geodatabase()  #temporarily disabled to avoid reading in the GIs file - remove the "#" to reactivate this cammand, and change top command rm...so taht the habitat map is removed ....
+hab.map <- read.network.geodatabase()  #temporarily disabled to avoid reading in the GIs file - remove the "#" to reactivate this cammand, and change top command rm...so taht the habitat map is removed ....
 
 
 #------------------------------
@@ -242,7 +242,7 @@ setwd(file.path(mainDir))
 rm(mainDir, subDir)
 
 #---------------
-#07 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the assessmsnets include eunis levels 6,5,4 only.
+#07 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
 # loads and runs the function: read in all the restuls generated in a single file as lists of dataframes: r object output name: results.files
 source(file = "./functions/read_temporary_sbgr_results_fn.R")
 # Outstored as result.files
