@@ -42,9 +42,16 @@ A fourth objective is to link the work to policy on Sustainable Fishing within E
 Fishing displacement models have been developed previously [@Bastardie2013].
 
 
+#
 
-## Methods: Objective 1
-Natural England’s exiting conservation advice database, which houses sensitivity assessments for all biotopes in English territorial waters, will be used in conjunction with existing benthic habitat maps to derive sensitivity maps for benthic habitat.
+## Methods
+
+## Study Area
+The area for which sensitivity maps were genereated covers the United Kingdom's Exclusive Economic Zone (EEZ) 
+
+Objective 1
+
+Natural Englands exiting conservation advice database, which houses sensitivity assessments for all biotopes in English territorial waters, will be used in conjunction with existing benthic habitat maps to derive sensitivity maps for benthic habitat.
 
 All technical work is being carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to sensitivity assessments or updates to the benthic habitat map.
 
