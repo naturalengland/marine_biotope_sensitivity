@@ -18,6 +18,25 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                         dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE)) %>%
                         tidyr::spread(key = PressureCode, value = max.sens.consolidate)
                 
+                # Error test: there are too many NA values being produced - I am not sure why. the code below isolates a single polygon with pkey 601959 - which from the map we know appears as if missing data 
+                #create subset from data
+                #test.dat <- sbgr.hab.gis %>%
+                #        filter(pkey == "601959")
+                
+                #test.dat.spread <- test.dat %>%
+                #        dplyr::ungroup() %>%
+                #        dplyr::group_by(PressureCode,pkey) %>%
+                #        dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm = TRUE)) %>%
+                #        tidyr::spread(key = PressureCode, value = max.sens.consolidate)
+                        
+                #compare
+                #sbgr.hab.gis.2 %>%
+                #        filter(pkey == "532659") # seems to be correct # 601959
+                
+                #compare
+                #test.result <- act.sbgr.bps.gis %>%
+                #        filter(pkey == "601959") # seems to be correct
+                
                 
                 # Make unique names for each dataframe so that they can be put into a single data frame at the end:
                 ## Activity code based names: append activity code to the names
