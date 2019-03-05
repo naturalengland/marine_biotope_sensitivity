@@ -1,5 +1,5 @@
 #function that reads file from specified locality, or defaults to a back-up locality, # needs working up
-load.gis.attrib <- function(attr = hab.map@data){ #hab.map is the habitat map that was read in 03_read_spatial_habitat_data
+load.gis.attrib <- function(attr = hab_map@data){ #hab.map is the habitat map that was read in 03_read_spatial_habitat_data
         gis.attr <- try(attr) # input data from habitat map - if error read the hab map attributes from a back file
         if("try-error" %in% class(gis.attr)) {
                 cat("The GIS habitat map is not read in, or there is an error, trying read a back up copy of attribute file.\n")
