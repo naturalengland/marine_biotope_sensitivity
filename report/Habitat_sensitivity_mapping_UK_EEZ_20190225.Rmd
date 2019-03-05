@@ -1,7 +1,8 @@
 ---
-title: "Habitat sensitivity mapping of UK EEZ"
-author: "Philip Haupt"
-date: "25 February 2019"
+title: "Mapping benthic habitat sensitivity to fishing activities"
+subtitle: ""
+author: "Philip Haupt and Duncan Vaughan"
+date: "29 March 2019"
 output: html_document
 bibliography: "references.bib"
 ---
@@ -10,12 +11,12 @@ bibliography: "references.bib"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction
-The United Kingdom's (UK) benthic habitat is a critical component of the marine ecosystem which supports a rich fish and benthic invertebrate communit. 
+# Introduction
+The United Kingdom's (UK) benthic habitat is a critical component of the marine ecosystem which supports a rich fish and benthic invertebrate community. 
 
-The benthic habitat is subject to a vast array of pressures in the marine environment, of which bottom towed fishing gears is the most prevalent and widesread acitvities.
+The benthic habitat is subject to a vast array of pressures in the marine environment, of which bottom towed fishing gears is the most prevalent and widespread activities.
 
-Natural England provides statuary conservation advice on operations in the marine environment in National National Reserves (NNRs) in England, including terrestrial and marine environment. In the marine environment, NNRs include special Protected Areas (SPAs), Special Areas of Conservation (SACs), Marine Conservation Zones (MCZs), collecteivly referred to as Marine Protected Areas (MPas). All MPas in the england are currently multi-use areas, within which protected features exist. Protected features include habitats The call for wider seas conservation 
+Natural England provides statuary conservation advice on operations in the marine environment in National National Reserves (NNRs) in England, including terrestrial and marine environment. In the marine environment, NNRs include special Protected Areas (SPAs), Special Areas of Conservation (SACs), Marine Conservation Zones (MCZs), collectively referred to as Marine Protected Areas (MPAs). All MPAs in the England are currently multi-use areas, within which protected features exist. Protected features include habitats The call for wider seas conservation 
 
 
 
@@ -41,18 +42,42 @@ A fourth objective is to link the work to policy on Sustainable Fishing within E
 
 Fishing displacement models have been developed previously [@Bastardie2013].
 
+*TO DO: Section on biotopes and habitat, and the scale of information availbe.*
 
-#
-
-## Methods
+# Methods
 
 ## Study Area
-The area for which sensitivity maps were genereated covers the United Kingdom's Exclusive Economic Zone (EEZ) 
+Marine habitat sensitivity maps were generated for the United Kingdom's Exclusive Economic Zone (EEZ), from the shoreline to 200 NM offshore (Figure 1). The sensitivity maps were generated in two steps, first for 0 - 12 NM offshore for English territorial waters, and second for 12 - 200 NM offshore and 0 - 12 NM for devolved administrations. The sensitivity maps were generated independently for two geographical areas for which
 
-Objective 1
 
-Natural Englands exiting conservation advice database, which houses sensitivity assessments for all biotopes in English territorial waters, will be used in conjunction with existing benthic habitat maps to derive sensitivity maps for benthic habitat.
+```{r, echo = FALSE}
+library(maps)       # Provides functions that let us plot the maps
+library(mapdata)        # Contains the hi-resolution points that mark out the countries.
 
+#map('worldHires',
+#    c(),
+#    xlim=c(-11,3), ylim=c(49,60.9))	
+
+map('worldHires',
+    c('UK', 'Isle of Man','Isle of Wight', 'Ireland'),
+    xlim=c(-11,3), ylim=c(49,60.9),
+    fill = TRUE,
+    col = c("grey50", "grey80", "grey80", "grey80"))#,
+    #add = TRUE)	
+```
+*TO DO replace with maps from QGIS?: Figure 1. Insert a map of the UK coastline and 200 NM Exclusive Economic Zone (EEZ) Or Map of 0 - 12NM and a second map of develoved admin*
+
+
+### Data sources
+Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, include 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share common unique identifier of the habitat catogory which was assessed and that which appears on the habitat map, and could therefore be joined to generate habitat sensitivity maps.
+
+#### 1. Sensitivity assessments
+Natural England's exiting conservation advice database, PD_AoO.accdb, houses sensitivity assessments for all biotopes in English territorial waters. The sensitivity assessments are based upon the MarESA *REF: Tillen et al/MarESA* methods. the methodology uses a standardised approach in which each biotope (formally recognised) was assessed against the *Pressures* arising from 
+
+#### 2. Marine biotope map
+, will be used in conjunction with existing benthic habitat maps to derive sensitivity maps for benthic habitat.
+
+### Data processing
 All technical work is being carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to sensitivity assessments or updates to the benthic habitat map.
 
 ## References
