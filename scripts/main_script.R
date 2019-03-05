@@ -36,7 +36,7 @@
 # START
 #clear workspace
 rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-#rm(list=setdiff(ls(), "hab.map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+#rm(list=setdiff(ls(), "hab_map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
 #-----
 # R libraries
 ## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
@@ -48,6 +48,7 @@ library(reshape2)
 library(rgdal)
 library(magrittr)
 library(stringr)
+library(sf)# to allow for multiple layers being written
 
 # USER INPUT REQUIRED BELOW
 #-----
@@ -74,9 +75,8 @@ final_output <- "outputs"
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
 dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing.gpkg") # name of geopackage file in final output
-layer.name <- "fishing_ops" # name of layer being put
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-
+layer.name <- "fishing_ops" # name of layer being put
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
@@ -87,6 +87,7 @@ print(OpsAct)
 # Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 14, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
 ops.number <- 11
+
 
 #Run this to save your choice, and see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
@@ -148,7 +149,7 @@ source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 source(file = "./functions/read_gis_hab_lr_fn.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea)
-hab.map <- read.network.geodatabase()  #temporarily disabled to avoid reading in the GIs file - remove the "#" to reactivate this cammand, and change top command rm...so taht the habitat map is removed ....
+hab_map <- read.network.geodatabase()  #temporarily disabled to avoid reading in the GIs file - remove the "#" to reactivate this cammand, and change top command rm...so taht the habitat map is removed ....
 
 
 #------------------------------
@@ -293,11 +294,11 @@ source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 #12
 #save singel GIS file as final output
 # attach sensitivity results to the habitat map's geodatabase
-hab.map@data <- cbind(hab.map@data, act.sbgr.bps.gis) 
+hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) 
 
 
 # write the sensitivity data to the geodatabase/geopackage
 #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
-writeOGR(hab.map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = TRUE)
-
+#writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = TRUE)
+st_write(storms, "hab_map.gpkg", "storms", update = TRUE)
 
