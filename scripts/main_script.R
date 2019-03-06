@@ -74,9 +74,9 @@ final_output <- "outputs"
 
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing.gpkg") # name of geopackage file in final output
+dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables.gpkg") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "fishing_ops" # name of layer being put
+layer.name <- "renew_ops" # name of layer being put
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
@@ -86,16 +86,13 @@ print(OpsAct)
 
 # Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 14, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
-ops.number <- 11
+ops.number <- 10
 
 
 #Run this to save your choice, and see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
 
-#END OF INITIAL USER INPUT REQUIREMENT, you can now run scripts below to produce biotope sensitivity data.
-
-
-
+#END OF USER INPUT REQUIREMENT, you can now run scripts below to produce biotope sensitivity data.
 
 
 #---------------------------------
@@ -297,8 +294,7 @@ source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) 
 
 
-# write the sensitivity data to the geodatabase/geopackage
-#driver.choice <- "ESRI Shapefile" #to do: save as shapefile
-#writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = TRUE)
-st_write(storms, "hab_map.gpkg", "storms", update = TRUE)
+# write the sensitivity data to the geodatabase/geopackage Or #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
+writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = TRUE)
+
 
