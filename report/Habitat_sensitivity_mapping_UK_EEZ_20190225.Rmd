@@ -4,27 +4,23 @@ subtitle: ""
 author: "Philip Haupt and Duncan Vaughan"
 date: "29 March 2019"
 output: html_document
-bibliography: "references.bib"
+bibliography: "C:/Users/The Fishes/Zotero/references.bib"
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Introduction
 The United Kingdom's (UK) benthic habitat is a critical component of the marine ecosystem which supports a rich fish and benthic invertebrate community. 
+The UK's benthic habitat is subject to a vast array of pressures in the marine environment, including fishing operations, marine aggegrate dredging, development of renewable energy and risks of pollution from oil spills among many others. 
 
-The benthic habitat is subject to a vast array of pressures in the marine environment, of which bottom towed fishing gears is the most prevalent and widespread activities.
-
-Natural England provides statuary conservation advice on operations in the marine environment in National National Reserves (NNRs) in England, including terrestrial and marine environment. In the marine environment, NNRs include special Protected Areas (SPAs), Special Areas of Conservation (SACs), Marine Conservation Zones (MCZs), collectively referred to as Marine Protected Areas (MPAs). All MPAs in the England are currently multi-use areas, within which protected features exist. Protected features include habitats The call for wider seas conservation 
-
+Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which altered benthic habitats, composition and trophic structure of fish and invertebrate communities, and caused declines in fish biomass over the last centuary of industriaal fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010].Fishing operations are widespread throughout the United Kingdom, fished by both national and international fleets within the remits of the United Nations Convention on the Law Of the Sea (UNCLOS 1982), the Common Fishery Policy (CFP 1970s). 
 
 
-Fishing regulations may change in due process when the UK leaves the EU (EU exit) on the 31 March 2019, which is likely to have substantial ramifications for fisheries and fisheries management *(Appleby and Harrison, 2017)*. The Queen’s speech indicated that a new Fisheries Bill would be drafted to set domestic fishing quotas, and preserve fishing stocks (https://www.instituteforgovernment.org.uk/explainers/queens-speech). A change to fishing regulations requires that due consideration be given to the impacts of a displacement of fishing effort on the environment and to livelihoods of fishermen *(ABPmer, 2017; Guidetti, 2007)*. A displacement of fishing effort is defined here as the new or different areas where fishing effort moves to, which may be accompanied by a change in fishing gear used, in response to a change in fishing regulations (Vaughan, 2017). Previous research (studies) have shown that a displacement of fishing effort could lead to detrimental environmental and socio-economic effects (Bastardie et al., 2017; Chollet and Mumby, 2015).
+The UK leaves the EU (EU exit/Brexit) on the 29 March 2019, which may lead to change in fisheries regulations and management *(Appleby and Harrison, 2017)*. 
+A change in fishing regulations and mangement operations is likely to have substantial ramifications fishing operations in the UK [@vaughanFishingEffortDisplacement2017]. The equitable redistribution of marine resources, such as fishing quota allocation, remains a key challenge to resource managers, for example [@halpernConfoundingEffectsExport2004]. A change in fishing regulations or management practices is therefore likely to lead to a change in the spatial distribution of fishing effort among various fishing metiers [@vaughanFishingEffortDisplacement2017]. Previous research (studies) have shown that a displacement of fishing effort could lead to detrimental environmental and socio-economic effects [e.g. @stevensonSocioeconomicConsequencesFishing2013a]. A change to fishing regulations therefore requires that due consideration be given to the impacts of a displacement of fishing effort on the environment and to livelihoods of fishermen [@vaughanFishingEffortDisplacement2017; Mumby].
+
+Natural England provides statuary conservation advice on operations in the marine environment in National National Reserves (NNRs) in England, including terrestrial and marine environment. In the marine environment, NNRs include special Protected Areas (SPAs), Special Areas of Conservation (SACs), Marine Conservation Zones (MCZs), collectively referred to as Marine Protected Areas (MPAs). All MPAs in the England are currently multi-use areas, within which protected features exist. 
+
 The overarching aim of this project is provide advice to fisheries managers to minimise damage to UK marine ecosystems by avoiding negative impacts on the ecosystem arising from the displacement of fishing effort from the various [inshore] fisheries. Specifically, the project aims to identify recently non-fished sensitive benthic habitat, and essential fish habitat which are currently only lightly impacted, or not impacted. 
 
-
-
+*and national regulations such as marine protected areas and byelaws. *
 
 
 Habitat sensitivity mapping
