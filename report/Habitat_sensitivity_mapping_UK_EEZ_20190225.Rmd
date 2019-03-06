@@ -96,6 +96,13 @@ Natural England's exiting conservation advice database, PD_AoO.accdb, houses sen
 ### Data processing
 All technical work is being carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to sensitivity assessments or updates to the benthic habitat map.
 
+# Case Study
+Dredging benthic abrasion wihtin MPAs
+
+# Results
+![./] *Insert link to image*
+
+
 # Annex
 **Table.** EUNIS MESH confidence scores
 
