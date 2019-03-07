@@ -5,28 +5,34 @@ author: "Philip Haupt and Duncan Vaughan"
 date: "29 March 2019"
 output: html_document
 bibliography: "./references.bib"
+fig_width: 6 
+fig_height: 4 
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```   
+
 # Introduction
-The United Kingdom's (UK) benthic habitat is a critical component of the marine ecosystem which supports a rich fish and benthic invertebrate community. 
-The UK's benthic habitat is subject to a vast array of pressures in the marine environment, including fishing operations, marine aggegrate dredging, development of renewable energy and risks of pollution from oil spills among many others. 
 
-Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which altered benthic habitats, composition and trophic structure of fish and invertebrate communities, and caused declines in fish biomass over the last centuary of industriaal fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010].Fishing operations are widespread throughout the United Kingdom, fished by both national and international fleets within the remits of the United Nations Convention on the Law Of the Sea (UNCLOS 1982), the Common Fishery Policy (CFP 1970s). 
+The United Kingdom's (UK) marine environment is of significant economic value, in which the exploitation, development and economic gain are constantly traded off against environmental conditions . 
+The UK's benthic habitat is subject to a vast array of pressures in the marine environment, including fishing operations, marine aggregate dredging, development of renewable energy and risks of pollution from oil spills among many others. 
+
+The UK's benthic habitat is a critical component of the marine ecosystem which supports a rich fish and benthic invertebrate community. 
 
 
-The UK leaves the EU (EU exit/Brexit) on the 29 March 2019, which may lead to change in fisheries regulations and management *(Appleby and Harrison, 2017)*. 
-A change in fishing regulations and mangement operations is likely to have substantial ramifications fishing operations in the UK [@vaughanFishingEffortDisplacement2017]. The equitable redistribution of marine resources, such as fishing quota allocation, remains a key challenge to resource managers, for example [@halpernConfoundingEffectsExport2004]. A change in fishing regulations or management practices is therefore likely to lead to a change in the spatial distribution of fishing effort among various fishing metiers [@vaughanFishingEffortDisplacement2017]. Previous research (studies) have shown that a displacement of fishing effort could lead to detrimental environmental and socio-economic effects [e.g. @stevensonSocioeconomicConsequencesFishing2013a]. A change to fishing regulations therefore requires that due consideration be given to the impacts of a displacement of fishing effort on the environment and to livelihoods of fishermen [@vaughanFishingEffortDisplacement2017; @chollettQuantifyingSqueezingStretching2016].
+Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which altered benthic habitats, composition and trophic structure of fish and invertebrate communities, and caused declines in fish biomass over the last century of industrial fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010].Fishing operations are widespread throughout the United Kingdom, fished by both national and international fleets within the remits of the United Nations Convention on the Law Of the Sea (UNCLOS 1982), the Common Fishery Policy (CFP 1970s). It is therefore critical for marine resource managers to understand the distribution of fishing impacts in relation to the distribution the habitats and species that it is attempting to manage.
 
-Natural England provides statuary conservation advice on operations in the marine environment in National National Reserves (NNRs) in England, including terrestrial and marine environment. In the marine environment, NNRs include special Protected Areas (SPAs), Special Areas of Conservation (SACs), Marine Conservation Zones (MCZs), collectively referred to as Marine Protected Areas (MPAs). All MPAs in the England are currently multi-use areas, within which protected features exist. Natural england therefore requires information on how a dispalcement of fishing effort (irresepctive of Brexit) would impact on protected features within its sites. In recognition that impacts from a dispalcement of fishing effort which occurs outside of MPAs can impact on features within MPAs, a "wider-seas" and "whole-site" approach was used to taken 
 
-The overarching aim of this project is provide advice to fisheries managers to minimise damage to UK marine ecosystems by avoiding negative impacts on the ecosystem arising from the displacement of fishing effort from the various [inshore] fisheries. Specifically, the project aims to identify recently non-fished sensitive benthic habitat, and essential fish habitat which are currently only lightly impacted, or not impacted. 
+The UK leaves the EU (EU exit/Brexit) on the 29 March 2019, which may lead to change in fisheries regulations and management *(Appleby and Harrison, 2017 - Duncan have you got a more apropriate reference?)*. 
+A change in fishing regulations and management operations is likely to have substantial ramifications fishing operations in the UK [@vaughanFishingEffortDisplacement2017]. The equitable redistribution of marine resources, such as fishing quota allocation, remains a key challenge to resource managers, for example [@halpernConfoundingEffectsExport2004]. A change in fishing regulations or management practices is therefore likely to lead to a change in the spatial distribution of fishing effort among various fishing metiers [@vaughanFishingEffortDisplacement2017]. Previous research (studies) have shown that a displacement of fishing effort could lead to detrimental environmental and socio-economic effects [e.g. @stevensonSocioeconomicConsequencesFishing2013a]. A change to fishing regulations therefore requires that due consideration be given to the impacts of a displacement of fishing effort on the environment and to livelihoods of fishermen [@vaughanFishingEffortDisplacement2017; @chollettQuantifyingSqueezingStretching2016].
+
+Natural England provides statuary conservation advice on operations in the marine environment in National National Reserves (NNRs) in England, including terrestrial and marine environment. In the marine environment, NNRs include special Protected Areas (SPAs), Special Areas of Conservation (SACs), Marine Conservation Zones (MCZs), collectively referred to as Marine Protected Areas (MPAs). All MPAs in the England are currently multi-use areas, within which protected features exist. Natural England therefore requires information on how a displacement of fishing effort (irrespective of Brexit) would impact on protected features within its sites. 
+
+The overarching aim of this project is provide advice to fisheries managers to minimise damage to UK marine ecosystems by avoiding negative impacts on the ecosystem arising from the displacement of fishing effort from the various fisheries. Specifically, the project aims to identify recently non-fished sensitive benthic habitat, 
+
 
 *and national regulations such as marine protected areas and byelaws. *
 
-
-Habitat sensitivity mapping
-Fishing displacement socio-economics [@Groot2014] [@Vaughan2017]
-The EU Exit 
-test citations: [@Bastardie2013; @Groot2014]
 
 ### Objectives
 The objective of the project is to map the spatial distribution of sensitive benthic habitat in relation to 36 OSPAR standardized pressures caused by fishing activities in English territorial waters (12 NM offshore). 
@@ -34,11 +40,11 @@ The objective of the project is to map the spatial distribution of sensitive ben
 A secondary aim for the project is develop a consolidated spatial index of the combined suite of pressures stemming from each fishing activity to provide a summarised overview of benthic habitat sensitivity to inform NE’s conservation advice. 
 A third project objective is the development of maps of the sensitivity distribution for 30 fish and shellfish species within UK waters to fishing related activities. These models are underpinned by sensitivity assessments carried out at set benchmarks, and coupled with species distribution models.
 A fourth objective is to link the work to policy on Sustainable Fishing within English territorial waters to provide high level direction to Natural England. Specifically this component will help develop the principles which inform advice on sustainable fishing in English territorial waters. This part of the project will attempt to develop a clear understanding of how sensitivity maps can be used to inform sustainable fishing policy and practice. 
+This project develop habitat sensitivity to a wide range of operations, which consist of activities, for which 39 pressures were analysed against standardized benchmarks for each EUNIS benthic habitat category. Previous studies have developed tools to predict the impacts of fishing effort displacement, which forecast a change in fishing effort displacement have been developed previously, for example, "##" e.g.  [@bastardieDISPLACEDynamicIndividualbased2013]. This project did not attempt to predict a change in fishing activity 
 
+In recognition that impacts from displacement of fishing effort occurring outside of MPAs can have an impact on features within MPAs, a "wider-seas" and "whole-site" approach was used to taken to map out the sensitivity for the entire EEZ. 
 
-Fishing displacement models have been developed previously [@Bastardie2013].
-
-*TO DO: Section on biotopes and habitat, and the scale of information availbe.*
+In this report a case study was developed to inspect the potential application of the habitat sensitivity mapping. Dredging benthic abrasion within MPAs
 
 # Methods
 
@@ -61,14 +67,15 @@ map('worldHires',
     col = c("grey50", "grey80", "grey80", "grey80"))#,
     #add = TRUE)	
 ```
+
 *TO DO replace with maps from QGIS?: Figure 1. Insert a map of the UK coastline and 200 NM Exclusive Economic Zone (EEZ) Or Map of 0 - 12NM and a second map of develoved admin*
 
 
 ### Data sources
-Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, include 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share common unique identifier of the habitat catogory which was assessed and that which appears on the habitat map, and could therefore be joined to generate habitat sensitivity maps.
+Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, include 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share common unique identifier of the habitat category which was assessed and that which appears on the habitat map, and could therefore be joined to generate habitat sensitivity maps.
 
 #### 1. Marine biotope map
-The standard benthic habitat map used by NE in its day to day operations, was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat cateogries contained within NE's habitat map is based on the European Nature Information System (EUNIS) classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012]. 
+The standard benthic habitat map used by NE in its day to day operations, was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat categories contained within NE's habitat map is based on the European Nature Information System (EUNIS) classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012].
 *TO DO: Get detail from Ian/Tim on the habitat map - is there a NE document to reference?*
 
 #### The EUNIS habitat classification system
@@ -78,29 +85,46 @@ EUNIS level 4: A1.11 : Mussel and/or barnacle communities,
 EUNIS level 5: A1.113 : *Semibalanus balanoides* on exposed to moderately exposed or vertical sheltered eulittoral rock,
 EUNIS level 6: A1.1132 : *Semibalanus balanoides*, *Fucus vesiculosus* and red seaweeds on exposed to moderately exposed eulittoral rock. 
 
-See the [EUNIS-webpage](https://eunis.eea.europa.eu/habitats-code-browser.jsp) for more examples on the hierarchical view of the EUNIS habitat classification system.
+*See the* [EUNIS-webpage](https://eunis.eea.europa.eu/habitats-code-browser.jsp) *for more examples on the hierarchical view of the EUNIS habitat classification system.*
 
+The habitat map is comprised habitat categories are of different EUNIS levels, based on the data available for the different areas in the EEZ. The data sources used to generate the benthic habitat map are based on a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys. The development of the habitat is an ongoing process which updates the habitat maps and habitat classification system as new information becomes available. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as variability between the confidence associated with each mapped area (known as polygons). The habitat map is therefore comprised of a patchwork of polygons which may differ in their shape, area and the habitat category (and EUNIS level) which they represent, as well as the level of confidence with which the habitat was category was assigned to it. The confidence associated with habitat classification of each polygon is represented by a MESH score (*Annex MESH confidence*).
 
-The benthic habitat map was generated using a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys, through the collaboration of a large number of orgnaisations. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as the confidence associated thereto for areas around the coastline. The EUNIS benthic habitat map is therefore comprised of a patchwork of polygons which differ in their shape, area and the  habitat category which they represent. The habitat categories are of different EUNIS levels, and the confidence associated with the patches of habitat are varied. The confidence associated with habitat clasifcation of each polygon is represented by a MESH score (*Annex MESH confidence*)
-
-highest spatial resolution contained within the habitat map used by NE are mapped 
-
-, will be used in conjunction with existing benthic habitat maps to derive sensitivity maps for benthic habitat.
+The EUNIS benthic habitat categories which appear on the habitat map were associated with sensitivity assessments, will be used in conjunction with existing benthic habitat maps to derive sensitivity maps for benthic habitat.
 
 #### 2. Sensitivity assessments
-Sensitivity assessments of each betnhic habitat category has been carried out for all habitats.
-Natural England's exiting conservation advice database, PD_AoO.accdb, houses sensitivity assessments for all biotopes in English territorial waters. The sensitivity assessments are based upon the MarESA [@Tillin2014]. methods. the methodology uses a standardised approach in which each biotope (formally recognised) was assessed against the *Pressures* arising from 
+Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats, and are publicly available on The Marine Life Information Network's (MarLIN) [website](https://www.marlin.ac.uk/). The sensitivity data is also housed internally at Natural England in a Microsoft Access database, namely, PD_AoO.accdb, which is used to inform NE's conservation advice on operations packages, known as [Designated Sites View](https://designatedsites.naturalengland.org.uk/Marine/MarineSiteDetail.aspx?SiteCode=UKMCZ0045&SiteName=aln&countyCode=&responsiblePerson=&SeaArea=&IFCAArea=). The Microsoft Access database, PD_AoO.accdb, was used to obtain sensitivity assessments for the EUNIS habitats. 
 
+The sensitivity assessments are based upon the MarESA [@tillinAssessingSensitivitySubtidal2014] methods. The methodology uses a standardised approach in which the EUNIS habitats were assessed against standardised *Pressures*.
 
+*Expand on the senstivity methods*
 
 ### Data processing
 All technical work is being carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to sensitivity assessments or updates to the benthic habitat map.
 
-# Case Study
-Dredging benthic abrasion wihtin MPAs
+# Case study materials methods
 
-# Results
-![./] *Insert link to image*
+
+
+
+# Case study results
+
+The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure \@ref(fig:insh_drdg).
+
+```{r insh_drdg, fig.cap= "Figure 2: The habitat sensitivity to abrasion from inshore dredging.",  echo = FALSE}
+library(knitr)
+library(png)
+library(ggplot2)
+insh_fishing_dredging_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/Fishing_dredging__Abrasion_disturbance.png"
+#insh_fishing_dredging_img <- readPNG(insh_fishing_dredging_img_path, native = TRUE, info = TRUE)
+#attr(fishing_dredging_img, "info")
+#knitr::opts_chunk$set(fig.width=12, fig.height=8) 
+knitr::include_graphics(insh_fishing_dredging_img_path, dpi = 150)
+```
+
+# Discussion
+
+## Future development of the research
+In a second phase essential fish habitat which are currently only lightly impacted, or not impacted will be identified
 
 
 # Annex
