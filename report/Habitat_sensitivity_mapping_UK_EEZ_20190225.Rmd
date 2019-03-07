@@ -14,39 +14,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-The United Kingdom's (UK) marine environment is of significant economic value, in which the exploitation, development and economic gain are constantly traded off against environmental conditions . 
-The UK's benthic habitat is subject to a vast array of pressures in the marine environment, including fishing operations, marine aggregate dredging, development of renewable energy and risks of pollution from oil spills among many others. 
+The United Kingdom's (UK) marine environment is of significant economic value, in which the exploitative activities and developments are constantly weighed up against the impact on the environment [@walportForesightFutureSea2017].  The UK's marine environment is subject to a vast array of pressures, such as fishing operations, marine aggregate dredging, development of renewable energy and risks of pollution from oil spills among many others. Overfishing and habitat loss are regarded as two of the main contributors to the degradation of the UK's marine environment [@walportForesightFutureSea2017].
 
-The UK's benthic habitat is a critical component of the marine ecosystem which supports a rich fish and benthic invertebrate community. 
+Fishing operations are widespread throughout the United Kingdom, fished by both national and international fleets within the remits of the United Nations Convention on the Law Of the Sea (UNCLOS 1982), the Common Fishery Policy (CFP 1970s). It is therefore critical for marine resource managers to understand the distribution of fishing impacts in relation to the distribution the habitats and species to minimise damage to UK marine ecosystems. A change in fishing regulations or management practices are likely to lead to a change in the spatial distribution of fishing effort among various fishing metiers [@vaughanFishingEffortDisplacement2017]. Previous research has shown that a displacement of fishing effort could lead to detrimental environmental and socio-economic effects [e.g. @stevensonSocioeconomicConsequencesFishing2013a]. A change in fishing regulations therefore requires that due consideration be given to the impacts of a displacement of fishing effort on the environment and to livelihoods of fishermen [@vaughanFishingEffortDisplacement2017; @chollettQuantifyingSqueezingStretching2016].
 
+The UK leaves the EU (EU exit/Brexit) on the 29 March 2019, which may lead to change in fisheries regulations and management *(Appleby and Harrison, 2017 - Duncan have you got a more apropriate reference?)*. A change in fishing regulations and management is likely to have substantial ramifications fishing operations in the UK [@vaughanFishingEffortDisplacement2017]. Natural England provides statuary conservation advice on operations in the marine environment in National National Reserves (NNRs) in England, including terrestrial and marine environment. In the marine environment, NNRs include special Protected Areas (SPAs), Special Areas of Conservation (SACs), Marine Conservation Zones (MCZs), collectively referred to as Marine Protected Areas (MPAs) hereafter. All MPAs in the England are currently multi-use areas, within which protected features exist. Natural England therefore requires a spatial evidence base to inform its advice on operations which would minimise the impacts of a displacement of fishing effort on protected features within MPAs. In recognition that impacts from displacement of fishing effort occurring outside of MPAs can have an impact on features within MPAs, a "wider-seas" and "whole-sites" approach was used to taken to map out the sensitivity for the entire EEZ. 
+The whole-sites and wider-seas approach means that currently protected features were not considered in isolation, but that the connectivity between benthic habitats within the entire UK EEZ were considered to provide a holistic overview the spatial distributions of fishing related impacts on the bentic habitat.
 
-Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which altered benthic habitats, composition and trophic structure of fish and invertebrate communities, and caused declines in fish biomass over the last century of industrial fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010].Fishing operations are widespread throughout the United Kingdom, fished by both national and international fleets within the remits of the United Nations Convention on the Law Of the Sea (UNCLOS 1982), the Common Fishery Policy (CFP 1970s). It is therefore critical for marine resource managers to understand the distribution of fishing impacts in relation to the distribution the habitats and species that it is attempting to manage.
+Natural England uses senstivity assessments of benthic habitat to 18 operations (including fishing), which consist of 100 activities and each assessed against 39 pressures, as part of its statuatory role to provide conservation advice on operations in the marine environment.
 
-
-The UK leaves the EU (EU exit/Brexit) on the 29 March 2019, which may lead to change in fisheries regulations and management *(Appleby and Harrison, 2017 - Duncan have you got a more apropriate reference?)*. 
-A change in fishing regulations and management operations is likely to have substantial ramifications fishing operations in the UK [@vaughanFishingEffortDisplacement2017]. The equitable redistribution of marine resources, such as fishing quota allocation, remains a key challenge to resource managers, for example [@halpernConfoundingEffectsExport2004]. A change in fishing regulations or management practices is therefore likely to lead to a change in the spatial distribution of fishing effort among various fishing metiers [@vaughanFishingEffortDisplacement2017]. Previous research (studies) have shown that a displacement of fishing effort could lead to detrimental environmental and socio-economic effects [e.g. @stevensonSocioeconomicConsequencesFishing2013a]. A change to fishing regulations therefore requires that due consideration be given to the impacts of a displacement of fishing effort on the environment and to livelihoods of fishermen [@vaughanFishingEffortDisplacement2017; @chollettQuantifyingSqueezingStretching2016].
-
-Natural England provides statuary conservation advice on operations in the marine environment in National National Reserves (NNRs) in England, including terrestrial and marine environment. In the marine environment, NNRs include special Protected Areas (SPAs), Special Areas of Conservation (SACs), Marine Conservation Zones (MCZs), collectively referred to as Marine Protected Areas (MPAs). All MPAs in the England are currently multi-use areas, within which protected features exist. Natural England therefore requires information on how a displacement of fishing effort (irrespective of Brexit) would impact on protected features within its sites. 
-
-The overarching aim of this project is provide advice to fisheries managers to minimise damage to UK marine ecosystems by avoiding negative impacts on the ecosystem arising from the displacement of fishing effort from the various fisheries. Specifically, the project aims to identify recently non-fished sensitive benthic habitat, 
-
-
-*and national regulations such as marine protected areas and byelaws. *
-
-
-### Objectives
+#### Objectives
 The objective of the project is to map the spatial distribution of sensitive benthic habitat in relation to 36 OSPAR standardized pressures caused by fishing activities in English territorial waters (12 NM offshore). 
  and their corresponding pressures to inform Natural England’s Conservation Advice. The study area includes the wider seas (outside of MPAs) to provide evidence of sensitive habitats which may be affected by a displacement of fishing pressures arising from different scenarios of EU Exit. 
 A secondary aim for the project is develop a consolidated spatial index of the combined suite of pressures stemming from each fishing activity to provide a summarised overview of benthic habitat sensitivity to inform NE’s conservation advice. 
 A third project objective is the development of maps of the sensitivity distribution for 30 fish and shellfish species within UK waters to fishing related activities. These models are underpinned by sensitivity assessments carried out at set benchmarks, and coupled with species distribution models.
 A fourth objective is to link the work to policy on Sustainable Fishing within English territorial waters to provide high level direction to Natural England. Specifically this component will help develop the principles which inform advice on sustainable fishing in English territorial waters. This part of the project will attempt to develop a clear understanding of how sensitivity maps can be used to inform sustainable fishing policy and practice. 
-This project develop habitat sensitivity to a wide range of operations, which consist of activities, for which 39 pressures were analysed against standardized benchmarks for each EUNIS benthic habitat category. Previous studies have developed tools to predict the impacts of fishing effort displacement, which forecast a change in fishing effort displacement have been developed previously, for example, "##" e.g.  [@bastardieDISPLACEDynamicIndividualbased2013]. This project did not attempt to predict a change in fishing activity 
+The aim of this project was to developed habitat sensitivity maps of EUNIS habitat categories to 39 standardised pressures arising from 10 different fishery-related activities within the UK's EEZ.
 
-In recognition that impacts from displacement of fishing effort occurring outside of MPAs can have an impact on features within MPAs, a "wider-seas" and "whole-site" approach was used to taken to map out the sensitivity for the entire EEZ. 
+Previous studies have developed tools to predict the impacts of fishing effort displacement, which forecast a change in fishing effort displacement [@bastardieDISPLACEDynamicIndividualbased2013]. This project did not attempt to predict a change in fishing activity given the significant uncertainty and complexity in how Brexit would affect fishing opportunities and regulations in the UK.
 
-In this report a case study was developed to inspect the potential application of the habitat sensitivity mapping. Dredging benthic abrasion within MPAs
+In this report a case study was developed to inspect the potential application of the habitat sensitivity mapping in relatio to spatial maps of fishing activity. Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which altered benthic habitats, composition and trophic structure of fish and invertebrate communities over the last century of industrial fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010]. The spatial overlap of benthic habitat senstivity maps and the distribution of fishing related dredging activities were compared to evaluate the use of sensitiviy mapping as a tool to inform management of options to minimise the impacts of a the spatial distribution of fishing activities. The habitat senstivity maps were therefore evalauted as an dataset to inform conservation advice in the event of displacement of fishing effort. The ability of the tool to identify recently non-fished sensitive benthic habitats were explored, as a means to inform spatial planning in the UK's EEZ. 
+
+#### Remove: 
+The equitable redistribution of marine resources, such as fishing quota allocation, remains a key challenge to resource managers, for example [@halpernConfoundingEffectsExport2004].
+
 
 # Methods
+
 
 ## Study Area
 Marine habitat sensitivity maps were generated for the United Kingdom's Exclusive Economic Zone (EEZ), from the shoreline to 200 NM offshore (Figure 1). The sensitivity maps were generated in two steps, first for 0 - 12 NM offshore for English territorial waters, and second for 12 - 200 NM offshore and 0 - 12 NM for devolved administrations. The sensitivity maps were generated independently for two geographical areas for which
@@ -94,21 +88,63 @@ The EUNIS benthic habitat categories which appear on the habitat map were associ
 #### 2. Sensitivity assessments
 Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats, and are publicly available on The Marine Life Information Network's (MarLIN) [website](https://www.marlin.ac.uk/). The sensitivity data is also housed internally at Natural England in a Microsoft Access database, namely, PD_AoO.accdb, which is used to inform NE's conservation advice on operations packages, known as [Designated Sites View](https://designatedsites.naturalengland.org.uk/Marine/MarineSiteDetail.aspx?SiteCode=UKMCZ0045&SiteName=aln&countyCode=&responsiblePerson=&SeaArea=&IFCAArea=). The Microsoft Access database, PD_AoO.accdb, was used to obtain sensitivity assessments for the EUNIS habitats. 
 
-The sensitivity assessments are based upon the MarESA [@tillinAssessingSensitivitySubtidal2014] methods. The methodology uses a standardised approach in which the EUNIS habitats were assessed against standardised *Pressures*.
+The sensitivity assessments are based upon the MarESA [@tillinAssessingSensitivitySubtidal2014] methods in which the EUNIS habitats were assessed against 39 standardised pressures for each activity (Annex Activities and Pressures). Ten activities are currently considered part of fishing operations (Table Fishing Activities) The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standarised pressures and an additional three which allow specifying directionality of a presure rather than simply stating a change. For example instead of one pressure stating a change of 0.5&deg C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014].
 
-*Expand on the senstivity methods*
+Table. Fishing activities *Decide how this is to be done,either you will have to reproduce the script to generate the objects here, or load a saved object
+
+```{r fishing_acts, fig.cap="Table Fishing activities", echo = FALSE, include=FALSE}
+library(dplyr)
+#print(OpsAct)
+#f.acts <- tblActivityLUT %>% 
+#        left_join(tbl)
+```
+*Expand on the senstivity methods; insert an annex with actitivities, pressures, benchmarks-reference-only*
+
+One of six levels of sensitivity are assigned to each habitat category in relation to the each of the 39 pressures, including 
+
+```{r sens_levels, echo = FALSE}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+sens.rank <- tribble(
+        ~Rank, ~Sensivity_description,
+        #-------/------------
+        1, "Not sensitive",
+        2, "Insufficient evidence",
+        3, "Not assessed",
+        4, "Low",            
+        5, "Medium",
+        6, "High"
+)
+
+sens.rank %>%
+        kable(caption = "Table: Senstivity levels") %>%
+        kable_styling(position = "left", full_width = F)
+
+```
+
 
 ### Data processing
 All technical work is being carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to sensitivity assessments or updates to the benthic habitat map.
 
 # Case study materials methods
+The habitat senstivity map was developed for abrassion from dredging for the UK's EEZ, using the two step process described above. 
 
+GIS operations
+A fishing pressure layer for dredging and the current MPA layer was overlaid onto the habiat senstivity map to investigate 1.) the overlap of dredging activities on habitats which are sentive thereto, 2. ) the placement of MPAs in relation to the impacts on senstive benthic habitats.
 
+Fishing pressure layer
 
+Marine protected area layer
 
-# Case study results
+# Results
 
-The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure \@ref(fig:insh_drdg).
+In total 390 benthic habitat sensitivity maps were produced for 39 pressures from the ten fishing activities.
+Output maps were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map.
+
+## Case study results
+
+1. The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure \@ref(fig:insh_drdg). (or merge theinshore and offshore into 1 figure perhaps?)
 
 ```{r insh_drdg, fig.cap= "Figure 2: The habitat sensitivity to abrasion from inshore dredging.",  echo = FALSE}
 library(knitr)
@@ -120,8 +156,14 @@ insh_fishing_dredging_img_path <- "F:/projects/marine_biotope_sensitivity/output
 #knitr::opts_chunk$set(fig.width=12, fig.height=8) 
 knitr::include_graphics(insh_fishing_dredging_img_path, dpi = 150)
 ```
+2. Overlay fishing activity
+And provide some analysis of the proportion of sensitivity categories which overlap with dredging activity (which may need to be categorised into high/medium/low?) 
+3. Overlay the MPAs, and repeat the above?
+
 
 # Discussion
+
+The senstivity maps 
 
 ## Future development of the research
 In a second phase essential fish habitat which are currently only lightly impacted, or not impacted will be identified
