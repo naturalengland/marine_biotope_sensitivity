@@ -46,7 +46,6 @@ The remit of NE's statutory powers : National National Reserves (NNRs) in Englan
 
 # Methods
 
-
 ## Study Area
 Marine habitat sensitivity maps were generated for the United Kingdom's Exclusive Economic Zone (EEZ), from the shoreline to 200 NM offshore (Figure 1). The sensitivity maps were generated in two steps, first for 0 - 12 NM offshore for English territorial waters, and second for 12 - 200 NM offshore and 0 - 12 NM for devolved administrations. The sensitivity maps were generated independently for two geographical areas for which
 
