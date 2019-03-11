@@ -10,6 +10,12 @@ fig_height: 4
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(maps)       # Provides functions that let us plot the maps
+library(mapdata)        # Contains the hi-resolution points that mark out the countries.
+library(png)
 ```   
 
 # Introduction
@@ -51,8 +57,7 @@ Marine habitat sensitivity maps were generated for the United Kingdom's Exclusiv
 
 
 ```{r, echo = FALSE}
-library(maps)       # Provides functions that let us plot the maps
-library(mapdata)        # Contains the hi-resolution points that mark out the countries.
+
 
 #map('worldHires',
 #    c(),
@@ -97,7 +102,7 @@ The sensitivity assessments are based upon the MarESA [@tillinAssessingSensitivi
 Table. Fishing activities *Decide how this is to be done,either you will have to reproduce the script to generate the objects here, or load a saved object
 
 ```{r fishing_acts, fig.cap="Table Fishing activities", echo = FALSE, include=FALSE}
-library(dplyr)
+#library(dplyr)
 #print(OpsAct)
 #f.acts <- tblActivityLUT %>% 
 #        left_join(tbl)
@@ -107,9 +112,7 @@ library(dplyr)
 One of six levels of sensitivity are assigned to each habitat category in relation to the each of the 39 pressures, including 
 
 ```{r sens_levels, echo = FALSE}
-library(tidyverse)
-library(knitr)
-library(kableExtra)
+#library(tidyverse)
 sens.rank <- tribble(
         ~Rank, ~Sensivity_description,
         #-------/------------
@@ -151,9 +154,6 @@ Output maps were vector based, and mirror the spatial resolution and habitat det
 1. The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure \@ref(fig:insh_drdg). (or merge the inshore and offshore into 1 figure perhaps?)
 
 ```{r insh_drdg, fig.cap= "Figure 2: The habitat sensitivity to abrasion from inshore dredging.",  echo = FALSE}
-library(knitr)
-library(png)
-library(ggplot2)
 insh_fishing_dredging_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/Fishing_dredging__Abrasion_disturbance.png"
 #insh_fishing_dredging_img <- readPNG(insh_fishing_dredging_img_path, native = TRUE, info = TRUE)
 #attr(fishing_dredging_img, "info")
