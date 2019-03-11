@@ -1,6 +1,6 @@
 ---
 title: "Mapping benthic habitat sensitivity to fishing activities"
-subtitle: ""
+subtitle: "Natural England report XXX-draft"
 author: "Philip Haupt and Duncan Vaughan"
 date: "29 March 2019"
 output: html_document
@@ -33,15 +33,18 @@ The whole-sites and wider-seas approach means that currently protected features 
 
 Natural England uses sensitivity assessments of benthic habitat to 18 operations (including fishing), which consist of 100 activities and each assessed against 39 pressures, to provide conservation advice on operations in the marine environment.
 
-#### Objectives
-The objective of the project is to map the spatial distribution of sensitive benthic habitat in relation to 36 OSPAR standardized pressures caused by fishing activities in English territorial waters (12 NM offshore). 
- and their corresponding pressures to inform Natural England’s Conservation Advice. The study area includes the wider seas (outside of MPAs) to provide evidence of sensitive habitats which may be affected by a displacement of fishing pressures arising from different scenarios of EU Exit. 
-A secondary aim for the project is develop a consolidated spatial index of the combined suite of pressures stemming from each fishing activity to provide a summarised overview of benthic habitat sensitivity to inform NE’s conservation advice. 
-A third project objective is the development of maps of the sensitivity distribution for 30 fish and shellfish species within UK waters to fishing related activities. These models are underpinned by sensitivity assessments carried out at set benchmarks, and coupled with species distribution models.
+The objective of this project was to map the spatial distribution of sensitive benthic habitat in relation to 36 OSPAR standardized pressures caused by fishing activities in the UK's Exclusive Economic Zone (EEZ). 
+
+The study area includes the wider seas (outside of MPAs) to provide evidence of sensitive habitats which may be affected by a displacement of fishing pressures arising from different scenarios of EU Exit. 
+
+A secondary objective  
+
 A fourth objective is to link the work to policy on Sustainable Fishing within English territorial waters to provide high level direction to Natural England. Specifically this component will help develop the principles which inform advice on sustainable fishing in English territorial waters. This part of the project will attempt to develop a clear understanding of how sensitivity maps can be used to inform sustainable fishing policy and practice. 
 The aim of this project was to developed habitat sensitivity maps of EUNIS habitat categories to 39 standardised pressures arising from 10 different fishery-related activities within the UK's EEZ.
 
-Previous studies have developed tools to predict the impacts of fishing effort displacement, which forecast a change in fishing effort displacement [@bastardieDISPLACEDynamicIndividualbased2013]. This project did not attempt to predict a change in fishing activity given the significant uncertainty and complexity in how Brexit would affect fishing opportunities and regulations in the UK.
+Previous studies have developed tools to predict the impacts of fishing effort displacement, which forecast a change in fishing effort displacement [@bastardieDISPLACEDynamicIndividualbased2013]. This project did not attempt to predict a change in fishing activity given the significant uncertainty and complexity in how Brexit would affect fishing opportunities and regulations in the UK. In this study habitat sensitivity to standardised pressures from various fishing activity were mapped as a precautionary approach given the manifold uncertainties associated with fishing displacement arising from Brexit, such as how trade negotiations may influence fishing rights allocations. Previous work which have mapped benthic habitat sensitivity have used a different approach . Broad-scale benthic habitat and ...START HERE.
+
+A case study was developed to explore the potential use of benthic habitat sensitivity models to help inform NE of potential impacts ion the marine environment. 
 
 In this report a case study was developed to inspect the potential application of the habitat sensitivity mapping in relation to spatial maps of fishing activity. Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which altered benthic habitats, composition and trophic structure of fish and invertebrate communities over the last century of industrial fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010]. The spatial overlap of benthic habitat sensitivity maps and the distribution of fishing related dredging activities were compared to evaluate the use of sensitivity mapping as a tool to inform management of options to minimise the impacts of a the spatial distribution of fishing activities. The habitat sensitivity maps were therefore evaluated as an dataset to inform conservation advice in the event of displacement of fishing effort. The ability of the tool to identify recently non-fished sensitive benthic habitats were explored, as a means to inform spatial planning in the UK's EEZ. 
 
@@ -53,12 +56,12 @@ The remit of NE's statutory powers : National National Reserves (NNRs) in Englan
 # Methods
 
 ## Study Area
-Marine habitat sensitivity maps were generated for the United Kingdom's Exclusive Economic Zone (EEZ), from the shoreline to 200 NM offshore (Figure 1). The sensitivity maps were generated in two steps, first for 0 - 12 NM offshore for English territorial waters, and second for 12 - 200 NM offshore and 0 - 12 NM for devolved administrations. The sensitivity maps were generated independently for two geographical areas for which
+Marine habitat sensitivity maps were generated for the United Kingdom's Exclusive Economic Zone (EEZ), from the shoreline to 200 NM offshore (Figure 1). The sensitivity maps were generated in two steps, first for 0 - 12 NM offshore for English territorial waters, and second, comprising both the 12 - 200 NM English offshore and 0 - 200 NM for devolved administrations. The sensitivity maps were generated independently for these two steps which covered adjacent geographical areas. 
+
+The two steps were required as Natural England holds fine-scale data on the composition of the benthic habitat in 0 - 12 NM in England which was not available for the offshore (12 - 200 NM) English waters and 0 - 200 NM for Devolved Administrations at the time of writing. The fine-scale information on habitat composition was utilised in an additional step within the modelling routines, which allowed biotope prediction within broader scale habitat from additional data and expert validation. (This fine-scale habitat information when NE provides statutory advice, and is therefore well established within the organisations day to day working.)
 
 
 ```{r, echo = FALSE}
-
-
 #map('worldHires',
 #    c(),
 #    xlim=c(-11,3), ylim=c(49,60.9))	
@@ -70,14 +73,12 @@ map('worldHires',
     col = c("grey50", "grey80", "grey80", "grey80"))#,
     #add = TRUE)	
 ```
-
-*TO DO replace with maps from QGIS?: Figure 1. Insert a map of the UK coastline and 200 NM Exclusive Economic Zone (EEZ) Or Map of 0 - 12NM and a second map of develoved admin*
-
+*TO DO replace with maps from QGIS? or add the eez?: Figure 1. Insert a map of the UK coastline and 200 NM Exclusive Economic Zone (EEZ) Or Map of 0 - 12NM and a second map of develoved admin*
 
 ### Data sources
-Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, include 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share common unique identifier of the habitat category which was assessed and that which appears on the habitat map, and could therefore be joined to generate habitat sensitivity maps.
+Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, include 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share a common unique identifier which refers to the habitat category and could therefore be joined to associate the sensitivity of habitat categories to the mapped habitat categories.
 
-#### 1. Marine biotope map
+#### 1. Marine habitat map
 The standard benthic habitat map used by NE in its day to day operations, was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat categories contained within NE's habitat map is based on the European Nature Information System (EUNIS) classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012].
 *TO DO: Get detail from Ian/Tim on the habitat map - is there a NE document to reference?*
 
@@ -170,7 +171,10 @@ And provide some analysis of the proportion of sensitivity categories which over
 The sensitivity maps 
 
 ## Future development of the research
-In a second phase essential fish habitat which are currently only lightly impacted, or not impacted will be identified
+In a second phase essential fish habitat which are currently only lightly impacted, or not impacted will be identified.
+
+A follow up project will consider: 
+A third project objective is the development of maps of the sensitivity distribution for 30 fish and shellfish species within UK waters to fishing related activities. These models are underpinned by sensitivity assessments carried out at set benchmarks, and coupled with species distribution models.
 
 
 # Annex
