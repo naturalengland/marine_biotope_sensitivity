@@ -24,7 +24,7 @@ The United Kingdom's (UK) marine environment is of significant economic value, i
 
 Fishing operations are widespread throughout the United Kingdom, and is fished by both national and international fleets within the remits of the The London Fisheries Convention (1964) and the Common Fishery Policy (CFP 1970s). It is therefore critical for marine resource managers to understand the distribution of fishing impacts in relation to the distribution the habitats and species to minimise damage to UK marine ecosystems. A change in fishing regulations and management is likely to have substantial ramifications fishing operations in the UK by causing a change in the spatial distribution of fishing effort among various fishing metiers [@vaughanFishingEffortDisplacement2017]. Previous research has shown that a displacement of fishing effort could lead to detrimental environmental and socio-economic effects [e.g. @stevensonSocioeconomicConsequencesFishing2013a]. It is therefore important that new regulations or change in management which may bring about a displacement of fishing effort [@vaughanFishingEffortDisplacement2017; @chollettQuantifyingSqueezingStretching2016].
 
-The withdrawal of UK from the European Union (Brexit), which is scheduled for the 29 March 2019,[European Union (Withdrawal) Act 2018, section 20](http://www.legislation.gov.uk/ukpga/2018/16/section/20); [Article 50](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:12016M/TXT&from=EN), is likely to lead to change in fisheries regulations and management [@phillipsonSeaTroublesBrexit2018]. Brexit may influence how fish stocks are shared across political borders, quoata allocation to EU-member states in the UK, and Total Allowable Catch (TAC) for different stocks among many other aspects related to managing the UK fishing grounds [@phillipsonSeaTroublesBrexit2018]. It is therefore imperative that the Marine environment and fisheries bodies of the  UK's Government make the necessary provisions to minimise and make best use of the opportunity to minimise damage to the UK's marine resources following Brexit.
+The withdrawal of UK from the European Union (Brexit), which is scheduled for the 29 March 2019,[European Union (Withdrawal) Act 2018, section 20](http://www.legislation.gov.uk/ukpga/2018/16/section/20); [Article 50](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:12016M/TXT&from=EN), is likely to lead to change in fisheries regulations and management [@phillipsonSeaTroublesBrexit2018]. Brexit may influence how fish stocks are shared across political borders, quota allocation to EU-member states in the UK, and Total Allowable Catch (TAC) for different stocks among many other aspects related to managing the UK fishing grounds [@phillipsonSeaTroublesBrexit2018]. It is therefore imperative that the Marine environment and fisheries bodies of the  UK's Government make the necessary provisions to minimise and make best use of the opportunity to minimise damage to the UK's marine resources following Brexit.
 
 Natural England provides statuary conservation advice on operations in English territorial waters (from the shore to 12 NM offshore) to the UK Government and industry (with the exception of renewable energy for which its remit extends to 200 NM offshore). Natural England therefore requires a spatial evidence base to inform its advice on operations which would minimise the impacts of a displacement of fishing effort on marine environment and biodiversity.  
 
@@ -46,7 +46,7 @@ Previous studies have developed tools to predict the impacts of fishing effort d
 
 A case study was developed to explore the potential use of benthic habitat sensitivity models to help inform NE of potential impacts ion the marine environment. 
 
-In this report a case study was developed to inspect the potential application of the habitat sensitivity mapping in relation to spatial maps of fishing activity. Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which altered benthic habitats, composition and trophic structure of fish and invertebrate communities over the last century of industrial fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010]. The spatial overlap of benthic habitat sensitivity maps and the distribution of fishing related dredging activities were compared to evaluate the use of sensitivity mapping as a tool to inform management of options to minimise the impacts of a the spatial distribution of fishing activities. The habitat sensitivity maps were therefore evaluated as an dataset to inform conservation advice in the event of displacement of fishing effort. The ability of the tool to identify recently non-fished sensitive benthic habitats were explored, as a means to inform spatial planning in the UK's EEZ. 
+In this report a case study was developed to inspect the potential application of the habitat sensitivity mapping in relation to spatial maps of fishing activity. Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which altered benthic habitats, composition and trophic structure of fish and invertebrate communities over the last century of industrial fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010]. The spatial overlap of benthic habitat sensitivity maps and the distribution of fishing related dredging activities were compared to evaluate the use of sensitivity mapping as a tool to inform management of options to minimise the impacts of a the spatial distribution of fishing activities. The habitat sensitivity maps were therefore evaluated as an data set to inform conservation advice in the event of displacement of fishing effort. The ability of the tool to identify recently non-fished sensitive benthic habitats were explored, as a means to inform spatial planning in the UK's EEZ. 
 
 #### Remove: 
 The equitable redistribution of marine resources, such as fishing quota allocation, remains a key challenge to resource managers, for example. [@halpernConfoundingEffectsExport2004].
@@ -58,7 +58,7 @@ The remit of NE's statutory powers : National National Reserves (NNRs) in Englan
 ## Study Area
 Marine habitat sensitivity maps were generated for the United Kingdom's Exclusive Economic Zone (EEZ), from the shoreline to 200 NM offshore [Figure 1]!(english_waters). The sensitivity maps were generated in two steps, first for 0 - 12 NM offshore for English territorial waters, and second, comprising both the 12 - 200 NM English offshore and 0 - 200 NM for devolved administrations. The habitat sensitivity maps were therefore generated independently for these adjacent geographical areas. 
 
-The areas were treated indepdently as Natural England holds fine-scale data on the composition of the benthic habitat in 0 - 12 NM in England which was not available for the offshore (12 - 200 NM) English waters and 0 - 200 NM for Devolved Administrations at the time of writing. The fine-scale information on habitat composition was utilised in an additional step within the R modelling routines, which allowed biotope prediction within mapped broader scale habitats. The biotope level habitat information was obtained from additional data and expert validation which describes the likley biotopes within subbiogeographic regions within English waters *insert a map of subbiogeogrpahic regions*. (This fine-scale habitat information when NE provides statutory advice, and is therefore well established within the organisations day to day working.)
+The areas were treated independently as Natural England holds fine-scale data on the composition of the benthic habitat in 0 - 12 NM in England which was not available for the offshore (12 - 200 NM) English waters and 0 - 200 NM for Devolved Administrations at the time of writing. The fine-scale information on habitat composition was utilised in an additional step within the R modelling routines, which allowed biotope prediction within mapped broader scale habitats. The biotope level habitat information was obtained from additional data and expert validation which describes the likely biotopes within subbiogeographic regions within English waters *insert a map of subbiogeogrpahic regions*. (This fine-scale habitat information when NE provides statutory advice, and is therefore well established within the organisations day to day working.)
 
 
 ```{r english_waters, echo = FALSE}
@@ -76,13 +76,13 @@ map('worldHires',
 *TO DO replace with maps from QGIS? or add the eez?: Figure 1. Insert a map of the UK coastline and 200 NM Exclusive Economic Zone (EEZ) Or Map of 0 - 12NM and a second map of develoved admin*
 
 ### Data sources
-Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, include 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share a common unique identifier which refers to the habitat category and could therefore be joined to associate the sensitivity of habitat categories to the mapped habitat categories.
+Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, including 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share a common unique identifier which refers to the habitat category and could therefore be joined to associate the sensitivity of habitat categories to the mapped habitat categories.
 
 #### 1. Marine habitat map
-The standard benthic habitat map used by NE in its day to day operations, was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat categories contained within NE's habitat map is based on the European Nature Information System (EUNIS) classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012].
+The benthic habitat map used by NE (Marine_Evidence_Base_Internal.gdb, layer = BSH), was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat categories contained within NE's habitat map are based on the European Nature Information System (EUNIS) classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012]. 
 *TO DO: Get detail from Ian/Tim on the habitat map - is there a NE document to reference?*
 
-#### The EUNIS habitat classification system
+##### The EUNIS habitat classification system
 The EUNIS benthic habitat categories is a hierarchical system within which fine-scale habitat categories are nested within broader scale habitat categories, referred to as EUNIS levels. At the top of the hierarchical classification system, the broadest definition of habitat corresponds, e.g. "Marine", to EUNIS level 1. At higher EUNIS values, the amount of thematic detail about the habitat increases progressively, for example, EUNIS level 2: A1 : Littoral rock and other hard substrata,
 EUNIS level 3: A1.1 : High energy littoral rock,
 EUNIS level 4: A1.11 : Mussel and/or barnacle communities,
@@ -91,28 +91,103 @@ EUNIS level 6: A1.1132 : *Semibalanus balanoides*, *Fucus vesiculosus* and red s
 
 *See the* [EUNIS-webpage](https://eunis.eea.europa.eu/habitats-code-browser.jsp) *for more examples on the hierarchical view of the EUNIS habitat classification system.*
 
-The habitat map is comprised habitat categories are of different EUNIS levels, based on the data available for the different areas in the EEZ. The data sources used to generate the benthic habitat map are based on a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys. The development of the habitat is an ongoing process which updates the habitat maps and habitat classification system as new information becomes available. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as variability between the confidence associated with each mapped area (known as polygons). The habitat map is therefore comprised of a patchwork of polygons which may differ in their shape, area and the habitat category (and EUNIS level) which they represent, as well as the level of confidence with which the habitat was category was assigned to it. The confidence associated with habitat classification of each polygon is represented by a MESH score (*Annex MESH confidence*).
+The habitat map was comprised habitat categories which were of different EUNIS levels (2 - 6). The differences in the habitat categories (EUNIS levels) is a result of different amounts of data available for the different areas across the EEZ. The development of the habitat is an ongoing process which updates the habitat maps and habitat classification system as new information becomes available. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as variability in  confidence between the mapped areas (referred to as polygons hereafter). The habitat map is therefore comprised of a patchwork of polygons which may differ in their shape, area and the habitat category (and EUNIS level) which they represent, as well as the level of confidence with which the habitat was category was assigned to it. The confidence associated with habitat classification of each polygon is represented by a MESH (Mapping European Seabed Habitats) score (*Annex MESH confidence*). MESH scores are derived from the confidence associated with different data sources used to inform the classification of the habitat category assigned to a polygon. The data sources used to generate the benthic habitat map are based on a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys.
 
-The EUNIS benthic habitat categories which appear on the habitat map were associated with sensitivity assessments, will be used in conjunction with existing benthic habitat maps to derive sensitivity maps for benthic habitat.
+The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database, which were used together to derive sensitivity maps for benthic habitat.
 
 #### 2. Sensitivity assessments
-Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats, and are publicly available on The Marine Life Information Network's (MarLIN) [website](https://www.marlin.ac.uk/). The sensitivity data is also housed internally at Natural England in a Microsoft Access database, namely, PD_AoO.accdb, which is used to inform NE's conservation advice on operations packages, known as [Designated Sites View](https://designatedsites.naturalengland.org.uk/Marine/MarineSiteDetail.aspx?SiteCode=UKMCZ0045&SiteName=aln&countyCode=&responsiblePerson=&SeaArea=&IFCAArea=). The Microsoft Access database, PD_AoO.accdb, was used to obtain sensitivity assessments for the EUNIS habitats. 
+Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats, and are publicly available on The Marine Life Information Network's (MarLIN) [website](https://www.marlin.ac.uk/).The sensitivity assessments are based upon the MarESA [@tillinAssessingSensitivitySubtidal2014] methods in which the EUNIS habitats were assessed against 39 standardised pressures for each activity (Annex Activities and Pressures). The ten fishing activities in the AoO database were included in this project (Table 1). The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying direction of a pressure rather than simply stating a change (Table 2). For example instead of one pressure stating a change of 0.5&deg C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014]. One of six levels of sensitivity are assigned to each habitat category in relation to the each of the 39 pressures (Table 3).
 
-The sensitivity assessments are based upon the MarESA [@tillinAssessingSensitivitySubtidal2014] methods in which the EUNIS habitats were assessed against 39 standardised pressures for each activity (Annex Activities and Pressures). Ten activities are currently considered part of fishing operations (Table Fishing Activities) The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying directionality of a pressure rather than simply stating a change. For example instead of one pressure stating a change of 0.5&deg C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014].
 
-Table. Fishing activities *Decide how this is to be done,either you will have to reproduce the script to generate the objects here, or load a saved object
+```{r fishing_acts, fig.cap="Table 1. Fishing activities", echo = FALSE}
+library(RODBC)
+library(DBI)
+library(tidyverse)
 
-```{r fishing_acts, fig.cap="Table Fishing activities", echo = FALSE, include=FALSE}
-#library(dplyr)
-#print(OpsAct)
-#f.acts <- tblActivityLUT %>% 
-#        left_join(tbl)
+#power pc path to database
+db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
+drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for isntallation, and will not work without it!
+
+#Below prints the list of options for the user to read, and then make a selection to enter below
+#see key below
+rpt.dir <- getwd()
+setwd("F:/projects/marine_biotope_sensitivity")
+
+
+db.p  <-  db.path
+drv.p <-  drv.path
+
+#specificy the connection to the database
+connection.path <- paste0("Driver={",drv.path,"};DBQ=",db.path)#server=",srv.host,"; #server may need to be defined for other SQL database formats
+        
+# Connect to Access db to allow reading the data into R environment.
+conn <- odbcDriverConnect(connection.path)
+        
+# Get individual data tables
+        #----------------------------------------------------------------------------------------
+#sql statements to translate Microsoft Access table into R objects - these will be needed make joined tables to arrive at the required datatable
+tblActivityLUT <- sqlQuery(conn, paste("SELECT tblActivityLUT.*
+                                       FROM tblActivityLUT;"))
+tblActivityLUT <- as.data.frame(sapply(X = tblActivityLUT, FUN = as.character), stringsAsFactors=FALSE)
+tblActivityLUT$OperationCode <- as.integer(tblActivityLUT$OperationCode)
+        
+tblActivityLUT %>% 
+        filter(OperationCode == 11) %>%
+        select(ActivityName, Description) %>%
+        kable(caption = "Table 1: Fishing activities in Advice on Operations (AoO) database") %>%
+        kable_styling(position = "left", full_width = F)
+
+close(conn)
+setwd(rpt.dir)
 ```
 *Expand on the senstivity methods; insert an annex with actitivities, pressures, benchmarks-reference-only*
 
-One of six levels of sensitivity are assigned to each habitat category in relation to the each of the 39 pressures, including 
+##### Pressures
+The 39 standarised pressures which 
 
-```{r sens_levels, echo = FALSE}
+
+``` {r pressures, fig.cap="Table 2. The 39 standrdised pressures against which habitat sensitivities were assessed", echo = FALSE}
+library(RODBC)
+library(DBI)
+library(tidyverse)
+
+#power pc path to database
+db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
+drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for isntallation, and will not work without it!
+
+#Below prints the list of options for the user to read, and then make a selection to enter below
+#see key below
+rpt.dir <- getwd()
+setwd("F:/projects/marine_biotope_sensitivity")
+
+
+db.p  <-  db.path
+drv.p <-  drv.path
+
+#specificy the connection to the database
+connection.path <- paste0("Driver={",drv.path,"};DBQ=",db.path)#server=",srv.host,"; #server may need to be defined for other SQL database formats
+        
+# Connect to Access db to allow reading the data into R environment.
+conn <- odbcDriverConnect(connection.path)
+        
+# Get individual data tables
+        #----------------------------------------------------------------------------------------
+#sql statements to translate Microsoft Access table into R objects - these will be needed make joined tables to arrive at the required datatable
+tblPressureLUT <- sqlQuery(conn, paste("SELECT tblPressureLUT.*
+                                                FROM tblPressureLUT;"))
+tblPressureLUT <- as.data.frame(sapply(X = tblPressureLUT, FUN = as.character), stringsAsFactors=FALSE)
+
+tblPressureLUT %>% 
+        kable(caption = "Table 2: Standardised 39 ppressures in Operations (AoO) database") %>%
+        kable_styling(position = "left", full_width = F)
+
+close(conn)
+setwd(rpt.dir)
+```
+
+
+
+```{r sens_levels, fig.cap="Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.", echo = FALSE}
 #library(tidyverse)
 sens.rank <- tribble(
         ~Rank, ~Sensivity_description,
@@ -126,11 +201,14 @@ sens.rank <- tribble(
 )
 
 sens.rank %>%
-        kable(caption = "Table: Senstivity levels") %>%
+        kable(caption = "Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.") %>%
         kable_styling(position = "left", full_width = F)
 
 ```
+##### 2.1 Sensitvity assessments database
+The sensitivity data is also stored internally at Natural England in a Microsoft Access database, namely, PD_AoO.accdb. the sensitivity assessments are used to inform NE's Advice on Operations (AoO), available as conservation advice packages to the public on the [Designated Sites View](https://designatedsites.naturalengland.org.uk/Marine/MarineSiteDetail.aspx?SiteCode=UKMCZ0045&SiteName=aln&countyCode=&responsiblePerson=&SeaArea=&IFCAArea=). The Microsoft Access database, PD_AoO.accdb, was used to obtain sensitivity assessments for the EUNIS habitats in this project. 
 
+##### Fishing activities
 
 ### Data processing
 All technical work is being carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to sensitivity assessments or updates to the benthic habitat map.
