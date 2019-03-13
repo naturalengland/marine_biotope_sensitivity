@@ -86,7 +86,7 @@ print(OpsAct)
 
 # Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 14, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
-ops.number <- 10
+ops.number <- 11
 
 
 #Run this to save your choice, and see what was saved
@@ -269,8 +269,8 @@ source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 
 #----------------
 #10
-#compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
-#rreads and runs the function
+# compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
+# reads and runs the function
 source(file = "./functions/min_max_sbgr_bap_fn.R")
 # Output stored as: sbgr.BAP.max.sens
 
