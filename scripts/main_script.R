@@ -42,8 +42,8 @@ rm(list = ls()) # this will remove all objects inthe R environment. Run this to 
 ## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
 library(RODBC)
 library(DBI)
-library(plyr)
 library(tidyverse)
+library(plyr)
 library(reshape2)
 library(rgdal)
 library(magrittr)
@@ -74,9 +74,9 @@ final_output <- "outputs"
 
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables.gpkg") # name of geopackage file in final output
+dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing.gpkg") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "renew_ops" # name of layer being put
+layer.name <- "fishing_ops" # name of layer being put
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
