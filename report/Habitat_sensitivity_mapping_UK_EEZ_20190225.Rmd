@@ -140,11 +140,6 @@ tblActivityLUT %>%
 close(conn)
 setwd(rpt.dir)
 ```
-*Expand on the senstivity methods; insert an annex with actitivities, pressures, benchmarks-reference-only*
-
-##### Pressures
-The 39 standarised pressures which 
-
 
 ``` {r pressures, fig.cap="Table 2. The 39 standrdised pressures against which habitat sensitivities were assessed", echo = FALSE}
 library(RODBC)
@@ -185,8 +180,6 @@ close(conn)
 setwd(rpt.dir)
 ```
 
-
-
 ```{r sens_levels, fig.cap="Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.", echo = FALSE}
 #library(tidyverse)
 sens.rank <- tribble(
@@ -208,10 +201,55 @@ sens.rank %>%
 ##### 2.1 Sensitvity assessments database
 The sensitivity data is also stored internally at Natural England in a Microsoft Access database, namely, PD_AoO.accdb. the sensitivity assessments are used to inform NE's Advice on Operations (AoO), available as conservation advice packages to the public on the [Designated Sites View](https://designatedsites.naturalengland.org.uk/Marine/MarineSiteDetail.aspx?SiteCode=UKMCZ0045&SiteName=aln&countyCode=&responsiblePerson=&SeaArea=&IFCAArea=). The Microsoft Access database, PD_AoO.accdb, was used to obtain sensitivity assessments for the EUNIS habitats in this project. 
 
-##### Fishing activities
+# START HERE
 
-### Data processing
-All technical work is being carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to sensitivity assessments or updates to the benthic habitat map.
+### Expert fine-scale benthic habitats within inshore sub-biogeoregions 
+Fine-scale benthic habs
+
+### 3. Data processing
+A few GIs steps were required, and all other technical data manipulation was carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to the sensitivity assessment database (PD_AoO.accdb) or updates to the benthic habitat map.
+
+
+
+#### 3.1 GIS steps
+
+
+step 1
+rebuild the sbgr layer using set SNAP tolerance to 20m to inshore boundary of existing sbgr layer, and then extend outer edges beyond current extent. sbgr (Keith Hiscock) layer
+
+Step 2
+
+clip (difference) step 2 by the 12 NM limit mask (Neil Irvine), and the layer from step 1.
+
+Step 3. 
+Join (one to one) the properties of the sbgr (kH) layer to the newly clipped layer to obtain the correct attributes, and carried out a few checks to see that the correct associations were made. 
+Output: D:\projects\fishing_displacement\2_subprojects_and_data\2_GIS_DATA\biogeoregions\subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
+
+
+GIS habitat map steps
+
+Production of the Offshore and Inshore areas.
+
+Offshore (outside 12 NM) habitat map
+F:\copy_data\Marine_Evidence_Base_Internal.gdb → CLIP with D:\projects\fishing_displacement\2_subprojects_and_data\2_GIS_DATA\masks\mask_minus_12nm_and_land.shp
+
+Inshore (inside 12NM) habitat map
+F:\copy_data\Marine_Evidence_Base_Internal.gdb → DIFFERENCE with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land_WGS84.shp
+NAME: D:\projects\fishing_displacement\2_subprojects_and_data\2_GIS_DATA\Marine habitat\Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg
+
+
+Associate subbiogeoregions to Inshore habitat map
+Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg → INTERSECT with  subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
+
+#### 3.2 R Main code steps
+
+githib link
+
+
+
+
+
+
 
 # Case study materials methods
 The habitat sensitivity map was developed for abrasion from dredging for the UK's EEZ, using the two step process described above. 
