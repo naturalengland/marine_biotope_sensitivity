@@ -6,7 +6,7 @@ read.network.geodatabase <- function(net.dir = "\\\\SAMVW3-GIREP02\\NEWorkingDat
         gdb <- try(readOGR(dsn = net.dir, layer = gis.layer))
         if("try-error" %in% class(gdb)) {
                 cat("Caught an error during to read the network file, trying read a back up copy.\n")
-                prep.gdb.dir <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg"
+                prep.gdb.dir <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\err_missing_edge\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg"
                 gis.layer <- "sbgr_input_poly_wgs84_internal_bgr_inside_12nm"
                 gdb <- try(readOGR(dsn = prep.gdb.dir, layer = gis.layer))
                 if("try-error" %in% class(gdb)) {
