@@ -136,7 +136,7 @@ eunis.lvl.assessed$EUNISCode <- as.character(eunis.lvl.assessed$EUNISCode) # ens
 source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 
 # housekeeping: remove the initial database query, and keep only the last R object
-#rm(qryEUNIS_ActPressSens, sens.rank)
+rm(qryEUNIS_ActPressSens, sens.rank)
 
 #-------------------------------
 #03#Read GIS habitat map file
@@ -260,7 +260,7 @@ source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 # Output stored as xap.ls
 
 #housekeeping: remove objects no longer required
-#rm(sbgr.matched.btpt.w.rpl)
+rm(sbgr.matched.btpt.w.rpl)
 
 #--------------
 #09 Reads a file which generate a table of sensitivities scored 1 to 5, as values are needed to obtain and compare a MAXIMUM value where more than one fine-scale biotope occurs within a broader biotope.
@@ -275,7 +275,7 @@ source(file = "./functions/min_max_sbgr_bap_fn.R")
 # Output stored as: sbgr.BAP.max.sens
 
 #housekeeping - remove temporary object (list) now
-#rm(xap.ls)
+rm(xap.ls)
 
 #--------------
 #11 assocaite maximum sensitivity with gis polygon Ids
