@@ -89,19 +89,7 @@ map('worldHires',
 ### Data sources
 Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, including 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share a common unique identifier which refers to the habitat category and could therefore be joined to associate the sensitivity of habitat categories to the mapped habitat categories.
 
-#### 1. 
-
-#### 2. Marine habitat map
-The benthic habitat map used by NE (Marine_Evidence_Base_Internal.gdb, layer = BSH), was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat categories contained within NE's habitat map are based on the EUNIS classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012]. The habitat map is continuously updated as new information on habitat becomes available follwoing a well defined process *TO DO: Get detail from Ian/Tim on the habitat map - is there a NE document to reference?*
-
-The habitat map was comprised habitat categories which were of different EUNIS levels (2 - 6). The differences in the habitat categories (EUNIS levels) is a result of different amounts of data available for the different areas across the EEZ. The development of the habitat is an ongoing process which updates the habitat maps and habitat classification system as new information becomes available. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as variability in  confidence between the mapped areas (referred to as polygons hereafter). The habitat map is therefore comprised of a patchwork of polygons which may differ in their shape, area and the habitat category (and EUNIS level) which they represent, as well as the level of confidence with which the habitat was category was assigned to it. The confidence associated with habitat classification of each polygon is represented by a MESH (Mapping European Seabed Habitats) score (*Annex MESH confidence*). MESH scores are derived from the confidence associated with different data sources used to inform the classification of the habitat category assigned to a polygon. The data sources used to generate the benthic habitat map are based on a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys.
-
-### Expert fine-scale benthic habitats within inshore sub-biogeoregions 
-Fine-scale benthic habitats which occur within broader-scale habitats were were identified using ... 
-
-The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database, which were used together to derive sensitivity maps for benthic habitat.
-
-#### 2. Sensitivity assessments
+#### 1. Sensitivity assessments
 Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats using the MarESA methods [@tillinAssessingSensitivitySubtidal2014]. The sensitivity of the EUNIS habitats levels 4 to 6 were assessed against 39 standardised pressures for each activity. The ten fishing activities in the AoO database were included in this project (Table 1). The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying direction of a pressure rather than stating non-diretional change (Table 2). For example instead of one pressure stating a change of 0.5&deg C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014]. One of six levels of sensitivity are assigned to each habitat category in relation to the each of the 39 pressures (Table 3). The sensitivity is based on the resistance and resilience of the habitat. See [@tillinAssessingSensitivitySubtidal2014] for details.
 
 ```{r fishing_acts, fig.cap="Table 1. Fishing activities", echo = FALSE}
@@ -203,8 +191,25 @@ sens.rank %>%
         kable_styling(position = "left", full_width = F)
 
 ```
-##### 2.1 Sensitvity assessments database
+##### 1.1 Sensitvity assessments database
 The sensitivity data is also stored internally at Natural England in a Microsoft Access database, namely, PD_AoO.accdb. The Microsoft Access database, PD_AoO.accdb, was used to obtain sensitivity assessments for the EUNIS habitats in this project. The sensitivity assessments are used to inform NE's Advice on Operations (AoO), available as conservation advice packages to the public on the [Designated Sites View](https://designatedsites.naturalengland.org.uk/Marine/MarineSiteDetail.aspx?SiteCode=UKMCZ0045&SiteName=aln&countyCode=&responsiblePerson=&SeaArea=&IFCAArea=).
+
+#### 2. Marine habitat map
+The benthic habitat map used by NE (Marine_Evidence_Base_Internal.gdb, layer = BSH), was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat categories contained within NE's habitat map are based on the EUNIS classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012]. The habitat map is continuously updated as new information on habitat becomes available follwoing a well defined process *TO DO: Get detail from Ian/Tim on the habitat map - is there a NE document to reference?*
+
+The habitat map was comprised habitat categories which were of different EUNIS levels (2 - 6). The differences in the habitat categories (EUNIS levels) is a result of different amounts of data available for the different areas across the EEZ. The development of the habitat is an ongoing process which updates the habitat maps and habitat classification system as new information becomes available. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as variability in  confidence between the mapped areas (referred to as polygons hereafter). The habitat map is therefore comprised of a patchwork of polygons which may differ in their shape, area and the habitat category (and EUNIS level) which they represent, as well as the level of confidence with which the habitat was category was assigned to it. The confidence associated with habitat classification of each polygon is represented by a MESH (Mapping European Seabed Habitats) score (*Annex MESH confidence*). MESH scores are derived from the confidence associated with different data sources used to inform the classification of the habitat category assigned to a polygon. The data sources used to generate the benthic habitat map are based on a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys.
+
+### 3. Addressing the mismatch in EUNIS habitat assessments and the habitat map.
+There was a mismatch in the habitat categories included int eh habiat map and those that have been assessed for sensitivity to pressures. The habitat map includes EUNIS level 2 - 6, while the assessmetns only cover EUNIS level 4 - 6.
+
+#### 3.1 Integration of expert fine-scale benthic habitats within inshore sub-biogeoregions 
+Fine-scale benthic habitats (EUNIS level 4 - 6) which are known to occur within sub-biogeoregions within (0 - 12 NM) were identified by Dr Keith Hiscock in project (Hiscock, K. 2016). These fine scale habitats were then assoiated with their parent broad-scale habitats for each sub-biogeoregion. **insert and map and diagram/slide**.
+
+The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database, which were used together to derive sensitivity maps for benthic habitat. 
+
+
+
+
 
 ### 3. Data processing
 A few GIs steps were required, and all other technical data manipulation was carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to the sensitivity assessment database (PD_AoO.accdb) or updates to the benthic habitat map.
