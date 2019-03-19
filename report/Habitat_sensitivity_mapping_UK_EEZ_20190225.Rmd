@@ -259,8 +259,8 @@ A significant proportion of the EUNIs habitats which occur on the map have been 
 
 ```{r eunis_mismatch, fig.cap= "Figure 2: The overlap and mismatch between the EUNIS levels which have had sensitivity assessments and those on the habitat map.",  echo = FALSE}
 eunis_mismath_img_path <- "F:/projects/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20190225_files/figure-html/EUNIS_mismatch_20190319.png"
-
-knitr::include_graphics(eunis_mismath_img_path, dpi = 150)
+#eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
+knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 ```
 
 #### 3.1 Integration of expert fine-scale benthic habitats within inshore sub-biogeoregions 
@@ -289,7 +289,7 @@ clip (difference) step 2 by the 12 NM limit mask (Neil Irvine), and the layer fr
 
 Step 3. 
 Join (one to one) the properties of the sbgr (kH) layer to the newly clipped layer to obtain the correct attributes, and carried out a few checks to see that the correct associations were made. 
-Output: D:\projects\fishing_displacement\2_subprojects_and_data\2_GIS_DATA\biogeoregions\subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
+Output: D:/projects\fishing_displacement\2_subprojects_and_data\2_GIS_DATA\biogeoregions\subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
 
 
 GIS habitat map steps
