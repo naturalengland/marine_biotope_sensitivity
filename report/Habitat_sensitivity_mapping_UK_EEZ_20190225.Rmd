@@ -87,10 +87,10 @@ map('worldHires',
 *TO DO replace with maps from QGIS? or add the eez?: Figure 1. Insert a map of the UK coastline and 200 NM Exclusive Economic Zone (EEZ) Or Map of 0 - 12NM and a second map of develoved admin*
 
 ### Data sources
-Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, including 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share a common unique identifier which refers to the habitat category and could therefore be joined to associate the sensitivity of habitat categories to the mapped habitat categories.
+Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, including 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share a common key in the datasets and could therefore be joined to associate the sensitivity of habitat categories to the mapped habitat categories.
 
 #### 1. Sensitivity assessments
-Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats using the MarESA methods [@tillinAssessingSensitivitySubtidal2014]. The sensitivity of the EUNIS habitats levels 4 to 6 were assessed against 39 standardised pressures for each activity. The ten fishing activities in the AoO database were included in this project (Table 1). The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying direction of a pressure rather than stating non-diretional change (Table 2). For example instead of one pressure stating a change of 0.5&deg C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014]. One of six levels of sensitivity are assigned to each habitat category in relation to the each of the 39 pressures (Table 3). The sensitivity is based on the resistance and resilience of the habitat. See [@tillinAssessingSensitivitySubtidal2014] for details.
+Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats using the MarESA methods [@tillinAssessingSensitivitySubtidal2014] as part of Natural England's ongoing advice on operations programme. The sensitivity of the EUNIS habitats levels 4 to 6 were assessed against 39 standardised pressures for each activity. The ten fishing activities in the AoOADvice on Operations database were included in this project (Table 1). The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect caused by the pressure is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying direction of a pressure rather than one parameter stating non-diretional change (Table 2). For example instead of one pressure stating a change of 0.5&deg C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014]. One of six levels of sensitivity are assigned to each habitat category in response to each of the 39 pressures, each with their own defined benchmark (Table 3). The sensitivity score is based on the resistance and resilience of the habitat. See [@tillinAssessingSensitivitySubtidal2014] for details. Resistance is comprised of X 
 
 ```{r fishing_acts, fig.cap="Table 1. Fishing activities", echo = FALSE}
 library(RODBC)
@@ -188,6 +188,41 @@ sens.rank <- tribble(
 
 sens.rank %>%
         kable(caption = "Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.") %>%
+        kable_styling(position = "left", full_width = F)
+
+```
+
+```{r resistance_tbl, fig_cap = "Table 4. Assessment scale for resistance (tolerance) to a defined intensity of pressure.", echo = FALSE}
+
+tbl.resist <- tribble(
+        ~Resistance, ~Description,
+        #----------,-------------------
+        "None", "Key functional, structural, characterizing species severely decline and/or physicochemical                       parameters are also affected e.g. removal of habitats causing a change in habitats type. A                      severe decline/reduction relates to the loss of 75% of the extent, density or abundance of the                  selected species or habitat component e.g. loss of 75% substratum (where this can be sensibly                   applied).",
+        "Low", "Significant mortality of key and characterizing species with some effects on the physicochemical character of habitat. A significant decline/reduction relates to the loss of 25-75% of the extent, density, or abundance of the selected species or habitat component e.g. loss of 25-75% of the substratum.",
+        "Medium", "Some mortality of species (can be significant where these are not structural/functional and characterizing species) without change to habitats relates to the loss <25% of the species or habitat component.",
+        "High", "No significant effects on the physicochemical character of habitat and no effect on population viability of key/characterizing species but may affect feeding, respiration and reproduction rates."
+)
+
+
+tbl.resist %>%
+        kable(caption = "Table 4. Assessment scale for resistance (tolerance) to a defined intensity of pressure.") %>%
+        kable_styling(position = "left", full_width = F)
+```
+
+
+```{r resilience_tbl,fig_caption = "Table 5. Assessment scale for resilience (recovery)"", echo = FALSE}
+
+tbl.resil <- tribble(
+        ~Resilience, ~Description,
+        #-----------,------------------
+        "Very Low", "Negligible or prolonged recovery possible; at least 25 years to recover structure and function.",
+        "Low", "Full recovery within 10-25 years.",
+        "Medium", "Full recovery within 2-10 years.",
+        "High", "Full recovery within 2 years."
+)
+
+tbl.resil %>% 
+        kable(caption = "Table 5. Assessment scale for resilience (recovery)") %>%
         kable_styling(position = "left", full_width = F)
 
 ```
