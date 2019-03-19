@@ -266,6 +266,12 @@ knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 #### 3.1 Integration of expert fine-scale benthic habitats within inshore sub-biogeoregions 
 Fine-scale benthic habitats (EUNIS level 4 - 6) which are known to occur within sub-biogeoregions within (0 - 12 NM) were identified by Dr Keith Hiscock in project (Hiscock, K. 2016). These fine scale habitats were then assoiated with their parent broad-scale habitats for each sub-biogeoregion. **insert and map and diagram/slide**.
 
+```{r subbiogeoregions, fig.cap= "Figure 3: The subbiogeoregions within which fine-scale habitats (EUNIS level 4 - 6) are known, and were assocaited with broad-scale habitats from which fine scale habitat on the habitat map.",  echo = FALSE}
+eunis_mismatch_img_path <- "F:/projects/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20190225_files/figure-html/EUNIS_mismatch_20190319.png"
+#eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
+knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
+```
+
 The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database, which were used together to derive sensitivity maps for benthic habitat. 
 
 
