@@ -230,15 +230,15 @@ tbl.resil %>%
 ```{r cross_tabulate_resist_resil, Fig_caption = "Table 6. The combination of resistance and resilience scores to categorize sensitivity.", echo = FALSE}
 
 tbl.sens.crss <- tribble(
-        ~ ,~Resistance, ~ ,~ ,~ ,
+        ~Resilience,~None,~Low,~Medium,~High,
         #------,-----,-----,-------,-------
-        "Resilience","None","Low","Medium","High",
         "Very Low","High","High","Medium","Low",
         "Low","High","High","Medium","Low",
         "Medium","Medium","Medium","Medium","Low",
         "High","Medium","Low","Low","Not sensitive"
 )
 
+print("          Resisistence")
 tbl.sens.crss %>%
         kable(caption = "Table 6. The combination of resistance and resilience scores to categorize sensitivity.") %>%
         kable_styling(position = "left", full_width = FALSE)
