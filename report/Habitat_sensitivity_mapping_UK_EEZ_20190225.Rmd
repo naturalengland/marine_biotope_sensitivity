@@ -258,7 +258,7 @@ A significant proportion of the EUNIs habitats which occur on the map have been 
 
 
 ```{r eunis_mismatch, fig.cap= "Figure 2: The overlap and mismatch between the EUNIS levels which have had sensitivity assessments and those on the habitat map.",  echo = FALSE}
-eunis_mismath_img_path <- "F:/projects/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20190225_files/figure-html/EUNIS_mismatch_20190319.png"
+eunis_mismatch_img_path <- "F:/projects/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20190225_files/figure-html/EUNIS_mismatch_20190319.png"
 #eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
 knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 ```
