@@ -210,7 +210,7 @@ tbl.resist %>%
 ```
 
 
-```{r resilience_tbl,fig_caption = "Table 5. Assessment scale for resilience (recovery)"", echo = FALSE}
+```{r resilience_tbl,fig_caption = "Table 5. Assessment scale for resilience (recovery)", echo = FALSE}
 
 tbl.resil <- tribble(
         ~Resilience, ~Description,
