@@ -258,7 +258,7 @@ A significant proportion of the EUNIs habitats which occur on the map have been 
 
 
 ```{r eunis_mismatch, fig.cap= "Figure 2: The overlap and mismatch between the EUNIS levels which have had sensitivity assessments and those on the habitat map.",  echo = FALSE}
-eunis_mismatch_img_path <- "F:/projects/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20190225_files/figure-html/EUNIS_mismatch_20190319.png"
+eunis_mismatch_img_path <- "F:/projects/marine_biotope_sensitivity/report/_bookdown_files/_main_files/figure-html/EUNIS_mismatch_20190319.png"
 #eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
 knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 ```
@@ -267,23 +267,23 @@ knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 Fine-scale benthic habitats (EUNIS level 4 - 6) which are known to occur within sub-biogeoregions within (0 - 12 NM) were identified by Dr Keith Hiscock in project (Hiscock, K. 2016). These fine scale habitats were then assoiated with their parent broad-scale habitats for each sub-biogeoregion. **insert and map and diagram/slide**.
 
 ```{r subbiogeoregions, fig.cap= "Figure 3: The subbiogeoregions within which fine-scale habitats (EUNIS level 4 - 6) are known, and were assocaited with broad-scale habitats from which fine scale habitat on the habitat map.",  echo = FALSE}
-eunis_mismatch_img_path <- "F:/projects/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20190225_files/figure-html/EUNIS_mismatch_20190319.png"
+sbgr_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/subbiogeoregions.png"
 #eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
-knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
+knitr::include_graphics(sbgr_img_path, dpi = 150)
 ```
 
-The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database, which were used together to derive sensitivity maps for benthic habitat. 
+The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database. By joining these datasets sensitivity maps for benthic habitat to the various presssures and activities were generated. The GI and R programming following steps were taken to produce the habitat senstivity maps from these data sources.
 
+### 4. Data processing
+GIS steps were required to split the original habitat map into an inshore (0 - 12 NM) and offhsore compoennt (12 - 200 NM). All other technical data manipulation was carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to the sensitivity assessment database (PD_AoO.accdb) or updates to the benthic habitat map.
 
+```{r GI_process, fig.cap="Figure 4. The GIS processes followed to prepare the data set prior to implementing the R scripts.", echo =FALSE}
 
+GIS_process_path <- "D:/projects/fishing_displacement/4_Docs/internal_reports/gis_process_map.png"
+knitr::include_graphics(GIS_process_path, dpi = 150)
 
-
-### 3. Data processing
-A few GIs steps were required, and all other technical data manipulation was carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to the sensitivity assessment database (PD_AoO.accdb) or updates to the benthic habitat map.
-
-
-
-#### 3.1 GIS steps
+```
+#### 4.1 GIS steps
 
 
 step 1
@@ -295,7 +295,7 @@ clip (difference) step 2 by the 12 NM limit mask (Neil Irvine), and the layer fr
 
 Step 3. 
 Join (one to one) the properties of the sbgr (kH) layer to the newly clipped layer to obtain the correct attributes, and carried out a few checks to see that the correct associations were made. 
-Output: D:/projects\fishing_displacement\2_subprojects_and_data\2_GIS_DATA\biogeoregions\subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
+Output: D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/biogeoregions/subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
 
 
 GIS habitat map steps
@@ -303,11 +303,11 @@ GIS habitat map steps
 Production of the Offshore and Inshore areas.
 
 Offshore (outside 12 NM) habitat map
-F:\copy_data\Marine_Evidence_Base_Internal.gdb → CLIP with D:\projects\fishing_displacement\2_subprojects_and_data\2_GIS_DATA\masks\mask_minus_12nm_and_land.shp
+F:/copy_data/Marine_Evidence_Base_Internal.gdb → CLIP with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land.shp
 
 Inshore (inside 12NM) habitat map
-F:\copy_data\Marine_Evidence_Base_Internal.gdb → DIFFERENCE with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land_WGS84.shp
-NAME: D:\projects\fishing_displacement\2_subprojects_and_data\2_GIS_DATA\Marine habitat\Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg
+F:/copy_data/Marine_Evidence_Base_Internal.gdb → DIFFERENCE with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land_WGS84.shp
+NAME: D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/Marine habitat/Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg
 
 
 Associate subbiogeoregions to Inshore habitat map
