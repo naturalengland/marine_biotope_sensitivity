@@ -3,7 +3,8 @@ title: "Mapping benthic habitat sensitivity to marine activities"
 subtitle: "Natural England report XXX-draft"
 author: "Philip Haupt and Duncan Vaughan"
 date: "29 March 2019"
-output: html_document
+#output: word_document
+always_allow_html: yes
 #toc: true
 #toc_depth: 2
 #number_sections: true
@@ -23,7 +24,27 @@ library(maps)       # Provides functions that let us plot the maps
 library(mapdata)        # Contains the hi-resolution points that mark out the countries.
 library(png)
 #rmarkdown::render('Marine_biotope_mapping_UK_EEZ_20190225.Rmd', output_format = c('pdf'))
+bookdown::pdf_document2
 ```  
+
+```{r set_default_space_after_plots, echo = F}
+library(knitr)
+if(is_latex_output()) {
+  plot_default <- knit_hooks$get("plot")
+  knit_hooks$set(plot = function(x, options) { 
+    x <- c(plot_default(x, options), "\\vspace{25pt}")
+  })
+}
+```
+
+
+```{r set_png_hooks, echo = FALSE}
+# Set up the hook
+library(knitr)
+knit_hooks$set(optipng = hook_optipng)
+knit_hooks$set(pngquant = hook_pngquant)
+```
+
 
 # Introduction
 
@@ -31,11 +52,11 @@ The United Kingdom's (UK) marine environment is of significant economic value, i
 
 Commercial fishing operations are widespread throughout the United Kingdom, and is fished by both national and international fleets within the remits of the London Fisheries Convention (1964) and the Common Fishery Policy (CFP 1970s). Many of the existing regulations and laws are therefore enshrined in EU maritime law. The withdrawal of the UK from the European Union (EU exit), which is scheduled for the 29 March 2019,[European Union (Withdrawal) Act 2018, section 20](http://www.legislation.gov.uk/ukpga/2018/16/section/20); [Article 50](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:12016M/TXT&from=EN), is likely to lead to change in fisheries regulations [@phillipsonSeaTroublesBrexit2018]. Leaving the EU may change how fish stocks are shared across political borders, quota allocation to EU-member states in the UK, and Total Allowable Catch (TAC) for different stocks among many other aspects related to managing the UK fishing grounds [@phillipsonSeaTroublesBrexit2018]. A change in fishing regulations and management may have substantial ramifications fishing operations in the UK. The spatial distribution of fishing effort among various fishing metiers is a key element is likely to be influenced by a change in regulations [@vaughanFishingEffortDisplacement2017]. Previous research has shown that a displacement of fishing effort could lead to detrimental environmental and socio-economic effects [e.g. @stevensonSocioeconomicConsequencesFishing2013a]. It is therefore important that the impact on the marine environment brought about by a displacement of fishing effort be considered prior to adopting new regulations or change in management practices [@vaughanFishingEffortDisplacement2017; @chollettQuantifyingSqueezingStretching2016]. 
 
-Natural England provides statuary conservation Advice on Operations in English territorial waters (from the shore to 12 NM offshore) to the Defra, regulators and developers. Natural England also provides advice out to 200 NM offshore for renewable energy through the delegation of responsibility from the Joint nature Conservation Council (JNCC). Previous studies have developed tools to predict the impacts of fishing effort displacement, which forecast a change in fishing effort displacement [@bastardieDISPLACEDynamicIndividualbased2013]. This project did not attempt to predict a change in fishing activity given the significant uncertainty and complexity in how Brexit would affect fishing opportunities and regulations in the UK. Delineating the geographical distribution of habitat sensitivity has been identified as critical dataset for managing human activities on the marine environment [@baxSeabedHabitatSoutheastern2001]. The sensitivity of marine habitats have previously been defined as sensitivity as: *"The intolerance of a species or habitat to damage from an external factor and the time taken for its subsequent recovery"*,[Laffoley et al. (2000); Tyler-Walters & Hiscock (2005)](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale)), *, or, "the degree to which marine features respond to stresses, which are deviations of environmental conditions beyond the expected range"* [@zachariasSensitivityVulnerabilityMarine2005]. In this study habitat sensitivity to standardised pressures from various activities in the marine environment were mapped. The sensitivty mapping is a precautionary approach which could then be used to assess impacts from change in marine activities as they happen. This response, as oposed to predictive approach was preferred due to the multitude of uncertainties associated with fishing displacement, and other activities in the marine environment arising from EU exit. 
+Natural England provides statuary conservation Advice on Operations in English territorial waters (from the shore to 12 NM offshore) to the Defra, regulators and developers. Natural England also provides advice out to 200 NM offshore for renewable energy through the delegation of responsibility from the Joint nature Conservation Council (JNCC). Previous studies have developed tools to predict the impacts of fishing effort displacement, which forecast a change in fishing effort displacement [@bastardieDISPLACEDynamicIndividualbased2013]. This project did not attempt to predict a change in fishing activity given the significant uncertainty and complexity in how Brexit would affect fishing opportunities and regulations in the UK. Delineating the geographical distribution of habitat sensitivity has been identified as critical dataset for managing human activities on the marine environment [@baxSeabedHabitatSoutheastern2001]. The sensitivity of marine habitats have previously been defined as sensitivity as: *"The intolerance of a species or habitat to damage from an external factor and the time taken for its subsequent recovery"*,[Laffoley et al. (2000); Tyler-Walters & Hiscock (2005)](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale)), *, or, "the degree to which marine features respond to stresses, which are deviations of environmental conditions beyond the expected range"* [@zachariasSensitivityVulnerabilityMarine2005]. In this study habitat sensitivity to standardised pressures from various activities in the marine environment were mapped. The sensitivity mapping is a precautionary approach which could then be used to assess impacts from change in marine activities as they happen. This response, as opposed to predictive approach was preferred due to the multitude of uncertainties associated with fishing displacement, and other activities in the marine environment arising from EU exit. 
 
-Natural England uses sensitivity assessments of protected bethic habitats and species to inform its Advice on Operations. The habitat sensitivity assessments are comprised of three principal components, namely 1) habitat, 2) pressure, and 3) activity (which may be attributed to an operation). 
+Natural England uses sensitivity assessments of protected benthic habitats and species to inform its Advice on Operations. The habitat sensitivity assessments are comprised of three principal components, namely 1) habitat, 2) pressure, and 3) activity (which may be attributed to an operation). 
 
-##### 1. Habitat
+#### Habitat
 This study was limited to the marine benthic habitat, comprised from the substratum and the community of organisms adhered to or living in close contact to the seabed. The definition of the multitude of benthic habitat categories used by Natural England is based on the pan-European adopted habitat classification system, known as the European Nature Information System (EUNIS). The EUNIS benthic habitat categories is a hierarchical system within which fine-scale habitat categories are nested within broader-scale habitat categories, referred to as EUNIS levels. At the top of the hierarchical classification system, the broadest definition of habitat corresponds, e.g. "Marine", to EUNIS level 1. At higher EUNIS values, the amount of thematic detail about the habitat increases progressively, for example, EUNIS level 2: A1 : Littoral rock and other hard substrata,
 EUNIS level 3: A1.1 : High energy littoral rock,
 EUNIS level 4: A1.11 : Mussel and/or barnacle communities,
@@ -44,20 +65,24 @@ EUNIS level 6: A1.1132 : *Semibalanus balanoides*, *Fucus vesiculosus* and red s
 
 *See the* [EUNIS-webpage](https://eunis.eea.europa.eu/habitats-code-browser.jsp) *for more examples on the hierarchical view of the EUNIS habitat classification system.*
 
-#### 2. Pressure
-Pressure is the force of stress exerted by an activity on marine benthic habitats. Every acivity may be assocaited with numerous pressures whcih act simultaneously on these habitats. The nature of the pressure is determined by the activity type, intensity and distribution [Robinson et al. (2008)](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale). Pressures are standardised according to a  benchmark. A benchmark is a set level at which tthere are known effectand habitats or species. See the MarESA methods *(MarESA reference to be included - also check with James Highfield taht indeed we are using MarESA, or MarLIN -a s there are differences!)*.
+#### Pressure
+Pressure is the force of stress exerted by an activity on marine benthic habitats. Every activity may be associated with numerous pressures which act simultaneously on these habitats. The nature of the pressure is determined by the activity type, intensity and distribution [Robinson et al. (2008)](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale). Pressures are standardised according to a  benchmark. A benchmark is a set level at which there are known effect and habitats or species. See the MarESA methods *(MarESA reference to be included - also check with James Highfield taht indeed we are using MarESA, or MarLIN -a s there are differences!)*.
 
-#### 3. Activity
-Standardised categories of human activities and natural events, to which pressures on the environment are associated. Activities can be grouped within operations.
+#### Activity
+Standardized categories of human activities and natural events, to which pressures on the environment are associated. Activities can be grouped within operations.
 
+#### Natural England's role
 Natural England's benthic habitat sensitivity assessments include 39 pressures associated with a 100 activities stemming from 18 operations in the marine environment. Other common concepts include the Vulnerability and Exposure. Vulnerability is the measure of the degree of exposure of a receptor to a pressure to which it is sensitive [Based on Hiscock et al. 1999; Oakwood Environmental Ltd (2002)](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale). Exposure is the action of a pressure on a receptor, with regard to the extent, magnitude and duration of the pressure [Robinson et al. (2008)](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale).
 
-Natural England's statuatory remit is restricted to protected habitats and species within English marine protected areas (MPAs), known as designated features. The designated habitat features are represented at a intermediate scale of detail, equivalent to EUNIS level 3. Natural England's conservation advice is therefore limited to a subset of the area of English territorial waters, and provided at a coarser scale of habitat detail than is available for the UK seabed. In recognition that impacts from a displacement of fishing effort occurring outside of MPAs can have an impact on features within MPAs, a "wider-seas" and "whole-sites" approach was used to assess the sensitivity of benthic habitats to fishing activities for the UK's EEZ (Exclusive Economic Zone). The whole-sites and wider-seas approach means that currently protected features were not considered in isolation, but that the connectivity between benthic habitats were considered to provide a holistic overview the spatial distributions of fishing related impacts on the benthic habitat. Natural England holds a bespoke dataset which details potential fine-scale habtiats (EUNIS level 4 - 6) which occur within the broader habitat categories (EUNIS level 1 - 3) within the subbiogeographical sea regions around England from 0 to 12 NM offshore. The bespoke dataset was informed through expert consultation with Dr Keith Hiscock (Hiscock, K. 2016). A case study was developed to explore the potential use of benthic habitat sensitivity models to help inform NE of potential impacts on the marine environment. 
+Natural England's statutory remit is restricted to protected habitats and species within English marine protected areas (MPAs), known as designated features. The designated habitat features are represented at a intermediate scale of detail, equivalent to EUNIS level 3. Natural England's conservation advice is therefore limited to a subset of the area of English territorial waters, and provided at a coarser scale of habitat detail than is available for the UK seabed. In recognition that impacts from a displacement of fishing effort occurring outside of MPAs can have an impact on features within MPAs, a "wider-seas" and "whole-sites" approach was used to assess the sensitivity of benthic habitats to fishing activities for the UK's EEZ (Exclusive Economic Zone). The whole-sites and wider-seas approach means that currently protected features were not considered in isolation, but that the connectivity between benthic habitats were considered to provide a holistic overview the spatial distributions of fishing related impacts on the benthic habitat. Natural England holds a bespoke dataset which details potential fine-scale habitats (EUNIS level 4 - 6) which occur within the broader habitat categories (EUNIS level 1 - 3) within the subbiogeographical sea regions around England from 0 to 12 NM offshore. The bespoke dataset was informed through expert consultation with Dr Keith Hiscock (Hiscock, K. 2016). A case study was developed to explore the potential use of benthic habitat sensitivity models to help inform NE of potential impacts on the marine environment. 
 
-Previous attempts to use quantitative methods to delineate benthic habitat sensitivity were limited by the level of detail about the underlying benthic habitat upon which fishing activities impact. These studies have assumed that benthic habitat were comprised of four broad-scale categories, such as mud, muddy sand, sand and gravel. Current quantitiative models therefore do not consider differences in living structures occuring within these habitats. These models are therefore likely to over- or under-estimate the sensitivity of fine-scale habitats within these very broad defintitions of habitat. Alternative methods using score based or expert judged systems  to map out geographical distribution of habitat sensitivity e.g. [@tillinAssessingSensitivitySubtidal2014; @zachariasSensitivityVulnerabilityMarine2005] have been critisised for not being quantitative, and therefore not repeatable [@dupliseaSizebasedModelImpacts2002; @hiddinkAssessingPredictingRelative2007]. Despite this limitation, both quantitative and scored based systems of habitat sensitivity have commonly been based upon the same central tenet of resilience to pressures, and standardiszation of the pressures [See Roberts et al 2010](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale).
+#### Previous sensitvity mapping work
+Previous attempts to use quantitative methods to delineate benthic habitat sensitivity were limited by the level of detail about the underlying benthic habitat upon which fishing activities impact. These studies have assumed that benthic habitat were comprised of four broad-scale categories, such as mud, muddy sand, sand and gravel. Current quantitative models therefore do not consider differences in living structures occurring within these habitats. These models are therefore likely to over- or under-estimate the sensitivity of fine-scale habitats within these very broad definitions of habitat. Alternative methods using score based or expert judged systems  to map out geographical distribution of habitat sensitivity e.g. [@tillinAssessingSensitivitySubtidal2014; @zachariasSensitivityVulnerabilityMarine2005] have been criticised for not being quantitative, and therefore not repeatable [@dupliseaSizebasedModelImpacts2002; @hiddinkAssessingPredictingRelative2007]. Despite this limitation, both quantitative and scored based systems of habitat sensitivity have commonly been based upon the same central tenet of resilience to pressures, and standardization of the pressures [See Roberts et al 2010](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale).
 
-Senstivity assessmsents are often comprised of two components, namely 1) resistence and 2) resilience. The resistance is the ability of the substrate and the benthic community of organisms to withstand damage caused by a particular pressures associated with an activity. In otherwords, it is the likelihood of damage due to a pressure. The second component, resilience, is the time that it takes for the benthic community to regenerate and restore the productivity and/or biomass [@hiddinkAssessingPredictingRelative2007] to its former level prior to the impact. In the qualitative methods used by NE, resitance and resilience is and resilience  are based on assigning a resistance and resilience category to each habitat cateogry based on literature reviews or expert judegement *(insert MAResa methods and reference)*. Cross-tabulation of the categorical scores of resitance and resilience are then used to determine the senstivity cateogry in the MAResa methods. A confidence score is then assocaited with each of the assessments, resistance, resilience and overall sensitivity, based on the quality of the evidence and and its applicability to the assessment of the likely effects of a pressure on a given feature (species or habitat). The quality of the evidence is based on the reputability of the source, e.g. journal article, grey literature or expert opinion, and the level of agreement between the different sets of evidence  [Tillin and Tyler-Walters, 2014, d’Avack et al. 2014](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale).
+#### Sensitivity assessments used by Natural England
+Sensitivity assessments are often comprised of two components, namely 1) resistance and 2) resilience. The resistance is the ability of the substrate and the benthic community of organisms to withstand damage caused by a particular pressures associated with an activity. In other words, it is the likelihood of damage due to a pressure. The second component, resilience, is the time that it takes for the benthic community to regenerate and restore the productivity and/or biomass [@hiddinkAssessingPredictingRelative2007] to its former level prior to the impact. In the qualitative methods used by NE, resistance and resilience is and resilience  are based on assigning a resistance and resilience category to each habitat category based on literature reviews or expert judgement *(insert MAResa methods and reference)*. Cross-tabulation of the categorical scores of resistance and resilience are then used to determine the sensitivity category in the MAResa methods. A confidence score is then associated with each of the assessments, resistance, resilience and overall sensitivity, based on the quality of the evidence and and its applicability to the assessment of the likely effects of a pressure on a given feature (species or habitat). The quality of the evidence is based on the reputability of the source, e.g. journal article, grey literature or expert opinion, and the level of agreement between the different sets of evidence  [Tillin and Tyler-Walters, 2014, d’Avack et al. 2014](https://www.marlin.ac.uk/sensitivity/sensitivity_rationale).
 
+#### Aim
 The overarching **aim (1.1)** of this project was to map the spatial distribution of sensitivity of fine-scale benthic habitats (EUNIS level 4 - 6) in relation to 39 pressures caused by all , with an emphasis on fishing activities, on which NE provides conservation advice in the UK's Exclusive Economic Zone (EEZ). The study area includes the wider seas (outside of MPAs) to provide evidence of sensitive habitats which may be affected by a displacement of fishing pressures arising from different scenarios of EU Exit. 
 
 In this report a case study was developed to inspect the application of the habitat sensitivity mapping in relation to spatial maps of fishing activity. The **aim 1.2** of the case study was  to identify a) sensitive and not-fished, and b) not-sensitive and not-fished areas, as a potential source to inform management of options which identifies the spatial distribution of fishing effort which would minimise the their impact on the benthic habitat. 
@@ -67,31 +92,21 @@ Fishing activities have had profound effects on the UK's marine ecosystem, of wh
 # Methods
 
 ## Study Area
-Marine habitat sensitivity maps were generated for the United Kingdom's Exclusive Economic Zone (EEZ), from the shoreline to 200 NM offshore [Figure 1]!(english_waters). The sensitivity maps were generated in two steps, first for 0 - 12 NM offshore for English territorial waters, and second, comprising both the 12 - 200 NM English offshore and 0 - 200 NM for devolved administrations. The habitat sensitivity maps were therefore generated independently for these adjacent geographical areas. 
-
-The areas were treated independently as Natural England holds fine-scale data on the composition of the benthic habitat in 0 - 12 NM in England which was not available for the offshore (12 - 200 NM) English waters and 0 - 200 NM for Devolved Administrations at the time of writing. The fine-scale information on habitat composition was utilised in an additional step within the R modelling routines, which allowed biotope prediction within mapped broader scale habitats. The biotope level habitat information was obtained from additional data and expert validation which describes the likely biotopes within subbiogeographic regions within English waters *insert a map of subbiogeogrpahic regions*. (This fine-scale habitat information when NE provides statutory advice, and is therefore well established within the organisations day to day working.)
+Marine habitat sensitivity maps were generated for the United Kingdom's Exclusive Economic Zone (EEZ), from the shoreline to 200 NM offshore. The sensitivity maps were generated in two steps, first for 0 - 12 NM offshore for English territorial waters (area in light blue in Figure 1), and second, comprising both the 12 - 200 NM English offshore and 0 - 200 NM for devolved administrations [Figure 1](!english_waters). The habitat sensitivity maps were therefore generated independently for these adjacent geographical areas. 
 
 
-```{r english_waters, echo = FALSE}
-#map('worldHires',
-#    c(),
-#    xlim=c(-11,3), ylim=c(49,60.9))	
-
-map('worldHires',
-    c('UK', 'Isle of Man','Isle of Wight', 'Ireland'),
-    xlim=c(-11,3), ylim=c(49,60.9),
-    fill = TRUE,
-    col = c("grey50", "grey80", "grey80", "grey80"))#,
-    #add = TRUE)	
+```{r english_waters, fig.cap="The United Kingdom's boundaries, showing English territorial waters (inshore) and offshore areas used in this study." ,echo = FALSE, out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
+english_waters_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/UK_waters.png"
+knitr::include_graphics(english_waters_img_path, dpi  = 150)
 ```
-*TO DO replace with maps from QGIS? or add the eez?: Figure 1. Insert a map of the UK coastline and 200 NM Exclusive Economic Zone (EEZ) Or Map of 0 - 12NM and a second map of develoved admin*
+
+The areas were treated independently as Natural England holds fine-scale data on the composition of the benthic habitat in 0 - 12 NM in England which was not available for the offshore (12 - 200 NM) English waters and 0 - 200 NM for Devolved Administrations at the time of writing. The fine-scale information on habitat composition was utilised in an additional step within the R modelling routines, which allowed biotope prediction within mapped broader scale habitats. The biotope level habitat information was obtained from additional data and expert validation which describes the likely biotopes within subbiogeoregions regions within English waters. (This fine-scale habitat information when NE provides statutory advice, and is therefore well established within the organisations day to day working.)
 
 ### Data sources
 Two main data sets were used to map the sensitivities for the marine benthic habitats within the UK's EEZ, including 1) habitat sensitivity assessments, and 2) a marine habitat map for the UK. The two data sources share a common key in the datasets and could therefore be joined to associate the sensitivity of habitat categories to the mapped habitat categories.
 
 #### 1. Sensitivity assessments
-Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats using the MarESA methods [@tillinAssessingSensitivitySubtidal2014] as part of Natural England's ongoing advice on operations programme. The sensitivity of the EUNIS habitats levels 4 to 6 were assessed against 39 standardised pressures for each activity. The ten fishing activities in the AoOADvice on Operations database were included in this project (Table 1). The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect caused by the pressure is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying direction of a pressure rather than one parameter stating non-diretional change (Table 2). For example instead of one pressure stating a change of 0.5&deg C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014]. One of six levels of sensitivity are assigned to each habitat category in response to each of the 39 pressures, each with their own defined benchmark (Table 3). The sensitivity score is based on the resistance and resilience of the habitat. See [@tillinAssessingSensitivitySubtidal2014] for details. Resistance is comprised of X 
-
+Sensitivity assessments of each benthic habitat categories has been carried out for most EUNIS habitats using the MarESA methods [@tillinAssessingSensitivitySubtidal2014] as part of Natural England's ongoing advice on operations programme. The sensitivity of the EUNIS habitats levels 4 to 6 were assessed against 39 standardised pressures for each activity. The ten fishing activities in the Advice on Operations database were included in this project (Table 1). The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect caused by the pressure is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying direction of a pressure rather than one parameter stating non-directional change (Table 2). For example instead of one pressure stating a change of 0.5&deg C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014]. One of six levels of sensitivity are assigned to each habitat category in response to each of the 39 pressures, each with their own defined benchmark (Table 3). The sensitivity score is based on the resistance and resilience of the habitat. See [@tillinAssessingSensitivitySubtidal2014] for details. 
 ```{r fishing_acts, fig.cap="Table 1. Fishing activities", echo = FALSE}
 library(RODBC)
 library(DBI)
@@ -246,89 +261,92 @@ tbl.sens.crss %>%
 
 ```
 ##### 1.1 Sensitvity assessments database
-The sensitivity data is also stored internally at Natural England in a Microsoft Access database, namely, PD_AoO.accdb. The Microsoft Access database, PD_AoO.accdb, was useas the source for the sensitivity assessments of the EUNIS habitats in relation to the activities and pressures in this project. The sensitivity assessments are used to inform NE's Advice on Operations (AoO), available as conservation advice packages to the public on the [Designated Sites View](https://designatedsites.naturalengland.org.uk/Marine/MarineSiteDetail.aspx?SiteCode=UKMCZ0045&SiteName=aln&countyCode=&responsiblePerson=&SeaArea=&IFCAArea=).
+The sensitivity data is also stored internally at Natural England in a Microsoft Access database, namely, PD_AoO.accdb. The Microsoft Access database, PD_AoO.accdb, was used as the source for the sensitivity assessments of the EUNIS habitats in relation to the activities and pressures in this project. The sensitivity assessments are used to inform NE's Advice on Operations (AoO), available as conservation advice packages to the public on the [Designated Sites View](https://designatedsites.naturalengland.org.uk/Marine/MarineSiteDetail.aspx?SiteCode=UKMCZ0045&SiteName=aln&countyCode=&responsiblePerson=&SeaArea=&IFCAArea=).
 
 #### 2. Marine habitat map
-The benthic habitat map used by NE (Marine_Evidence_Base_Internal.gdb, layer = BSH), was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat categories contained within NE's habitat map are based on the EUNIS classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012]. The habitat map is continuously updated as new information on habitat becomes available following a well defined process between NE and JNCC.*TO DO: Get detail from Ian/Tim on the habitat map - is there a NE document to reference?; See email from TIM*
+The benthic habitat map used by NE (Marine_Evidence_Base_Internal.gdb, layer = BSH), was used as the basis to inform the spatial distribution of benthic habitats around within the UK's EEZ for this project. The habitat categories contained within NE's habitat map are based on the EUNIS classification developed in conjunction with the JNCC [@Davies2004; @Galparsoro2012]. The habitat map is continuously updated as new information on habitat becomes available following a well defined process between NE and JNCC.
 
-The habitat map was comprised habitat categories which were of different EUNIS levels (2 - 6) *INSERT MAP*. The differences in the habitat categories (EUNIS levels) is a result of different amounts of data available for the different areas across the EEZ. The development of the habitat is an ongoing process which updates the habitat maps and habitat classification system as new information becomes available. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as variability in  confidence between the mapped areas (referred to as polygons hereafter). The habitat map is therefore comprised of a patchwork of polygons which may differ in their shape, area and the habitat category (and EUNIS level) which they represent, as well as the level of confidence with which the habitat was category was assigned to it. The confidence associated with habitat classification of each polygon is represented by a MESH (Mapping European Seabed Habitats) score (*Annex MESH confidence*). MESH scores are derived from the confidence associated with different data sources used to inform the classification of the habitat category assigned to a polygon. The data sources used to generate the benthic habitat map are based on a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys.
+```{r habmap200, fig.cap= "The benthic habitat map for the United Kingdom from 0 to 200 NM offshore, showing a small sample of the EUNIS habitat codes." , echo = FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
+hab200nm_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/habitat_map_200NM.png"
+
+knitr::include_graphics(hab200nm_img_path, dpi = 150)
+
+```
+
+The habitat map was comprised habitat categories which were of different EUNIS levels (2 - 6) \@ref. The differences in the habitat categories (EUNIS levels) is a result of different amounts of data available for the different areas across the EEZ. The development of the habitat is an ongoing process which updates the habitat maps and habitat classification system as new information becomes available. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as variability in  confidence between the mapped areas (referred to as polygons hereafter). The habitat map is therefore comprised of a patchwork of polygons which may differ in their shape, area and the habitat category (and EUNIS level) which they represent, as well as the level of confidence with which the habitat was category was assigned to it. The confidence associated with habitat classification of each polygon is represented by a MESH (Mapping European Seabed Habitats) score (*Annex MESH confidence*). MESH scores are derived from the confidence associated with different data sources used to inform the classification of the habitat category assigned to a polygon. The data sources used to generate the benthic habitat map are based on a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys.
 
 ### 3. Addressing the mismatch in EUNIS habitat assessments and the habitat map.
-A significant proportion of the EUNIs habitats which occur on the map have been assessed, but X % had not been assessed. The predominant reason for this was the mismatch in the habitat categories included in the habitat map and those that have been assessed for sensitivity to pressures. The habitat map includes EUNIS level 2 - 6, while the assessmetns only cover EUNIS level 4 - 6.
-
+A significant proportion (70 %) of the mapped area of inshore and offshore habitats corresponded to EUNIS habitat categories which have been assessed for sensitivity, but about 30% of the area included habitat categories which have not had not been assessed. The main reason for this was the mismatch in the habitat categories included in the habitat map and those that have been assessed for sensitivity to pressures. The habitat map includes EUNIS level 2 - 6, while the assessments only cover EUNIS level 4 - 6. 
 
 ```{r eunis_mismatch, fig.cap= "Figure 2: The overlap and mismatch between the EUNIS levels which have had sensitivity assessments and those on the habitat map.",  echo = FALSE}
 eunis_mismatch_img_path <- "F:/projects/marine_biotope_sensitivity/report/_bookdown_files/_main_files/figure-html/EUNIS_mismatch_20190319.png"
 #eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
 knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 ```
+In order to remedy this mismatch, an approach was adopted in which the sensitivities of fine-scale habitats which are known to occur within broad-scale habitats were assigned to the polygons where a mismatch of EUNIS levels occurs, as follows.
 
 #### 3.1 Integration of expert fine-scale benthic habitats within inshore sub-biogeoregions 
-Fine-scale benthic habitats (EUNIS level 4 - 6) which are known to occur within sub-biogeoregions within (0 - 12 NM) were identified by Dr Keith Hiscock in project (Hiscock, K. 2016). These fine scale habitats were then assoiated with their parent broad-scale habitats for each sub-biogeoregion. **insert and map and diagram/slide**.
+Fine-scale benthic habitats (EUNIS level 4 - 6) which are known to occur within sub-biogeoregions within (0 - 12 NM) were identified by Dr Keith Hiscock in project (Hiscock, K. 2016). These fine scale habitats were then associated with their parent broad-scale habitats for each sub-biogeoregion.
 
-```{r subbiogeoregions, fig.cap= "Figure 3: The subbiogeoregions within which fine-scale habitats (EUNIS level 4 - 6) are known, and were assocaited with broad-scale habitats from which fine scale habitat on the habitat map.",  echo = FALSE}
+```{r subbiogeoregions, fig.cap= "Figure 3: The subbiogeoregions within which fine-scale habitats (EUNIS level 4 - 6) are known, and were assocaited with broad-scale habitats from which fine scale habitat on the habitat map.",  echo = FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
 sbgr_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/subbiogeoregions.png"
 #eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
 knitr::include_graphics(sbgr_img_path, dpi = 150)
 ```
 
-The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database. By joining these datasets sensitivity maps for benthic habitat to the various presssures and activities were generated. The GI and R programming following steps were taken to produce the habitat senstivity maps from these data sources.
+The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database. By joining these datasets sensitivity maps for benthic habitat to the various pressures and activities were generated. The following steps were taken to produce the habitat sensitivity maps from the aforementioned data sources.
 
 ### 4. Data processing
-GIS steps were required to split the original habitat map into an inshore (0 - 12 NM) and offhsore compoennt (12 - 200 NM). All other technical data manipulation was carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to the sensitivity assessment database (PD_AoO.accdb) or updates to the benthic habitat map.
+GIS steps were required to split the original habitat map into an inshore (0 - 12 NM) and offshore component (12 - 200 NM). All other technical data manipulation was carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to the sensitivity assessment database (PD_AoO.accdb) or updates to the benthic habitat map.
 
+#### 4.1 GIS steps: 
+
+Geoprocessing tools in QGIS was used for the production of the inshore (0 - 12 NM) and offshore (12 - 200 NM) areas.
+The habitat map (master copy - Marine_Evidence_Base_Internal.gdb) was copied, and clipped (using the DIFFERENCE geoprocessing tool in QGIS) keeping the area inside the English 12 NM boundary to create the basis for the inshore habitat map. The sub-bioregional shapefile was used to associate the subbiogeoregions (subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp) to the individual polygons comprising the inshore habitat map, using INTERSECT geoprocessing tool in QGIS.
+
+The files used are specified below.
+```{r GI_filenames, echo=FALSE}
+print("Inshore (inside 12NM) habitat map
+F:/copy_data/Marine_Evidence_Base_Internal.gdb --> DIFFERENCE with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land_WGS84.shp
+NAME: D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/Marine habitat/Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg")
+ #------------
+
+print("Associate subbiogeoregions to Inshore habitat map
+Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg --> INTERSECT with  subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp")
+```
+The GIS process for the inshore map can be depicted in flow diagram as follows, where the files shown above were the input to the GI geoprocessing tools shown below.
 ```{r GI_process, fig.cap="Figure 4. The GIS processes followed to prepare the data set prior to implementing the R scripts.", echo =FALSE}
 
 GIS_process_path <- "D:/projects/fishing_displacement/4_Docs/internal_reports/gis_process_map.png"
 knitr::include_graphics(GIS_process_path, dpi = 150)
 
 ```
-#### 4.1 GIS steps
+The offshore habitat map was prepared by clipping (DIFFERENCE geoprocessing tool in QGIS) with the English 12 NM boundary, keeping the area outside of the 12 NM boundary. A column was added to the offshore dataset (built into the R script described below), equivalent to the subbiogeoregion column added to the inshore habitat map, but here labeling all polygons as "offshore", to allow merging of the end products.
 
+The files used for the offshore data layer are specified below
+```{r GI_offshore_files, echo=FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
+print("Offshore (outside 12 NM) habitat map
+F:/copy_data/Marine_Evidence_Base_Internal.gdb → CLIP with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land.shp")
+```
 
-step 1
-rebuild the sbgr layer using set SNAP tolerance to 20m to inshore boundary of existing sbgr layer, and then extend outer edges beyond current extent. sbgr (Keith Hiscock) layer
+#### 3.2 R-code steps
+All programming to generate habitat sensitivity layers was carried out in R. the files are stored on Natural England's GitHub [webpage](https://github.com/naturalengland/marine_biotope_sensitivity). Here only the high-level overview of how the code works is described, Details about what each section of code does is described within each file. The inshore and offshore are two separate sets of code, and run indecently, after they were split using the GIS described above. The R scripts of r the inshore and offshore follow largely the same steps, described below.
 
-Step 2
+The code is structured as a main script which calls sixteen helper functions to run the separate processes sequentially over 11 steps.
+In the main script, the user provides input, such as the locality of the input data sources, e.g. Microsoft Access database, and habitat maps. Furthermore, the location of outputs generated, and the choice of file names. Once the user enters these inputs, the main body of the code can be run, where upon the user will be prompted to select one of the 18 Operations for which to generate habitat sensitivity maps. Once the user has entered their selection, the code runs without further user input requirements.
 
-clip (difference) step 2 by the 12 NM limit mask (Neil Irvine), and the layer from step 1.
+##### The eleven steps follow:
+The main script now starts calling the helper functions, one  at a time, and passes on output from a previous step for further processing. It starts by (1) reading the desired section of data from the MS Access database, which it runs through a query to obtain a list of EUNIS habitat types and their sensitivity assessments. (2) It then ranks the possible combinations of sensitivity scores from 1 - 6 based on the degree of their sensitivity, to allow selecting the greatest (maximum) sensitivity associated with a fine-scale habitat occurring within a broad-scale habitat, further down the process (see step 10). The ranks are then associated to the appropriate sensitivity category in the list of EUNIS-sensitivity assessments. A lists of unique combinations of sensitivities to each pressure (39) is then generated for each of the assessed EUNIS habitats, separately for each activity within the operation. ("act.press.list") (3) The GIS file (geodatabase) is read in either from a new location supplied by the user, or from a back-up copy to avoid future changes to the map preventing the code from running should there be a mistake in the new map. (4) The GIS attributes are then separated from the polygons to allow for efficient data handling. In this step the data are cleaned, e.g. white space and inconsistent data separators were corrected. The "HAB_TYPE" column in the GIS habitat map is the main source of information which describes the EUNIS habitats associated with each polygon on the habitat map. Where more than one habitat were associated with a polygon, only the first instance was kept, as this is understood to be the dominant habitat in that polygon. (5) Step five associates the EUNIS levels to the data set, based on the number of characters in the EUNIS code provided. This step allows for splitting the assessed data according to levels further down the process. (6) Step six is the critical step in the code. In step 6, the GIS data set is also attributed with habitat levels. This dataset is then split to according the subbiogeoregions (sbgr), and only a unique set of EUNIS codes per sbgr is retained in parameter called "bgr.dfs.lst". The database-sourced habitat sensitivity assessments are then split into matrices according to their EUNIS levels, called "x.dfs.lst". 
+The two data sets (two lists containing matrices) are then matched in a cross tabulation exercise, such that where character coding of a fine-scale habitat matches that of a broad-scale habitat, the fine-scale habitat is recorded as a new value in the cross tabulation.  The matrices of unique habitats per sbgr ("bgr.dfs.lst") were therefore sequentially matched assessment data matrices ("bgr.dfs.lst"). The process is therefore done for separately for of the subbioregions, within a EUNIS level, and repeated until all subbiogeoregions are complete, before it moves onto the next EUNIS level. The result is a set of data matrices in which per EUNIS level and where the fine-scale habitats which correspond to broad-scale habitat (EUNIS level 2 - 3) are stored as values in cross tabulated data matrices. (7) In step seven, the data matrices of the same according to subbiogeoregion, were then merged into a single data matrix ("sbgr.matched.btpt.w.rpl") for each sbgr, as follows: the data matrix representing EUNIS level 4 was overlaid on the the data matrix representing EUNIS level 5, replacing only values in this matrix where there was not already a value in the EUNIS level 5 data matrix.i.e. replace missing values. This new dataset was then overlaid onto the EUNIS level 6 data matrix,again replacing only missing values. The result was a single data matrix for each sbgr, in which the fine-scale habitat was retained per matching broad-scale habitat. Note that multiple fine-scale habitats may be associated with a broad-scale habitat within its sbgr. (8) In step eight, the unique combinations of fine-scale habitats in broad-scale habitats is joined to the list of habitat sensitivities per pressure, for each per sbgr  within each activity ("act.press.list"). This generated a new list of data matrices data matrices ("xap.ls"). In this new list of data matrices **all** unique fine-scale-habitats-within-broad-scale habitats were associated with the habitat assessments, with one data matrix per  pressure-sensitivity combination.  (9) Step nine compares and keeps only maximum values for each biotope-pressure-activity-sub-biogeographic region combination. maximum is retained in a R list "act.sbgr.bps.gis". (10) the outputs from step nine are used in step ten, where it retains only the habitat-sensitivity assessment of the assessed habitats which had the highest sensitivity score, per GIS polygon ID value. This set of data matrices are stored in an R object "sbgr.BAP.max.sens". (11) The sbgr.BAP.max.sens is then associated (joined) to the GIS habitat map layer, and saved as a new geopackage (gpkg) file outside of R, in the directory specified at the start by the user.
 
-Step 3. 
-Join (one to one) the properties of the sbgr (kH) layer to the newly clipped layer to obtain the correct attributes, and carried out a few checks to see that the correct associations were made. 
-Output: D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/biogeoregions/subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
+The process was the same for the offshore, but he database was not split into subbiogeoregions.
 
+## Case Study
+### Fishing activity data investigation
+The spatial match of scallop fishing activity was compared to the distribution of sensitive habitats.
+Scalloping data were obtained from VMS records. The number of records per habitat-sensitivity category were provided, along with mapped outputs to illustrate the potential application of sensitivity maps. The habitat sensitivity map was developed for abrasion from dredging for the UK's EEZ, using the two step process described above. A fishing pressure layer for dredging **and the current MPA layer** was overlaid onto the habitat sensitivity map to investigate 1.) the overlap of dredging activities on habitats which are sensitive thereto, 2. ) the placement of MPAs in relation to the impacts on sensitive benthic habitats.
 
-GIS habitat map steps
-
-Production of the Offshore and Inshore areas.
-
-Offshore (outside 12 NM) habitat map
-F:/copy_data/Marine_Evidence_Base_Internal.gdb → CLIP with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land.shp
-
-Inshore (inside 12NM) habitat map
-F:/copy_data/Marine_Evidence_Base_Internal.gdb → DIFFERENCE with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land_WGS84.shp
-NAME: D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/Marine habitat/Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg
-
-
-Associate subbiogeoregions to Inshore habitat map
-Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg → INTERSECT with  subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
-
-#### 3.2 R Main code steps
-
-githib link
-
-
-
-
-
-
-
-# Case study materials methods
-The habitat sensitivity map was developed for abrasion from dredging for the UK's EEZ, using the two step process described above. 
-
-GIS operations
-A fishing pressure layer for dredging and the current MPA layer was overlaid onto the habitat sensitivity map to investigate 1.) the overlap of dredging activities on habitats which are sensitive thereto, 2. ) the placement of MPAs in relation to the impacts on sensitive benthic habitats.
-
+GIS files:
 Fishing pressure layer
 
 Marine protected area layer
@@ -342,7 +360,7 @@ Output maps were vector based, and mirror the spatial resolution and habitat det
 
 1. The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure \@ref(fig:insh_drdg). (or merge the inshore and offshore into 1 figure perhaps?)
 
-```{r insh_drdg, fig.cap= "Figure 2: The habitat sensitivity to abrasion from inshore dredging.",  echo = FALSE}
+```{r insh_drdg, fig.cap= "Figure 2: The habitat sensitivity to abrasion from inshore dredging.",  echo = FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
 insh_fishing_dredging_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/Fishing_dredging__Abrasion_disturbance.png"
 #insh_fishing_dredging_img <- readPNG(insh_fishing_dredging_img_path, native = TRUE, info = TRUE)
 #attr(fishing_dredging_img, "info")
@@ -365,7 +383,7 @@ A follow up project will consider:
 A third project objective is the development of maps of the sensitivity distribution for 30 fish and shellfish species within UK waters to fishing related activities. These models are underpinned by sensitivity assessments carried out at set benchmarks, and coupled with species distribution models.
 
 ## Compare with quantitaive methods
-This is fundamentally different from how recovery time is estimated using quantitative methods. Recovery as used in quantitative models follows a mathemetical formula such as a modified Lotka–Volterra to estimate the based on the assumption that the recovery rate of organisms is uniform according to size and being soft or hard bodied organisms [dupliseaSizebasedModelImpacts2002].
+This is fundamentally different from how recovery time is estimated using quantitative methods. Recovery as used in quantitative models follows a mathematical formula such as a modified Lotka–Volterra to estimate the based on the assumption that the recovery rate of organisms is uniform according to size and being soft or hard bodied organisms [dupliseaSizebasedModelImpacts2002].
 
 # Annex
 **Table.** EUNIS MESH confidence scores
