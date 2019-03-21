@@ -1,4 +1,4 @@
-#genereate a list of sbgr matched biotopes from the results files, and sequentially assess the EUNIS levels from 6 to 4. Where an empty value at a higher EUNIs level is found it will look ion the next lower level, until it runs out at level four, when it leaves the value at NA.
+#genereate a list of sbgr matched biotopes from the results files, and sequentially assess the EUNIS levels from 6 to 4. Where an empty value at a higher EUNIs level is found it will look in the next lower level, until it runs out at level four, when it leaves the value at NA.
 
 sbgr.matched.btpt.w.rpl <- results.files %>% 
         plyr::llply(function(x){ 
@@ -17,7 +17,7 @@ sbgr.matched.btpt.w.rpl <- results.files %>%
                 # splits it into a list of dataframes accoprding to the assessed (hlvl) biotope classicifation level (4/5/6)
                 # the dataframes now need to be compared, and use level 6 values, and only replace NA values using level 5 and 4, but not replace EUNIs codes provided for eunis codes.
                 
-                l6.tmp <- y[[3]]#"3" should be replaced by something to make it eunis level 6 category, which is currently [[3]]
+                l6.tmp <- y[[3]] #"3" should be replaced by something to make it eunis level 6 category, which is currently [[3]]
                 l5.tmp <- y[[2]] # eunis level 5
                 l4.tmp <- y[[1]] # eunis level 4
                 l.tmp <- l6.tmp # temporary storage variable
@@ -48,8 +48,8 @@ sbgr.matched.btpt.w.rpl <- results.files %>%
                 
                 
                 # Future improvement?
-                #I am sure that the ifelse could be converted to a function and ran inside % % and a map functional to make the code smooth...but not sure how to sepcify to replace with a cross corresponding element..., so where v and w stand alone at this stage...
-                #replacefn <- function(w,u){
+                #I am sure that the ifelse could be converted to a function and ran inside % % and a map function to make the code smooth...but not sure how to sepcify to replace with a cross corresponding element..., so where v and w stand alone at this stage...
+                #replace fn <- function(w,u){
                 #        l.tmp <- ifelse(w %==% "NA" | w %==% "<NA>"| w %==% is.na(),v,w)#compare and replace
                 #}
                 
