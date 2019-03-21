@@ -182,12 +182,13 @@ rm(ind.eunis.lvl.tmp)
 #----------------------------
 #06
 source("./functions/match_eunis_to_biotope_fn.R") # load function that will match the biotopes
-# THIS NEEDS TO BE FUNCTIONALISED:
+# THIS NEEDS TO BE FUNCTIONALISED: but currenbtly runs as a long section of code
+
 # input data
 
 # SPATIAL data for join (y):
 # y - from spatial data; all possible EUNIS codes per BGR
-#in order to do so, define the EUNIs level of the hab.1 column
+# in order to do so, define the EUNIS level of the hab.1 column
 eunis.lvl.less.2 <- nchar(as.character(hab.types$hab.1), type = "chars", allowNA = T, keepNA = T)
 eunis.lvl.more.2 <- nchar(as.character(hab.types$hab.1), type = "chars", allowNA = T, keepNA = T)-1
 hab.types$level <- ifelse(nchar(as.character(hab.types$hab.1), type = "chars", allowNA = T, keepNA = T) > 2, eunis.lvl.more.2, eunis.lvl.less.2) #only using the first stated habitat, could be made to include others later on
@@ -215,7 +216,7 @@ subDir <- "tmp_output/"
 dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
 setwd(file.path(mainDir, subDir))
 
-# below is a for loop that count backwards, and then split the EUNIsAssessed in to a list of dataframes 1st being the most detailed biotope level (6), and then down to the broadest biotope level (4) that were assessed in the PD_AoO access database: outnames:bgr.dfs.lst is a list of habtypes within each subbgr, and the eunis level from the gis - it is used wihtin the for loop to write the sbgr file which is the match between gis and database
+# below is a for loop in which the EUNIsAssessed is split into a list of dataframes 1st being the most detailed biotope level (6), and then down to the broadest biotope level (4) that were assessed in the PD_AoO access database: outnames:bgr.dfs.lst is a list of habtypes within each subbgr, and the eunis level from the gis - it is used wihtin the for loop to write the sbgr file which is the match between gis and database
 for (g in seq_along(x.dfs.lst)) {
         #determine the number of characters for substring limit to feed into substring statement
         sbstr.nchr <- unique(nchar(as.character(x.dfs.lst[[g]]$EUNISCode)))
@@ -262,13 +263,8 @@ source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 #housekeeping: remove objects no longer required
 rm(sbgr.matched.btpt.w.rpl)
 
-#--------------
-#09 Reads a file which generate a table of sensitivities scored 1 to 5, as values are needed to obtain and compare a MAXIMUM value where more than one fine-scale biotope occurs within a broader biotope.
-#source(file = "./scripts/09_sensitivity_rank.R")
-# Allready read in earlier - remove
-
 #----------------
-#10
+#09
 # compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
 # reads and runs the function
 source(file = "./functions/min_max_sbgr_bap_fn.R")
@@ -278,7 +274,7 @@ source(file = "./functions/min_max_sbgr_bap_fn.R")
 rm(xap.ls)
 
 #--------------
-#11 assocaite maximum sensitivity with gis polygon Ids
+#10 assocaite maximum sensitivity with gis polygon Ids
 
 source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 # Output stored as: act.sbgr.bps.gis
@@ -288,7 +284,7 @@ source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 
 
 #--------------
-#12
+#11
 #save singel GIS file as final output
 # attach sensitivity results to the habitat map's geodatabase
 hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) 
