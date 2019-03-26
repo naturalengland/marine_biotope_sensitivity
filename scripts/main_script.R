@@ -112,8 +112,6 @@ if("try-error" %in% class(read.access.db(db.path,drv.path))) {
 qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) 
 #qryEUNIS_ActPressSens <- as.character(qryEUNIS_ActPressSens$ActSensRank)
 
-#remove housekeeping variables
-rm(db.path,drv.path)
 
 #--------------------------------
 #02
@@ -274,14 +272,13 @@ source(file = "./functions/min_max_sbgr_bap_fn.R")
 rm(xap.ls)
 
 #--------------
-#10 assocaite maximum sensitivity with gis polygon Ids
+#10 assocaite maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
 
 source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 # Output stored as: act.sbgr.bps.gis
 
 #housekeeping
 #rm(hab.types)
-
 
 #--------------
 #11
