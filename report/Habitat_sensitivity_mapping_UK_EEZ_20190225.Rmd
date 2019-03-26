@@ -377,35 +377,29 @@ The process was the same for the offshore, but he database was not split into su
 
 ## Case Study
 ### Fishing activity data investigation
-The spatial match of scallop dredging activity was compared to the distribution of sensitive habitats. The habitat sensitivity map to abrasion (Pressure code D6) from dredging (activity code Z5) in the UK's EEZ was used. The aggregated dredging activity between 2013-2014, "Fishermap_JNCC_NE/MMO_UK_VMS_Fishing_Activity.gdb", in the English EEZ was used as a realistic exmaple of the distribution of this pressure. The above dredging activity data set contains scallop dredging, tractor drawn dredging, and rake dredging data, but the latter two only apply to the shoreline-area. It can therefore be assumed that the dredging layer largely represents scallop dredging. In future this layer may be replaced by another, but here it is meant to be proof of concept for internal use. *Requires further infomration on background of Fishermap_JNCC_NE\MMO_UK_VMS_Fishing_Activity.gdb data to spell out details around the layer; and describe the values on the table*
-
-was overlaid onto the habitat sensitivity map to investigate 1.) the overlap of dredging activities on habitats which are sensitive thereto.
-
-
-
+The spatial match of scallop dredging activity was compared to the distribution of sensitive habitats. The habitat sensitivity map to abrasion (pressure code D6) from dredging (activity code Z5) in the UK's EEZ was used.The aggregated dredging activity between 2013-2014 stored in file "Fishermap_JNCC_NE/MMO_UK_VMS_Fishing_Activity.gdb" was used as a realistic and recent exmaple of the geographic distribution of this pressure in the English EEZ. The above dredging activity data set contains scallop dredging, tractor drawn dredging, and rake dredging data, but the latter two only apply to the shoreline-area. It can therefore be assumed that the dredging layer largely represents scallop dredging. In future this layer may be replaced by another, but here it is meant to be proof of concept for internal use. *Requires further infomration on background of Fishermap_JNCC_NE\MMO_UK_VMS_Fishing_Activity.gdb data to spell out details around the layer; and describe the values on the table*
+The Marine Conservation Zones (MCZs) were overlaid onto the fishing activity map to to provide perspective of the location of activities and existing protected areas. Other forms of protected areas, SACs, SPAs may be added in future if the project further investigates the three-way relationship of senstive habitats, activities at sea and the location of protected areas.
 
 ## GIS data
-### Fishing pressure layer
+1. Fishing pressure layer (file): "Fishermap_JNCC_NE/MMO_UK_VMS_Fishing_Activity.gdb"
+2. Marine Conservation Zone (MCz) layer (file): "Marine_Conservation_Zones_NE_CCW/Marine_Conservation_Zones_England.shp"
 
-
-A fishing activity layer for dredging and the current Marine Conservation Zone (MCZ) layer shows the placement of MCZs in relation to the fishing activity.
+A fishing activity layer showing dredging and the current Marine Conservation Zone (MCZ) layer shows the placement of MCZs in relation to the fishing activity.
 ```{r dredge, fig.cap= "Figure 5. Dredging activity in English waters from MMO VMS data.", echo = FALSE}
 dredge_img_path <- "F:/projects/marine_biotope_sensitivity/report/_bookdown_files/_main_files/figure-html/Fishing_pressure_dredge.png"
 
 knitr::include_graphics(dredge_img_path, dpi = 150)
 
 ```
-Marine protected area layer (Provide metadata description)
-The Marine Conservation Zone data layer for England was overlaid to provide insight into the overlap of dredging activities and protected areas.
 
 # Results
 
-In total 390 benthic habitat sensitivity maps were produced for 39 pressures from the ten fishing activities.
+In total about 390 benthic habitat sensitivity maps were produced for 39 pressures from the ten fishing activities, for the inshore and for the offshore resepctively.
 Output maps were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map.
 
 ## Case study results
 
-1. The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure \@ref(fig:insh_drdg).
+1. The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure 6.
 
 ```{r insh_drdg, fig.cap= "Figure X : The habitat sensitivity to abrasion from inshore dredging.",  echo = FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
 #insh_fishing_dredging_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/Fishing_dredging__Abrasion_disturbance.png"
