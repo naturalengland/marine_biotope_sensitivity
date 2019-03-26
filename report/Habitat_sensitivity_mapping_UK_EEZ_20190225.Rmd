@@ -322,7 +322,6 @@ The EUNIS benthic habitat categories which appear on the habitat map were associ
 GIS steps were required to split the original habitat map into an inshore (0 - 12 NM) and offshore component (12 - 200 NM). All other technical data manipulation was carried out using the R statistical environment in effort to make the work repeatable and provide instant results following updates to the sensitivity assessment database (PD_AoO.accdb) or updates to the benthic habitat map.
 
 ### GIS steps 
-
 Geoprocessing tools in QGIS was used for the production of the inshore (0 - 12 NM) and offshore (12 - 200 NM) areas.
 The habitat map (master copy - Marine_Evidence_Base_Internal.gdb) was copied, and (step 1) clipped (using the DIFFERENCE geoprocessing tool in QGIS) keeping the area inside the English 12 NM boundary to create the basis for the inshore habitat map. The sub-bioregional shapefile was used to (step 2) associate the subbiogeoregions (subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp) to the individual polygons comprising the inshore habitat map, using INTERSECT geoprocessing tool in QGIS.Outputs were stored as geopackage files to explore the use of open source standard file formats (and tools) in order to promote their use within the organisation.
 
@@ -352,39 +351,21 @@ F:/copy_data/Marine_Evidence_Base_Internal.gdb → CLIP with D:/projects/fishing
 ```
 
 ### R-code steps
-All programming to generate habitat sensitivity layers was carried out in R. the files are stored on Natural England's GitHub [webpage](https://github.com/naturalengland/marine_biotope_sensitivity). Here only the high-level overview of how the code works is described, Details about what each section of code does is described within each file. The inshore and offshore are two separate sets of code, and run indecently, after they were split using the GIS described above. The R scripts of r the inshore and offshore follow largely the same steps, described below.
+All programming to generate habitat sensitivity layers was carried out in R. the files are stored on Natural England's GitHub [webpage](https://github.com/naturalengland/marine_biotope_sensitivity). Here only the high-level overview of how the code works is described. Details about what each section of code does is braodly described in the Annex, and specific details are described within each R-file. The inshore and offshore are two separate sets of code, and run indecently, after they were split using the GIS described above. The R scripts of r the inshore and offshore follow largely the same steps, described below.
 
-The code is structured as a main script which calls sixteen helper functions to run the separate processes sequentially over 11 steps.
-In the main script, the user provides input, such as the locality of the input data sources, e.g. Microsoft Access database, and habitat maps. Furthermore, the location of outputs generated, and the choice of file names. Once the user enters these inputs, the main body of the code can be run, where upon the user will be prompted to select one of the 18 Operations for which to generate habitat sensitivity maps. Once the user has entered their selection, the code runs without further user input requirements.
-
-#### The eleven steps follow:
-The main script now starts calling the helper functions, one  at a time, and passes on output from a previous step for further processing. It starts by 
-1. Reading the desired section of data from the MS Access database, which it runs through a query to obtain a list of EUNIS habitat types and their sensitivity assessments. 
-2. It then ranks the possible combinations of sensitivity scores from 1 - 6 based on the degree of their sensitivity, to allow selecting the greatest (maximum) sensitivity associated with a fine-scale habitat occurring within a broad-scale habitat, further down the process (see step 10). The ranks are then associated to the appropriate sensitivity category in the list of EUNIS-sensitivity assessments. A lists of unique combinations of sensitivities to each pressure (39) is then generated for each of the assessed EUNIS habitats, separately for each activity within the operation. ("act.press.list").
-3. The GIS file (geodatabase) is read in either from a new location supplied by the user, or from a back-up copy to avoid future changes to the map preventing the code from running should there be a mistake in the new map. 
-4. The GIS attributes are then separated from the polygons to allow for efficient data handling. In this step the data are cleaned, e.g. white space and inconsistent data separators were corrected. The "HAB_TYPE" column in the GIS habitat map is the main source of information which describes the EUNIS habitats associated with each polygon on the habitat map. Where more than one habitat were associated with a polygon, only the first instance was kept, as this is understood to be the dominant habitat in that polygon. 
-5. Step five associates the EUNIS levels to the data set, based on the number of characters in the EUNIS code provided. This step allows for splitting the assessed data according to levels further down the process. 
-6. Step six is the critical step in the code. In step 6, the GIS data set is also attributed with habitat levels. This dataset is then split to according the subbiogeoregions (sbgr), and only a unique set of EUNIS codes per sbgr is retained in parameter called "bgr.dfs.lst". The database-sourced habitat sensitivity assessments are then split into matrices according to their EUNIS levels, called "x.dfs.lst". 
-The two data sets (two lists containing matrices) are then matched in a cross tabulation exercise, such that where character coding of a fine-scale habitat matches that of a broad-scale habitat, the fine-scale habitat is recorded as a new value in the cross tabulation.  The matrices of unique habitats per sbgr ("bgr.dfs.lst") were therefore sequentially matched assessment data matrices ("bgr.dfs.lst"). The process is therefore done for separately for of the subbiogeoregions, within a EUNIS level, and repeated until all subbiogeoregions are complete, before it moves onto the next EUNIS level. The result is a set of data matrices in which per EUNIS level and where the fine-scale habitats which correspond to broad-scale habitat (EUNIS level 2 - 3) are stored as values in cross tabulated data matrices. 
-7. In step seven, the data matrices of the same according to subbiogeoregion, were then merged into a single data matrix ("sbgr.matched.btpt.w.rpl") for each sbgr, as follows: the data matrix representing EUNIS level 4 was overlaid on the the data matrix representing EUNIS level 5, replacing only values in this matrix where there was not already a value in the EUNIS level 5 data matrix.i.e. replace missing values. This new dataset was then overlaid onto the EUNIS level 6 data matrix,again replacing only missing values. The result was a single data matrix for each sbgr, in which the fine-scale habitat was retained per matching broad-scale habitat. Note that multiple fine-scale habitats may be associated with a broad-scale habitat within its sbgr. 
-8. In step eight, the unique combinations of fine-scale habitats in broad-scale habitats is joined to the list of habitat sensitivities per pressure, for each per sbgr  within each activity ("act.press.list"). This generated a new list of data matrices data matrices ("xap.ls"). In this new list of data matrices all unique fine-scale-habitats-within-broad-scale habitats were associated with the habitat assessments, with one data matrix per  pressure-sensitivity combination. 
-9. Step nine compares and keeps only maximum values for each biotope-pressure-activity-sub-biogeographic region combination. maximum is retained in a R list "act.sbgr.bps.gis". 
-10. the outputs from step nine are used in step ten, where it retains only the habitat-sensitivity assessment of the assessed habitats which had the highest sensitivity score, per GIS polygon ID value. This set of data matrices are stored in an R object "sbgr.BAP.max.sens". 
-11. The confidence assessments were assocaited with the resulting maps using a join between the EUNIS habitat codes inthe habitat map and that from the table where the EUNIs assessments are stored.
-12. The sbgr.BAP.max.sens is then associated (joined) to the GIS habitat map layer, and saved as a new geopackage (gpkg) file outside of R, in the directory specified at the start by the user.
-
-The process was the same for the offshore, but he database was not split into subbiogeoregions.
+In essennce the R-code read the senstivity assesmsents (and assocaited confidfence scores) and GIS data into the R statistical environment (an instance of the R programme), where it associated the sensitivty assessments to the respective benthic habitat maps (inshore and offshore). In the offshore the R-code evalutes the fine-scale habtias which may occur wihtin broad-scale habitats, and associates the individual mapped habitat polygons to the fine-scale habtitat assessments with the highest senstivity score. For the offshore, it uses the habtiat code provided as is, and does not attempt to find fine-scale habtiats wihtin broad-scale habitats, for the reasons provided earlier. The data are then saved and exported to geopackage for the inshore and offshore components, respectively. 
 
 ## Case Study
 ### Fishing activity data investigation
-The spatial match of scallop dredging activity was compared to the distribution of sensitive habitats. The habitat sensitivity map to abrasion (pressure code D6) from dredging (activity code Z5) in the UK's EEZ was used.The aggregated dredging activity between 2013-2014 stored in file "Fishermap_JNCC_NE/MMO_UK_VMS_Fishing_Activity.gdb" was used as a realistic and recent exmaple of the geographic distribution of this pressure in the English EEZ. The above dredging activity data set contains scallop dredging, tractor drawn dredging, and rake dredging data, but the latter two only apply to the shoreline-area. It can therefore be assumed that the dredging layer largely represents scallop dredging. In future this layer may be replaced by another, but here it is meant to be proof of concept for internal use. *Requires further infomration on background of Fishermap_JNCC_NE\MMO_UK_VMS_Fishing_Activity.gdb data to spell out details around the layer; and describe the values on the table*
-The Marine Conservation Zones (MCZs) were overlaid onto the fishing activity map to to provide perspective of the location of activities and existing protected areas. Other forms of protected areas, SACs, SPAs may be added in future if the project further investigates the three-way relationship of senstive habitats, activities at sea and the location of protected areas.
+The spatial match of scallop dredging activity was compared to the distribution of sensitive habitats. The habitat sensitivity map to abrasion (pressure code D6) from dredging (activity code Z5) in the UK's EEZ was used.The aggregated dredging activity between 2013-2014 stored in file "Fishermap_JNCC_NE/MMO_UK_VMS_Fishing_Activity.gdb" was used as a realistic and recent exmaple of the geographic distribution of this pressure in the English EEZ. The above dredging activity data set contains scallop dredging, tractor drawn dredging, and rake dredging data, but the latter two only apply to the shoreline-area. It can therefore be assumed that the dredging layer largely represents scallop dredging. In future this layer may be replaced by another, but here it is meant to be proof of concept for internal use. *Requires further infomration on background of Fishermap_JNCC_NE\MMO_UK_VMS_Fishing_Activity.gdb data to spell out details around the layer; and describe the values on the table*. 
+
+The Marine Conservation Zones (MCZs) were overlaid onto the fishing activity map to to provide perspective of the location of activities and existing protected areas. Other forms of protected areas, SACs, SPAs may be added in future if the project further investigates the three-way relationship of senstive habitats, activities at sea and the location of protected areas. 
 
 ## GIS data
 1. Fishing pressure layer (file): "Fishermap_JNCC_NE/MMO_UK_VMS_Fishing_Activity.gdb"
 2. Marine Conservation Zone (MCz) layer (file): "Marine_Conservation_Zones_NE_CCW/Marine_Conservation_Zones_England.shp"
 
-A fishing activity layer showing dredging and the current Marine Conservation Zone (MCZ) layer shows the placement of MCZs in relation to the fishing activity.
+A fishing activity layer showing dredging and the current Marine Conservation Zone (MCZ) layer shows the placement of MCZs in relation to the fishing activity. The map shows that there was very limited spatial overlap between the dredged areas with high levels of activity (>10.8) and MCZs (Figure 6). 
 ```{r dredge, fig.cap= "Figure 5. Dredging activity in English waters from MMO VMS data.", echo = FALSE}
 dredge_img_path <- "F:/projects/marine_biotope_sensitivity/report/_bookdown_files/_main_files/figure-html/Fishing_pressure_dredge.png"
 
@@ -394,12 +375,29 @@ knitr::include_graphics(dredge_img_path, dpi = 150)
 
 # Results
 
-In total about 390 benthic habitat sensitivity maps were produced for 39 pressures from the ten fishing activities, for the inshore and for the offshore resepctively.
-Output maps were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map.
+## Areas with high levels of activity
+A substantial inshore area was associated with relatively high levels of dredging activity, in particular the Wash. 
+The Wash was characterised by having the highest levels of dredging activity in England. The offshore areas between Worthing and Eastbourne is the largest contiguous area with relatively high levels (>10.8) of dredging activity, but it was predominantly focussed in the offshore area (Figure 6). Other areas with relatively high levels of dredging activity include the Solent between Portsmouth and the Isle of Wight. Dredgers operating near Brixham had highest acativity levels inshore, but also a large area of medium-high activity in the offshore. A large area between Falmouth and Plymouth had relatively high levels of dredging activity associated with the inshore area. Between Newlyn and the Isles of Scilly, there was an area with relatively high levels of dredging activity straddled accross the inshore and the offshore. The offshore area between Isle of Man and Blackpool in the Irish Sea was another area with relatively high levels of fishing activity. Cardigan Bay had high levels of dredging, but was not further considered as it is outside of English waters.
+
+```{r dredge_aois, fig.cap="Figure 6. Areas with relatively high levels of dredging actvity between 2009 and 2014 in English fishing waters.", echo = FALSE}
+
+aois_img_path <- "F:/projects/marine_biotope_sensitivity/report/_bookdown_files/_main_files/figure-html/AOI_Fishing_pressure_dredge.png"
+
+knitr::include_graphics(aois_img_path, dpi = 150)
+```
+
+## Sensitivity mapping
+In total about 390 benthic habitat sensitivity maps were produced (not all activities-pressure-habitat combinations had valid interactions) for 39 pressures from the ten fishing activities, for the inshore and for the offshore respectively. Including all activities the R script has the capability to instantly produce similar data sets for 18 operations (for the inshore and offshore), but were not al lstored as indepedent data sets, as 1) this requires a significant amount of data storage space (aproximately 72 GB), and while this seems trivial with data storage capabilities today, the fact that these maps can and should be updated as new data becomes incorporated into the database and map set was sufficient reason to produce the maps as and when needed by running the code for specific requirements. All outputs are stored as geopackages at this stage, for which the output maps were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map. 
+
+## Descriptive statistics to include:
+1. Area of each polygons per habitat sensitivity, for the inshore and offshore.
+2. Area of each polygons per habitat sensitivity, in MCZs.
 
 ## Case study results
 
-1. The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure 6.
+The spatial distribution of benthic habitat sensitivity to abrasion from dredging is shown in Figure 6. The offshore is characterised by large contiguous areas of medium or low level sensitivity. The inshore benthic habtiat is cahracterised by a patchwork of habitat senstivities including several highly sensitive habitats.
+
+The offshore area in the English Channel is dominated by low sensitivity habitat, while the inshore area in the English Channel has several areas of medium to high sensitivity, such as Skerries Bank, and reef areas off Plymouth. The Solent area includes habitat with non-sensitive to highly sensitive between Portsmouth and the Ilse of Wight.
 
 ```{r insh_drdg, fig.cap= "Figure X : The habitat sensitivity to abrasion from inshore dredging.",  echo = FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
 #insh_fishing_dredging_img_path <- "F:/projects/marine_biotope_sensitivity/outputs/Fishing_dredging__Abrasion_disturbance.png"
@@ -409,13 +407,10 @@ Output maps were vector based, and mirror the spatial resolution and habitat det
 #knitr::include_graphics(insh_fishing_dredging_img_path, dpi = 150)
 ```
 
-```{r hab_sens_dredge_abras, fig.cap= "Figure 6: The benthic habitat sensitivity to abrsation from dredging activities in the UK's Exclusive Economic Zone (EEZ)", echo = FALSE}
+```{r hab_sens_dredge_abras, fig.cap= "Figure 7: The benthic habitat sensitivity to abrsation from dredging activities in the UK's Exclusive Economic Zone (EEZ)", echo = FALSE}
 hs_drdg_img_path <- "F:/projects/marine_biotope_sensitivity/report/_bookdown_files/_main_files/figure-html/Habitat_sensitivity_abrasion_dredging.png"
 
 knitr::include_graphics(hs_drdg_img_path, dpi = 150)
-
-        
-        
 ```
 
 2. Overlay fishing activity
@@ -437,6 +432,8 @@ A third project objective is the development of maps of the sensitivity distribu
 This is fundamentally different from how recovery time is estimated using quantitative methods. Recovery as used in quantitative models follows a mathematical formula such as a modified Lotka–Volterra to estimate the based on the assumption that the recovery rate of organisms is uniform according to size and being soft or hard bodied organisms [dupliseaSizebasedModelImpacts2002].
 
 # Annex
+The MESH confidence scores are shown in the table below.
+
 **Table.** EUNIS MESH confidence scores
 
 Confidence Range (%) | Confidence Level        | Explanation
@@ -446,7 +443,31 @@ Confidence Range (%) | Confidence Level        | Explanation
 37 < x ≤ 58         |Moderate confidence     |Upper limit is the highest possible score for maps that use only physical and biological ground truthing data.
 58 < x ≤ 79         |High confidence         |Upper limit is the highest possible score for maps that use only physical ground truthing and remote sensing data.
 79 < x ≤ 100        |Very high confidence    |Maps with confidence scores higher than 79 % definitely include biological ground truthing and remote sensing data.
-	
+
+The R-code steps are outlined below.	
+## R-code steps
+The code is structured as a main script which calls sixteen helper functions to run the separate processes sequentially over 11 steps.
+In the main script, the user provides input, such as the locality of the input data sources, e.g. Microsoft Access database, and habitat maps. Furthermore, the location of outputs generated, and the choice of file names. Once the user enters these inputs, the main body of the code can be run, where upon the user will be prompted to select one of the 18 Operations for which to generate habitat sensitivity maps. Once the user has entered their selection, the code runs without further user input requirements.
+
+#### The eleven steps follow:
+The main script now starts calling the helper functions, one  at a time, and passes on output from a previous step for further processing. It starts by 
+1. Reading the desired section of data from the MS Access database, which it runs through a query to obtain a list of EUNIS habitat types and their sensitivity assessments. 
+2. It then ranks the possible combinations of sensitivity scores from 1 - 6 based on the degree of their sensitivity, to allow selecting the greatest (maximum) sensitivity associated with a fine-scale habitat occurring within a broad-scale habitat, further down the process (see step 10). The ranks are then associated to the appropriate sensitivity category in the list of EUNIS-sensitivity assessments. A lists of unique combinations of sensitivities to each pressure (39) is then generated for each of the assessed EUNIS habitats, separately for each activity within the operation. ("act.press.list").
+3. The GIS file (geodatabase) is read in either from a new location supplied by the user, or from a back-up copy to avoid future changes to the map preventing the code from running should there be a mistake in the new map. 
+4. The GIS attributes are then separated from the polygons to allow for efficient data handling. In this step the data are cleaned, e.g. white space and inconsistent data separators were corrected. The "HAB_TYPE" column in the GIS habitat map is the main source of information which describes the EUNIS habitats associated with each polygon on the habitat map. Where more than one habitat were associated with a polygon, only the first instance was kept, as this is understood to be the dominant habitat in that polygon. 
+5. Step five associates the EUNIS levels to the data set, based on the number of characters in the EUNIS code provided. This step allows for splitting the assessed data according to levels further down the process. 
+6. Step six is the critical step in the code. In step 6, the GIS data set is also attributed with habitat levels. This dataset is then split to according the subbiogeoregions (sbgr), and only a unique set of EUNIS codes per sbgr is retained in parameter called "bgr.dfs.lst". The database-sourced habitat sensitivity assessments are then split into matrices according to their EUNIS levels, called "x.dfs.lst". 
+The two data sets (two lists containing matrices) are then matched in a cross tabulation exercise, such that where character coding of a fine-scale habitat matches that of a broad-scale habitat, the fine-scale habitat is recorded as a new value in the cross tabulation.  The matrices of unique habitats per sbgr ("bgr.dfs.lst") were therefore sequentially matched assessment data matrices ("bgr.dfs.lst"). The process is therefore done for separately for of the subbiogeoregions, within a EUNIS level, and repeated until all subbiogeoregions are complete, before it moves onto the next EUNIS level. The result is a set of data matrices in which per EUNIS level and where the fine-scale habitats which correspond to broad-scale habitat (EUNIS level 2 - 3) are stored as values in cross tabulated data matrices. 
+7. In step seven, the data matrices of the same according to subbiogeoregion, were then merged into a single data matrix ("sbgr.matched.btpt.w.rpl") for each sbgr, as follows: the data matrix representing EUNIS level 4 was overlaid on the the data matrix representing EUNIS level 5, replacing only values in this matrix where there was not already a value in the EUNIS level 5 data matrix.i.e. replace missing values. This new dataset was then overlaid onto the EUNIS level 6 data matrix,again replacing only missing values. The result was a single data matrix for each sbgr, in which the fine-scale habitat was retained per matching broad-scale habitat. Note that multiple fine-scale habitats may be associated with a broad-scale habitat within its sbgr. 
+8. In step eight, the unique combinations of fine-scale habitats in broad-scale habitats is joined to the list of habitat sensitivities per pressure, for each per sbgr  within each activity ("act.press.list"). This generated a new list of data matrices data matrices ("xap.ls"). In this new list of data matrices all unique fine-scale-habitats-within-broad-scale habitats were associated with the habitat assessments, with one data matrix per  pressure-sensitivity combination. 
+9. Step nine compares and keeps only maximum values for each biotope-pressure-activity-sub-biogeographic region combination. maximum is retained in a R list "act.sbgr.bps.gis". 
+10. the outputs from step nine are used in step ten, where it retains only the habitat-sensitivity assessment of the assessed habitats which had the highest sensitivity score, per GIS polygon ID value. This set of data matrices are stored in an R object "sbgr.BAP.max.sens". 
+11. The confidence assessments were assocaited with the resulting maps using a join between the EUNIS habitat codes inthe habitat map and that from the table where the EUNIs assessments are stored.
+12. The sbgr.BAP.max.sens is then associated (joined) to the GIS habitat map layer, and saved as a new geopackage (gpkg) file outside of R, in the directory specified at the start by the user.
+
+
+
+
 #Refs to add
 Tyler‐Walters, H., and Jackson, A. 1999. Assessing seabed species and ecosystems sensitivities; rationale and user guide. Report to English Nature, Scottish Natural Heritage and the Department of the Environment Transport, and the Regions from the Marine Life Information Network (MarLIN report 4). Marine Biological Association of the United Kingdom , Plymouth .
 
