@@ -390,8 +390,9 @@ knitr::include_graphics(aois_img_path, dpi = 150)
 In total about 390 benthic habitat sensitivity maps were produced (not all activities-pressure-habitat combinations had valid interactions) for 39 pressures from the ten fishing activities, for the inshore and for the offshore respectively. Including all activities the R script has the capability to instantly produce similar data sets for 18 operations (for the inshore and offshore), but were not al lstored as indepedent data sets, as 1) this requires a significant amount of data storage space (aproximately 72 GB), and while this seems trivial with data storage capabilities today, the fact that these maps can and should be updated as new data becomes incorporated into the database and map set was sufficient reason to produce the maps as and when needed by running the code for specific requirements. All outputs are stored as geopackages at this stage, for which the output maps were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map. 
 
 ## Descriptive statistics to include:
-1. Area of each polygons per habitat sensitivity, for the inshore and offshore.
-2. Area of each polygons per habitat sensitivity, in MCZs.
+1. Area per habitat sensitivity, for the inshore and offshore.
+2. Area per habitat sensitivity, in MCZs.
+3. Area per habitat senstivity in areas with "relatively high" levels of fishing pressure.
 
 ## Case study results
 
