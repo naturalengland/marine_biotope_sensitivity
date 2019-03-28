@@ -236,7 +236,9 @@ for (g in seq_along(x.dfs.lst)) {
 }
 setwd(file.path(mainDir))
 #getwd()
-rm(mainDir, subDir)
+rm(mainDir, subDir, bgr.dfs.lst)
+
+
 
 #---------------
 #07 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
@@ -278,16 +280,17 @@ source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 # Output stored as: act.sbgr.bps.gis
 
 #housekeeping
-#rm(hab.types)
+rm(hab.types, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank, bgr.dfs.lst,sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread)
 
 #--------------
 #11
 #save singel GIS file as final output
 # attach sensitivity results to the habitat map's geodatabase
 hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) 
-
+rm(act.sbgr.bps.gis)
 
 # write the sensitivity data to the geodatabase/geopackage Or #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
+#rm(list=setdiff(ls(), "hab_map", "driver.choice", "layer.name"))
 writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = TRUE)
 
 
