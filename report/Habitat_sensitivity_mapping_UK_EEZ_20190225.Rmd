@@ -405,11 +405,14 @@ knitr::include_graphics(aois_img_path, dpi = 150)
 
 ## Sensitivity mapping
 In total about 390 benthic habitat sensitivity maps were produced (not all activities-pressure-habitat combinations had valid interactions) for 39 pressures from the ten fishing activities, for the inshore and for the offshore respectively. Including all activities the R script has the capability to instantly produce similar data sets for 18 operations (for the inshore and offshore), but were notallstored as independent data sets, as 1) this requires a significant amount of data storage space (approximately 72 GB), and while this seems trivial with data storage capabilities today, the fact that these maps can and should be updated as new data becomes incorporated into the database and map set was sufficient reason to produce the maps as and when needed by running the code for specific requirements. All outputs are stored as geopackages at this stage, for which the output maps were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map. 
+In the offshore 154 sensitivity maps were produced, for the 10 fishing activities included in NE's conservation advice.
 
 ## Descriptive statistics to include:
-1. Area per habitat sensitivity, for the inshore and offshore.
-2. Area per habitat sensitivity, in MCZs.
-3. Area per habitat sensitivity in areas with "relatively high" levels of fishing pressure.
+1. Area per habitat sensitivity, for the inshore and offshore. (Use field: shape_area)
+2. Area per habitat sensitivity, in MCZs. (can use fields in fields above and the  to work out the area per marine protected area)
+3. Area per habitat sensitivity in areas with "relatively high" levels of fishing pressure. (Select values above 10.82, and attribute them with "aoi" field. Then dissoolve based on that field, and intersect/clip habitat sensitivity to establish the area with high fishing sensitivity
+Can be exported and anlaysed further (but may wish to intersct with the grid again to obtain finer grained values).
+
 
 
 ## Case study results
@@ -433,8 +436,39 @@ hs_drdg_img_path <- "F:/projects/marine_biotope_sensitivity/report/_bookdown_fil
 
 knitr::include_graphics(hs_drdg_img_path, dpi = 150)
 ```
-
 <br>
+
+The habitat sensitivity assessments include the assessed habitat, i.e. the fine-scale habitat assocaited with the broad-scale habitats within a subbioregion. 
+```{r assessed_habs_inshore, fig.cap= "Figure 8. The assessed fine scale benthic habitats, modelled within the broad-scale habitats in the English territorial (0- 12NM) zone", echo = FALSE}
+hab_assessed_img_path <- "F:/projects/marine_biotope_sensitivity/report/_bookdown_files/_main_files/figure-html/inshore_fine_assessed_habs.png"
+
+knitr::include_graphics(hab_assessed_img_path, dpi = 150)
+```
+<br>
+
+The Quality of Evidence was provided as a spatial measure of confidence of the sensitivity assessments for the inshore and offshore.
+*More analytical detail to be included in future*
+<br>
+```{r conf_QoE}
+
+```
+
+The Quality of Evidence outputs are accompanied by mapable MESH scores, which together provide the user with spatial index of confidence in teh assessments.
+
+
+
+
+```{r area_stats_z5d6, fig_cap = "Table.7 The proportional area of confidence according the quality of the evidence in the inshore (0 - 12NM).", echo = FALSE}
+
+prop.area <- readRDS("F:/projects/marine_biotope_sensitivity/report/prop_area_tbl.RDS")
+
+
+prop.area %>%
+        kable(caption = "Table 7. The proportional area of sensitivity according the quality of the evidence in the inshore (0 - 12NM).") %>%
+        kable_styling(position = "left", full_width = TRUE)
+
+``` 
+
 
 2. Overlay fishing activity
 And provide some analysis of the proportion of sensitivity categories which overlap with dredging activity (which may need to be categorised into high/medium/low?) 
@@ -489,11 +523,12 @@ The two data sets (two lists containing matrices) are then matched in a cross ta
 9. Step nine compares and keeps only maximum values for each biotope-pressure-activity-sub-biogeographic region combination. maximum is retained in a R list "act.sbgr.bps.gis". 
 10. The outputs from step nine are used in step ten, where it retains only the habitat-sensitivity assessment of the assessed habitats which had the highest sensitivity score using a maximum filter, per GIS polygon ID value. This set of data matrices are stored in an R object "sbgr.BAP.max.sens". The confidence assessments were associated with the resulting maps using a join between the EUNIS habitat codes in the habitat map and that from the table where the EUNIS assessments are stored.
 12. The sbgr.BAP.max.sens is then associated (joined) to the GIS habitat map layer, and saved as a new geopackage (gpkg) file outside of R, in the directory specified at the start by the user.
+
 <br>
-
-
 
 #Refs to add
 Tyler‐Walters, H., and Jackson, A. 1999. Assessing seabed species and ecosystems sensitivities; rationale and user guide. Report to English Nature, Scottish Natural Heritage and the Department of the Environment Transport, and the Regions from the Marine Life Information Network (MarLIN report 4). Marine Biological Association of the United Kingdom , Plymouth .
+
 <br>
+
 # References
