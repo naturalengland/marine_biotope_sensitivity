@@ -409,6 +409,19 @@ In the offshore 154 sensitivity maps were produced, for the 10 fishing activitie
 
 ## Descriptive statistics to include:
 1. Area per habitat sensitivity, for the inshore and offshore. (Use field: shape_area)
+<br>
+```{r area_stats_z5d6, fig_cap = "Table.7 The proportional area of confidence according the quality of the evidence in the inshore (0 - 12NM).", echo = FALSE}
+
+prop.area <- readRDS("F:/projects/marine_biotope_sensitivity/report/prop_area_tbl.RDS")
+
+
+prop.area %>%
+        kable(caption = "Table 7. The proportional area of sensitivity according the quality of the evidence in the inshore (0 - 12NM).") %>%
+        kable_styling(position = "left", full_width = TRUE)
+
+``` 
+<br>
+
 2. Area per habitat sensitivity, in MCZs. (can use fields in fields above and the  to work out the area per marine protected area)
 3. Area per habitat sensitivity in areas with "relatively high" levels of fishing pressure. (Select values above 10.82, and attribute them with "aoi" field. Then dissoolve based on that field, and intersect/clip habitat sensitivity to establish the area with high fishing sensitivity
 Can be exported and anlaysed further (but may wish to intersct with the grid again to obtain finer grained values).
@@ -458,16 +471,7 @@ The Quality of Evidence outputs are accompanied by mapable MESH scores, which to
 
 
 
-```{r area_stats_z5d6, fig_cap = "Table.7 The proportional area of confidence according the quality of the evidence in the inshore (0 - 12NM).", echo = FALSE}
 
-prop.area <- readRDS("F:/projects/marine_biotope_sensitivity/report/prop_area_tbl.RDS")
-
-
-prop.area %>%
-        kable(caption = "Table 7. The proportional area of sensitivity according the quality of the evidence in the inshore (0 - 12NM).") %>%
-        kable_styling(position = "left", full_width = TRUE)
-
-``` 
 
 
 2. Overlay fishing activity
