@@ -37,14 +37,23 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                         distinct()
                 
                 # Obtain the maximum habitat sensitivity per polygon, and retain the assessed EUNIS habitat and the assocaited confidence score of the habitat with the maximum sensitivity
+                #sbgr.hab.max.sens.assessed  <-  sbgr.hab.gis %>%
+                #        dplyr::ungroup() %>%
+                #        dplyr::group_by(PressureCode, pkey) %>%
+                #        dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE)) 
+                        #dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE), eunis.match.assessed) 
+                
+                # Select rows with maximum value for sensitivity, retaining the additional row information (such as assessed habitat)
                 sbgr.hab.max.sens.assessed  <-  sbgr.hab.gis %>%
                         dplyr::ungroup() %>%
                         dplyr::group_by(PressureCode, pkey) %>%
-                        dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE), eunis.match.assessed) 
+                        dplyr::filter(max.sens == max(max.sens, na.rm=TRUE)) %>%
+                        dplyr::rename(max.sens.consolidate = max.sens)
+
                 
                 #join confidence of eunis habitats to the assessed eunis habitat
                 sbgr.hab.max.sens.assessed.conf <- dplyr::left_join(sbgr.hab.max.sens.assessed, confidence_sens_eunis, by = c("PressureCode" = "PressureCode", "eunis.match.assessed" = "EUNISCode"))
-                
+                rm(sbgr.hab.max.sens.assessed)
                 #--------------------------
                 #Remove if below works:
                 #generate a single maximum value per column (there are currently multiple sensitivity scores associated with each)
@@ -60,6 +69,8 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                         tidyr::spread(key = PressureCode, value = max.sens.consolidate)
                 sbgr.hab.gis.spread <- column_naming_fn(x = x, w= sbgr.hab.gis.spread, prfix = "sens")
                 
+                
+                
                 #catch EUNIS assessed of assessed habitat with max sensitivity
                 sbgr.hab.assessed.spread  <-  sbgr.hab.max.sens.assessed.conf %>%
                         dplyr::select(PressureCode, pkey, eunis.match.assessed) %>%
@@ -72,11 +83,12 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                         dplyr::select(PressureCode, pkey, SensitivityQoE) %>%
                         tidyr::spread(key = PressureCode, value = SensitivityQoE)
                 sbgr.hab.conf.spread <- column_naming_fn(x = x, w = sbgr.hab.conf.spread, prfix = "conf")
+                rm(sbgr.hab.max.sens.assessed.conf)
                 
                 #join three datasets together
                 sbgr.hab.gis.tmp <- left_join(sbgr.hab.gis.spread, sbgr.hab.assessed.spread, by = "pkey")
                 sbgr.hab.gis.assessed.conf.spread <- left_join(sbgr.hab.gis.tmp, sbgr.hab.conf.spread, by = "pkey")
-                
+                rm(sbgr.hab.gis.spread, sbgr.hab.assessed.spread, sbgr.hab.conf.spread, sbgr.hab.gis.tmp)
                 
                 
 #--------------------------
