@@ -20,7 +20,6 @@ output:
                 self_contained: yes
                 css: ne_rpt_style.css
                 highlight: pygments
-#output: word_document
 
 bibliography: "./references.bib"
 fig_width: 6 
