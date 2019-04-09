@@ -287,6 +287,7 @@ rm(hab.types, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssess
 #save singel GIS file as final output
 # attach sensitivity results to the habitat map's geodatabase
 hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) 
+writeRDS(act.sbgr.bps.gis, "./act.sbgr.bps.gis.R", compress = FALSE) # save the data as an object for analysis - it contains the shape_area field which can be used with sensitivity codes to do analysis.
 rm(act.sbgr.bps.gis)
 
 # write the sensitivity data to the geodatabase/geopackage Or #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
