@@ -35,8 +35,8 @@
 
 # START
 #clear workspace
-rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-#rm(list=setdiff(ls(), "hab_map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+#rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+rm(list=setdiff(ls(), "hab_map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
 #-----
 # R libraries
 ## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
@@ -52,16 +52,16 @@ library(sf)# to allow for multiple layers being written
 
 # USER INPUT REQUIRED BELOW
 #-----
-# DEFINE THE FOLLOWING VARIABLES
-## OR AT LEAST CHECK THAT THEY MAKE SENSE ACOCRDING TO YOUR COMPUTER CONFIGURATION!!!!
+
+## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACOCRDING TO YOUR COMPUTER CONFIGURATION!!!!
 
 # User to specify the path to the file activiate the below and comment out the default paths
-#db.path <- file.choose()
+db.path <- file.choose()
 # e.g. laptop path
 #db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
 #power pc path
-db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
-drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for isntallation, and will not work without it!
+#db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
+drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
 
 # USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
 folder <- "tmp_output/"
@@ -74,9 +74,9 @@ final_output <- "outputs"
 
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing.gpkg") # name of geopackage file in final output
+dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "fishing_ops" # name of layer being put
+layer.name <- "renewables_ops" # name of layer being put
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
@@ -84,25 +84,24 @@ source(file = "./functions/read_access_operations_and_activities.R")
 OpsAct <- read.access.op.act()
 print(OpsAct)
 
-# Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 14, and set the variable ops.choice to this.
+# Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
-ops.number <- 11
+ops.number <- 10
 
 
-#Run this to save your choice, and see what was saved
+# Run this to save your choice, and see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
 
-#END OF USER INPUT REQUIREMENT, you can now run scripts below to produce biotope sensitivity data.
+# END OF USER INPUT REQUIREMENT, you can now run scripts below to produce biotope sensitivity data.
 
 
 #---------------------------------
-#01_connect_to_access_db.R
+# 01_connect_to_access_db.R
 
-#load the function that reads the Access database
-#source(file = "./functions/read_access_db_fn.R")
+# Load the function that reads the Access database
 source(file = "./functions/01_connect_to_ms_access_qry_data.R")
 
-#populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
+# Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
 qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path)) 
 if("try-error" %in% class(read.access.db(db.path,drv.path))) {
         qryEUNIS_ActPressSens <- read.csv("C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/qryhabsens/qryEUNIS_ActPressSens.txt")
@@ -110,15 +109,15 @@ if("try-error" %in% class(read.access.db(db.path,drv.path))) {
 
 # ensure EUNISCode is a character, as it reads converts to factor (which is incorrectand caannot join to other objects)
 qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) 
-#qryEUNIS_ActPressSens <- as.character(qryEUNIS_ActPressSens$ActSensRank)
+# qryEUNIS_ActPressSens <- as.character(qryEUNIS_ActPressSens$ActSensRank)
 
 
 #--------------------------------
 #02
-#List of sensitivity_per_pressure for each assessed EUNIS code (biotope) (from Access database)
+#List of sensitivity_per_pressure for each assessed EUNIS code (biotopes/fine-scale assessed habitat codes from Access database)
 
 # add ranking of sensitivity to access database-object
-source("./functions/09_sensitivity_rank.R")
+source("./functions/sensitivity_rank_tbl.R")
 sens.act.rank <- left_join(qryEUNIS_ActPressSens,sens.rank, by = "ActSensRank")
 sens.act.rank$EUNISCode <- as.character(sens.act.rank$EUNISCode)# ensure EUNIS codes are character not factors!
 
@@ -137,15 +136,15 @@ source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 rm(qryEUNIS_ActPressSens, sens.rank)
 
 #-------------------------------
-#03#Read GIS habitat map file
+# 03 Read GIS habitat map file
 
 # Read geodatabase from network, it it fails read a preprocessed file (a back-up copy that should not be changed unless certain that it is working)
-#status: the current network file specified is the full file - this will have to be changed to a directory where the latest preprocessed file is saved.
+# status: the current network file specified is the full file - this will have to be changed to a directory where the latest preprocessed file is saved.
 source(file = "./functions/read_gis_hab_lr_fn.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea)
 hab_map <- read.network.geodatabase()  #temporarily disabled to avoid reading in the GIs file - remove the "#" to reactivate this cammand, and change top command rm...so taht the habitat map is removed ....
-
+# TO CHANGE USING read_st(dsn = "", layer = "") as only data frame is needed at the start.
 
 #------------------------------
 #04
@@ -273,6 +272,9 @@ source(file = "./functions/min_max_sbgr_bap_fn.R")
 #housekeeping - remove temporary object (list) now
 rm(xap.ls)
 
+#housekeeping
+rm(hab_map, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
+
 #--------------
 #10 assocaite maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
 
@@ -280,7 +282,7 @@ source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 # Output stored as: act.sbgr.bps.gis
 
 #housekeeping
-rm(hab.types, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank, bgr.dfs.lst,sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread)
+rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
 
 #--------------
 #11
