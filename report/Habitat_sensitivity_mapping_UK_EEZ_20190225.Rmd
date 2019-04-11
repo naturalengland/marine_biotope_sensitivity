@@ -416,18 +416,6 @@ knitr::include_graphics(dredge_img_path, dpi = 150)
 <br>
 
 # Results
-Eight areas of interest were identified from the spatial distribution of dredging effort.
-The Wash was characterized by having the highest levels of dredging activity in England, however this was thought to be largely based on hydraulic dredging and was therefore not considered further. The Solent area which also had high levels of dredging activity was removed from the study as it was thought not to be focused around scallop dredging. Cardigan Bay (Ba Redirection) had high levels of dredging, but was not further considered as it is outside of English waters.
-
-<br>
-
-```{r dredge_aois, fig.cap="Figure 7. Areas with relatively high levels of dredging actvity between 2009 and 2014 in English fishing waters.", echo = FALSE}
-
-aois_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/AOI_Fishing_pressure_dredge.png"
-
-knitr::include_graphics(aois_img_path, dpi = 150)
-```
-<br>
 
 ## Sensitivity mapping
 In total about 154 benthic habitat sensitivity mapable data columns were produced for 39 pressures from the ten fishing activities, for the inshore and for the offshore respectively. I.e. including both inshore and offshore 308 habitat sensitivity maps. Note that not all activities-pressure-habitat combinations have valid interactions, and therefore the total is not 390 per inshore/offshore data set. These mapable data columns were accompanied by the same number of confidence assessments and assessed fine-scale habitat type (child of broader habitat type). In total 462 new columns were added to the habitat map, each representing either a sensitivity to a activity pressure combination, the associated fine-scale habitat, and the confidence of the sensitivity assessment. The mapable data columns were stored in two files, one for the offshore, and another for the inshore as geopackages. The geopackages were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map, as the mapable columns become attached to the existing habitat map.
@@ -475,10 +463,6 @@ The largest inshore habitat polygon which had a high level of sensitivity and co
 #### Inshore polygons which were not sensitive
 The largest non-sensitive area to abrasion from dredging was a polygon off Margate Longsands with habitat type A5.137, Dense *Lanice conchilega* and other polychaetes in tide-swept infralittoral sand and mixed gravelly sand. The assessment had a high level of confidence based on the Quality of the Evidence and a high degree of confidence in the mapped habitat type (MESH score 81). See the sensitivity assessment on the [MarLIN webpage]( https://www.marlin.ac.uk/habitats/detail/116) for more detailed information on the reasons for the non-sensitive habitat type outcome.
 
-## Area per habitat sensitivity in areas with high levels of fishing pressure. 
-
-*Decide to include or not* 2. Area per habitat sensitivity, in MCZs. (can use fields in fields above and the  to work out the area per marine protected area)
-
 ## Fine-scale habitats within broad-scale habitats
 
 The outputs from the model provides the fine-scale (child) habitat (EUNIS level 4 - 6) which was used in the sensitivity assessment in the place of the broad-scale (parent) habitat (EUNIS level 2 - 3). The habitat codes which were assessed were therefore all EUNIS level 4 or above, as illustrated by Figure 9 showing a sample of habitat codes.
@@ -510,10 +494,28 @@ include_graphics(conf_map_img_path, dpi = 150)
 
 ## Scallop dredging activity in sensitive benthic habitat
 
-And provide some analysis of the proportion of sensitivity categories which overlap with dredging activity (which may need to be categorised into high/medium/low?) 
+Eight areas of interest were initially identified from the spatial distribution of dredging effort. From these eight areas, five areas were considered to largely represent high levels of scallop dredging, namely, 1) Worthing to easterbourne, 2) Brixham, 3) Falmouth to Plymouth, 4) Newlyen to the Isels of Scilly, and 5) Isle of Man to Blackpool. The Wash was characterized by having the highest levels of dredging activity in England, however this was thought to be largely based on hydraulic dredging and was therefore not considered further. The Solent area which also had high levels of dredging activity was removed from the study as it was thought not to be focused around scallop dredging. Cardigan Bay had high levels of dredging, but was not further considered as it is outside of English waters.
+
 <br>
 
-*3. Overlay the MPAs, and repeat the above? - may exlcude*
+```{r dredge_aois, fig.cap="Figure 7. Areas with relatively high levels of dredging actvity between 2009 and 2014 in English fishing waters.", echo = FALSE}
+
+aois_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/AOI_Fishing_pressure_dredge.png"
+
+knitr::include_graphics(aois_img_path, dpi = 150)
+```
+<br>
+### Area per habitat sensitivity in areas with high levels of fishing pressure. 
+
+*Inshore statistics*
+And provide some analysis of the proportion of sensitivity categories which overlap with dredging activity (which may need to be categorised into high/medium/low?) 
+<br>
+A 100 by 100m grid of randomly stratified points were overlaid over the inshore benthic habiat sensitivity map to sample the proportion of sensitivity habitat this. The majority (58 %) of inshore area under high levels of scallop dredging  activity  (more than 10 passess between 2009 and 2014) was of low sensitivity. A third of the area consisted of habitats with medium levels of sensitivity, and about 9 % consisted of highly sensitve habitats which were under high levels of scallop dredging activity. 
+<br>
+The largest concentration of effor on highly sensitive habitat is in the area between Falmouth to Plymouth. This sensitivty was informed by fine-scale benthic habitat A5.421 attributed to a large polygon on the habitat map offically classified as habitat type A5.4.
+
+
+
 
 
 
