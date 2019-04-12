@@ -226,12 +226,13 @@ setwd(rpt.dir)
 
 ```{r sens_levels, fig.cap="Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.", echo = FALSE}
 #library(tidyverse)
+# generate a sensitivity ranking score that will be used to replace characters/strings in sbgr.bap to allow selecting the highest, and lowest sensitivity, and genrate some confidence around this.
 sens.rank <- tribble(
-        ~Rank, ~Description,
+        ~rank.value, ~ActSensRank,
         #-------/------------
         1, "Not sensitive",
-        2, "Insufficient evidence",
-        3, "Not assessed",
+        2, "Not assessed",
+        3, "Insufficient evidence",
         4, "Low",            
         5, "Medium",
         6, "High"
@@ -315,6 +316,7 @@ knitr::include_graphics(hab200nm_img_path, dpi = 150)
 *redo maps to English waters (0 - 200NM) only*
 
 <br>
+
 The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database. By joining these datasets sensitivity maps for benthic habitat to the various pressures and activities were generated. The following steps were taken to produce the habitat sensitivity maps from the aforementioned data sources.
 
 <br>
@@ -332,7 +334,7 @@ knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 In order to remedy the mismatch of EUNIS levels between the map and the database, an approach was adopted in which the sensitivities of fine-scale habitats were assigned to the mapped polygons which did not have sensitivity assessments. This assignment of fine-scale habitats to broad-scale habitats within the inshore (0 - 12 NM) were done as follows:
 
 ### Integrating fine-scale benthic habitats within inshore sub-biogeoregions 
-Fine-scale benthic habitats (EUNIS level 4 - 6) which are known to occur within sub-biogeoregions (Figure 4) within (0 - 12 NM) were identified by Dr Keith Hiscock in project for NE [@hiscockAssigningEUNISClassification2016]. The fine-scale habitats were then associated with the broad-scale habitats within each sub-biogeoregion, where the fine-scale habitat were 1) known to occur in the given sub-biogeoregion, and 2) a the assessed habitat is a "child"" fine-scale habitat of a "parent" broad-scale habitat. i       .e. the fine-scale habitat had to be related to the broad-scale habitat, such as a habitat with EUNIS code A5.12 is a parent of A5.127. Each broad-scale (parent) habitat could therefore have multiple fine-scale (child) habitats associated to it within the given sub-biogeoregion. The child habitat of the highest EUNIS level and the highest sensitivity was assigned to parent habitats to inform sensitivity assessments. Sensitivity assessments of higher EUNIS levels were therefore preferred over sensitivity assessments at lower levels, where available. This habitat category replacement was justified under the assumption that fine-scale habitats would provide a more realistic assessment of the true sensitivity to a pressure, than the lower EUNIUS level (parent). This was based on the idea that an understanding of the sensitivity of benthic communities and the substrate would be more informative than sensitivity of the substrate alone. This information was not currently available for the offshore, but JNCC is working on such a project [@tillinAssiningEUNISClassification2017], and when the data becomes available, it will be incorporated in to the offshore model, as for the inshore.
+Fine-scale benthic habitats (EUNIS level 4 - 6) which are known to occur within sub-biogeoregions (Figure 4) within (0 - 12 NM) were identified by Dr Keith Hiscock in project for NE [@hiscockAssigningEUNISClassification2016]. The fine-scale habitats were then associated with the broad-scale habitats within each sub-biogeoregion, where the fine-scale habitat were 1) known to occur in the given sub-biogeoregion, and 2) a the assessed habitat is a "child" fine-scale habitat of a "parent" broad-scale habitat. i.e. the fine-scale habitat had to be related to the broad-scale habitat, such as a habitat with EUNIS code A5.12 is a parent of A5.127. Each broad-scale (parent) habitat could therefore have multiple fine-scale (child) habitats associated to it within the given sub-biogeoregion. The child habitat of the highest EUNIS level and the highest sensitivity was assigned to parent habitats to inform sensitivity assessments. Sensitivity assessments of higher EUNIS levels were therefore preferred over sensitivity assessments at lower levels, where available. This habitat category replacement was justified under the assumption that fine-scale habitats would provide a more realistic assessment of the true sensitivity to a pressure, than the lower EUNIUS level (parent). This was based on the idea that an understanding of the sensitivity of benthic communities and the substrate would be more informative than sensitivity of the substrate alone. This information was not currently available for the offshore, but JNCC is working on such a project [@tillinAssiningEUNISClassification2017], and when the data becomes available, it will be incorporated in to the offshore model, as for the inshore.
 <br>
 ```{r sub-biogeoregions, fig.cap= "Figure 4: The inshore sub-biogeoregions within which fine-scale habitats (EUNIS level 4 - 6) are known, and were assocaited with broad-scale habitats from which fine scale habitat on the habitat map.",  echo = FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
 sbgr_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/subbiogeoregions.png"
@@ -412,7 +414,7 @@ The Marine Conservation Zones (MCZs) were overlaid onto the fishing activity map
 ## GIS data
 
 1. Fishing pressure layer (file): "Fishermap_JNCC_NE/MMO_UK_VMS_Fishing_Activity.gdb"
-2. *Marine Conservation Zone (MCZ) layer (file): "Marine_Conservation_Zones_NE_CCW/Marine_Conservation_Zones_England.shp"*
+
 
 The spatial distribution of dredging activity in relation to the current Marine Conservation Zone (MCZ). The map shows that there was very limited spatial overlap between the dredged areas with high levels of activity (>10.8) and MCZs (Figure 6).
 
@@ -429,7 +431,7 @@ knitr::include_graphics(dredge_img_path, dpi = 150)
 # Results
 
 ## Sensitivity mapping
-In total about 154 benthic habitat sensitivity mapable data columns were produced for 39 pressures from the ten fishing activities, for the inshore and for the offshore respectively. I.e. including both inshore and offshore 308 habitat sensitivity maps. Note that not all activities-pressure-habitat combinations have valid interactions, and therefore the total is not 390 per inshore/offshore data set. These mapable data columns were accompanied by the same number of confidence assessments and assessed fine-scale habitat type (child of broader habitat type). In total 462 new columns were added to the habitat map, each representing either a sensitivity to a activity pressure combination, the associated fine-scale habitat, and the confidence of the sensitivity assessment. The mapable data columns were stored in two files, one for the offshore, and another for the inshore as geopackages. The geopackages were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map, as the mapable columns become attached to the existing habitat map.
+In total about 154 valid combinations of benthic habitat sensitivity assessments against 39 pressures from each the ten fishing activities, for the inshore and for the offshore respectively. I.e. including both inshore and offshore 308 habitat sensitivity maps. Not all activities-pressure-habitat combinations have valid interactions, and therefore the total is not 390 per inshore/offshore data set. These mapable data columns were accompanied by the same number of confidence assessments and assessed fine-scale habitat type (child of broader habitat type). In total 462 new columns were added to the habitat map, each representing either a sensitivity to a activity pressure combination, the associated fine-scale habitat, and the confidence of the sensitivity assessment. The mapable data columns were stored in two files, one for the offshore, and another for the inshore as geopackages. The geopackages were vector based, and mirror the spatial resolution and habitat detail of the benthic habitat map, as the mapable columns become attached to the existing habitat map.
 
 The R script which generates the mapable data set has the capability to instantly produce similar data sets for 18 operations (for the inshore and offshore). The R scripts were not run for all operations, as the outputs would require a significant amount of data storage space (approximately 160 GB). The fact that these maps can and should be updated as new data becomes incorporated into the database and habitat map was sufficient reason to produce the maps only as and when needed the outputs for other activities and operations are required. 
 In the offshore 154 sensitivity maps were produced, for the 10 fishing activities included in NE's conservation advice.
@@ -476,9 +478,7 @@ The largest non-sensitive area to abrasion from dredging was a polygon off Marga
 
 ## Fine-scale habitats within broad-scale habitats
 
-The outputs from the model provides the fine-scale (child) habitat (EUNIS level 4 - 6) which was used in the sensitivity assessment in the place of the broad-scale (parent) habitat (EUNIS level 2 - 3). The habitat codes which were assessed were therefore all EUNIS level 4 or above, as illustrated by Figure 9 showing a sample of habitat codes.
-
-*Only the inshore is shown at this stage. the offshore will be added once JNCC project data is included, with reference to:* [@tillinAssiningEUNISClassification2017]
+The outputs from the model provides the fine-scale (child) habitat (EUNIS level 4 - 6) which was used in the sensitivity assessment in the place of the broad-scale (parent) habitat (EUNIS level 2 - 3). The habitat codes which were assessed were therefore all EUNIS level 4 or above, as illustrated by Figure 9 showing a sample of habitat codes. Only the inshore habitat replacement is shown at this stage and the offshore will be added following JNCC commisioned project in which fine-scale habitats known to occur within broad-scale habitats are being assigned within each sub-biogeoregion [@tillinAssiningEUNISClassification2017]
 
 <br>
 
@@ -487,12 +487,11 @@ hab_assessed_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/
 
 knitr::include_graphics(hab_assessed_img_path, dpi = 150)
 ```
+
 <br>
 
 ## Confidence measure - Quality of Evidence
-The confidence of the sensitivity assessments for the inshore and offshore based on the quality of the evidence is shown in Figure 10. The confidence map showed that generally the quality of evidence was higher for habitats assessed in the inshore than offshore areas. The English channel generally had relatively high levels of confidence associated with sensitivity assessments. (this may change when a sub-biogeoregional approach is incorporated for the offshore habitats.)
-
-*More analytical detail to be included in future*
+The confidence of the sensitivity assessments for the inshore and offshore based on the quality of the evidence (QOE) is shown in Figure 10. The confidence map showed that generally the quality of evidence was higher for habitats assessed in the inshore than offshore areas, but the offshore is subject to change following an update to the habitats used during assessments. The English channel generally had relatively high levels of confidence associated with sensitivity assessments.
 
 <br>
 
@@ -503,7 +502,7 @@ include_graphics(conf_map_img_path, dpi = 150)
 
 <br>
 
-## Scallop dredging activity in sensitive benthic habitat
+## Case study: Scallop dredging activity in sensitive benthic habitat
 
 Eight areas of interest were initially identified from the spatial distribution of dredging effort. From these eight areas, five areas were considered to largely represent high levels of scallop dredging, namely, 1) Worthing to easterbourne, 2) Brixham, 3) Falmouth to Plymouth, 4) Newlyen to the Isels of Scilly, and 5) Isle of Man to Blackpool. The Wash was characterized by having the highest levels of dredging activity in England, however this was thought to be largely based on hydraulic dredging and was therefore not considered further. The Solent area which also had high levels of dredging activity was removed from the study as it was thought not to be focused around scallop dredging. Cardigan Bay had high levels of dredging, but was not further considered as it is outside of English waters.
 
@@ -521,12 +520,18 @@ knitr::include_graphics(aois_img_path, dpi = 150)
 *Inshore statistics*
 And provide some analysis of the proportion of sensitivity categories which overlap with dredging activity (which may need to be categorised into high/medium/low?) 
 <br>
-A 100 by 100m grid of randomly stratified points were overlaid over the inshore benthic habiat sensitivity map to sample the proportion of sensitivity habitat this. The majority (58 %) of inshore area under high levels of scallop dredging  activity  (more than 10 passess between 2009 and 2014) was of low sensitivity. A third of the area consisted of habitats with medium levels of sensitivity, and about 9 % consisted of highly sensitve habitats which were under high levels of scallop dredging activity. 
+A 100 by 100m grid of randomly stratified points were overlaid over the inshore benthic habiat sensitivity map to sample the proportion of sensitivity habitat this. 
+
+*Inshore*
+The majority (58 %) of inshore area under high levels of scallop dredging  activity  (more than 10 passess between 2009 and 2014) was of low sensitivity. A third of the area consisted of habitats with medium levels of sensitivity, and about 9 % consisted of highly sensitve habitats which were under high levels of scallop dredging activity. 
 <br>
-The largest concentration of effor on highly sensitive habitat is in the area between Falmouth to Plymouth. This sensitivty was informed by fine-scale benthic habitat A5.421 attributed to a large polygon on the habitat map offically classified as habitat type A5.4.
+Eight categories of highly sensitive habitats are currently impacted by scallop dredging, including A3.311,A4.111, A4.131, A4.231, A5.321, A5.421, A5.421, A5.441, A5.511. *add table with EUNIS habitat descriptions*
 
+The largest concentration of effort on highly sensitive habitat is in the area between Falmouth to Plymouth. This sensitivty was informed by fine-scale benthic habitat A5.421 attributed to a large polygon on the habitat map offically classified as habitat type A5.4.
 
-
+*Offshore*
+In the offshore 96 % of sampling points in high levels of dredging overlapped with low sensitivity habitat, and the remaining 4 % overlapped with habitat with levels of sensitivity.
+Medium sensitivie offshore habitat included A4.231 and A5.271.
 
 
 
