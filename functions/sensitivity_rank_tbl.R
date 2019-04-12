@@ -4,8 +4,8 @@ sens.rank <- tribble(
         ~rank.value, ~ActSensRank,
         #-------/------------
         1, "Not sensitive",
-        2, "Insufficient evidence",
-        3, "Not assessed",
+        2, "Not assessed",
+        3, "Insufficient evidence",
         4, "Low",            
         5, "Medium",
         6, "High"
