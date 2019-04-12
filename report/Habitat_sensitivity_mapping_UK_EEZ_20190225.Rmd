@@ -81,8 +81,10 @@ Previous studies have developed tools to predict the impacts of fishing effort d
 Natural England uses sensitivity assessments of protected benthic habitats and species to inform its Advice on Operations. The habitat sensitivity assessments are comprised of three principal components, namely 1) habitat, 2) pressure, and 3) activity (which may be attributed to an operation). 
 
 ## Habitat
-This study was limited to the marine benthic habitat, comprised from the substratum and the community of organisms adhered to or living in close contact to the seabed. The definition of the multitude of benthic habitat categories used by Natural England is based on the pan-European adopted habitat classification system, known as the European Nature Information System (EUNIS). The EUNIS benthic habitat categories is a hierarchical system within which fine-scale habitat categories are nested within broader-scale habitat categories, referred to as EUNIS levels. At the top of the hierarchical classification system, the broadest definition of habitat corresponds, e.g. "Marine", to EUNIS level 1. At higher EUNIS values, the amount of thematic detail about the habitat increases progressively, for example, EUNIS level 2: A1 : Littoral rock and other hard substrata,
->>>>>>> 5c3b6cfe2de667afb76814de91ad55a610a5af79
+This study was limited to the marine benthic habitats comprised from the substratum and the community of organisms adhered to or living in close contact to the seabed. The definition of the multitude of benthic habitat categories used by Natural England is based on the pan-European adopted habitat classification system, known as the European Nature Information System (EUNIS). The EUNIS benthic habitat classification is a hierarchical system within which fine-scale habitat categories are nested within broader-scale habitat categories, referred to as EUNIS levels. EUNIs level 1 is at the top of the hierarchical classification system where the broadest definition of habitat descerns marine habitat (A) from other habitats like terrestrial or freshwater. The amount of thematic detail about the habitat increases progressively With an increase in the EUNIS level as shown in the example below: 
+
+EUNIS level 1: A: Marine,
+EUNIS level 2: A1 : Littoral rock and other hard substrata,
 EUNIS level 3: A1.1 : High energy littoral rock,
 EUNIS level 4: A1.11 : Mussel and/or barnacle communities,
 EUNIS level 5: A1.113 : *Semibalanus balanoides* on exposed to moderately exposed or vertical sheltered eulittoral rock,
@@ -122,7 +124,7 @@ Fishing activities have had profound effects on the UK's marine ecosystem, of wh
 # Methods
 
 ## Study Area
-Marine habitat sensitivity maps were generated for English waters from the shoreline to 200 NM offshore. The sensitivity maps were generated in two independent steps for two geographical adjacent areas: First for 0 - 12 NM offshore for English Territorial Waters (area in light blue in Figure 1), and second, the 12 - 200 NM English offshore. 
+Marine habitat sensitivity maps were generated for English waters from the shoreline to the edge of the continental shelf, aproximately 200 NM offshore. The sensitivity maps were generated in two independent steps for two geographically adjacent areas: First for English Territorial Waters (0 - 12 NM, area in light blue in Figure 1), and second, the 12 - 200 NM offshore. 
 
 <br>
 
