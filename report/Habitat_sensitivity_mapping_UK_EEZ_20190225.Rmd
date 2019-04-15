@@ -505,7 +505,7 @@ Eight areas of interest were initially identified from the spatial distribution 
 
 <br>
 
-```{r dredge_aois, fig.cap="Figure 7. Areas with relatively high levels of dredging actvity between 2009 and 2014 in English fishing waters.", echo = FALSE}
+```{r dredge_aois, fig.cap="Figure 11. Areas with relatively high levels of dredging actvity between 2009 and 2014 in English fishing waters.", echo = FALSE}
 
 aois_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/AOI_Fishing_pressure_dredge.png"
 
@@ -520,6 +520,17 @@ The majority (58 %) of inshore habitats subject high levels of scallop dredging 
 <br>
 Eight habitat categories which were highly sensitive were impacted by scallop dredging, including EUNIS habitats A3.311,A4.111, A4.131, A4.231, A5.321, A5.421, A5.421, A5.441, A5.511 in the inshore. No highly sensitive habitats were impacted in the offshore (Table 8). Areas of low sensitivity were derivitives of EUNIS benthic habitat A5.1, such as A5.141 and A5.151, and similarly A5.2 and A5.4 (Table 8). The largest concentration of highly sensitive habitats within scalloped dredged areas inside the 12 NM inshore boundary (mean = 4.83,0 +- 0.68 s.d.) and in the offshore (4.46 +- 0.5) areas were between Falmouth to Plymouth (INSERT MAP). The inshore sensitivty was informed by fine-scale benthic habitat A5.421 attributed to a large polygon on the habitat map offically classified as habitat type A5.4. *this suggests that these areas require careful scrutinity and ground truthing to ensure that the result is robust - overlay validation points to see if these habitats occur?* 
 
+```{r habitat_sens_inside_dredged_aois, fig.cap="Figure 12. Habitat sensitivity inside areas with more than 10 scallop dredge passess between 2009 and 2014",  echo = FALSE}
+
+hab_sens_in_aois_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/habitat_sensitivity_inside_dredged_areas.png"
+
+knitr::include_graphics(hab_sens_in_aois_img_path, dpi = 150)
+
+```
+
+
+<br>
+
 ```{r high_and_medium_sensitive_table, fig.cap="Table 8. List of high and medium sensitive habitats under high levels of scallop dredging activity between 2009 and 2014 in England.", echo = FALSE}
 hm_sens_habs <- readRDS("./tables/high_and_medium_sensitive_habitats.RDS")
 hm_sens_habs %>%
@@ -527,6 +538,11 @@ hm_sens_habs %>%
         kable_styling(position = "left", full_width = TRUE)
 ```
 
+<br>
+```{r habitat_sens_inside_falmouth, fig.cap="Figure 13. Habitat sensitivity inside areas Falmouth, showing the sensitivity of habitat overlaid onto the assessed habitat", echo = FALSE}
+img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/falmouth_example.png"
+knitr::include_graphics(img_path, dpi = 150)
+```
 
 # Discussion
 
