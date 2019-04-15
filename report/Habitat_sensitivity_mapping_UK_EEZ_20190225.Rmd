@@ -387,7 +387,7 @@ The spatial match of scallop dredging activity was compared to the distribution 
 *Select values above 10.82, and attribute them with "aoi" field. Then dissoolve based on that field, and intersect/clip habitat sensitivity to establish the area with high fishing sensitivity*
 *Can be exported and anlaysed further (but may wish to intersct with the grid again to obtain finer grained values).*
 
-#### Identifying scalloping areas with high levels of dredging activity.
+### Identifying scalloping areas with high levels of dredging activity.
 A substantial inshore area was associated with relatively high levels of dredging activity.  The offshore areas between Worthing and Eastbourne was the largest contiguous area with relatively high levels (>10.8) of dredging activity. Dredging around this area was assumed to be largely focused on scallop dredging, as a large number of scallop dredgers operate from Shoreham Harbour, near Worthing. The Shoreham scallop dredgers effort was predominantly focused in the offshore area (Figure 6). Other areas with relatively high levels of dredging activity thought to be scallop dredging include Portsmouth, Brixham which had highest activity levels inshore. A large area between Falmouth and Plymouth had relatively high levels of dredging activity associated within the inshore area. There was an area with relatively high levels of dredging activity straddled across the inshore and the offshore between Newlyn and the Isles of Scilly. The offshore area between Isle of Man and Blackpool in the Irish Sea was another area with relatively high levels of scallop dredging. These core areas of interest were validated using MMO landings data [website](https://www.gov.uk/government/organisations/marine-management-organisation). 
 
 ```{r seafish, echo = FALSE}
@@ -398,6 +398,11 @@ A substantial inshore area was associated with relatively high levels of dredgin
 ```
 
 *Note: In future this layer may be replaced by another, but here it is meant to be proof of concept for internal use. Future reports should include more information on background of Fishermap_JNCC_NE\MMO_UK_VMS_Fishing_Activity.gdb data to spell out details around the layer; and describe the values on the table.* 
+<br>
+
+### Habitat sensitivity interaction with scallop dredging
+
+The habitat sensitivity within areas of high scallop dredging activity was anlaysed using a 100 by 100m grid of randomly stratified points within each high activity area. The point-grid was overlaid onto the inshore and offshore benthic habiat sensitivity maps in a GIS, and the underlying  habitat sensitivity and fishing activity was obtained where the points intersected these maps. 
 
 <br>
 *Idea for later?*
@@ -496,7 +501,7 @@ include_graphics(conf_map_img_path, dpi = 150)
 
 ## Case study: Scallop dredging activity in sensitive benthic habitat
 
-Eight areas of interest were initially identified from the spatial distribution of dredging effort. From these eight areas, five areas were considered to largely represent high levels of scallop dredging, namely, 1) Worthing to easterbourne, 2) Brixham, 3) Falmouth to Plymouth, 4) Newlyen to the Isels of Scilly, and 5) Isle of Man to Blackpool. The Wash was characterized by having the highest levels of dredging activity in England, however this was thought to be largely based on hydraulic dredging and was therefore not considered further. The Solent area which also had high levels of dredging activity was removed from the study as it was thought not to be focused around scallop dredging. Cardigan Bay had high levels of dredging, but was not further considered as it is outside of English waters.
+Eight areas of interest were initially identified from the spatial distribution of dredging effort. From these eight areas, five areas were considered to largely represent high levels of scallop dredging, namely, 1) Worthing to easterbourne, 2) Brixham, 3) Falmouth to Plymouth, 4) Newlyn to the Isels of Scilly, and 5) Isle of Mann to Blackpool. The Wash was characterized by having the highest levels of dredging activity in England, however this was thought to be largely based on hydraulic dredging and was therefore not considered further. The Solent area which also had high levels of dredging activity was removed from the study as it was thought not to be focused around scallop dredging. Cardigan Bay had high levels of dredging, but was not further considered as it is outside of English waters. The Isle of mann was included as this area straddled both Isle of Mann and UK waters (this may be removed if the area inlcuded is too contentious within NE's remit).
 
 <br>
 
@@ -507,24 +512,20 @@ aois_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/AOI_Fish
 knitr::include_graphics(aois_img_path, dpi = 150)
 ```
 <br>
+
 ### Area per habitat sensitivity in areas with high levels of fishing pressure. 
-
-*Inshore statistics*
-And provide some analysis of the proportion of sensitivity categories which overlap with dredging activity (which may need to be categorised into high/medium/low?) 
+The habitats within areas of high levels of scallop dredging activity ranged from low to high levels of sensitivity to abrasion, and there were no insensitive benthic habitats within these areas, nor habitats which have either not been assessed or had insufficient data. Therefore, all areas currently within english scallop dredging areas were sensitive to abrasion to a varying degree.
 <br>
-A 100 by 100m grid of randomly stratified points were overlaid over the inshore benthic habiat sensitivity map to sample the proportion of sensitivity habitat this. 
-
-*Inshore*
-The majority (58 %) of inshore area under high levels of scallop dredging  activity  (more than 10 passess between 2009 and 2014) was of low sensitivity. A third of the area consisted of habitats with medium levels of sensitivity, and about 9 % consisted of highly sensitve habitats which were under high levels of scallop dredging activity. 
+The majority (58 %) of inshore habitats subject high levels of scallop dredging activity (more than 10 passess between 2009 and 2014) were of low sensitivity. A third of the inshore area consisted of habitats with medium sensitivity and a further 9 % of high levels of sensitivity to abrasion  caused by scallop dredging. In the offshore 96 % of sampling points in high levels of dredging overlapped with low sensitivity habitat, and the remaining 4 % overlapped with habitat with levels of sensitivity.
 <br>
-Eight categories of highly sensitive habitats are currently impacted by scallop dredging, including A3.311,A4.111, A4.131, A4.231, A5.321, A5.421, A5.421, A5.441, A5.511. *add table with EUNIS habitat descriptions*
+Eight habitat categories which were highly sensitive were impacted by scallop dredging, including EUNIS habitats A3.311,A4.111, A4.131, A4.231, A5.321, A5.421, A5.421, A5.441, A5.511 in the inshore. No highly sensitive habitats were impacted in the offshore (Table 8). Areas of low sensitivity were derivitives of EUNIS benthic habitat A5.1, such as A5.141 and A5.151, and similarly A5.2 and A5.4 (Table 8). The largest concentration of highly sensitive habitats within scalloped dredged areas inside the 12 NM inshore boundary (mean = 4.83,0 +- 0.68 s.d.) and in the offshore (4.46 +- 0.5) areas were between Falmouth to Plymouth (INSERT MAP). The inshore sensitivty was informed by fine-scale benthic habitat A5.421 attributed to a large polygon on the habitat map offically classified as habitat type A5.4. *this suggests that these areas require careful scrutinity and ground truthing to ensure that the result is robust - overlay validation points to see if these habitats occur?* 
 
-The largest concentration of effort on highly sensitive habitat is in the area between Falmouth to Plymouth. This sensitivty was informed by fine-scale benthic habitat A5.421 attributed to a large polygon on the habitat map offically classified as habitat type A5.4.
-
-*Offshore*
-In the offshore 96 % of sampling points in high levels of dredging overlapped with low sensitivity habitat, and the remaining 4 % overlapped with habitat with levels of sensitivity.
-Medium sensitivie offshore habitat included A4.231 and A5.271.
-
+```{r high_and_medium_sensitive_table, fig.cap="Table 8. List of high and medium sensitive habitats under high levels of scallop dredging activity between 2009 and 2014 in England.", echo = FALSE}
+hm_sens_habs <- readRDS("./tables/high_and_medium_sensitive_habitats.RDS")
+hm_sens_habs %>%
+        knitr::kable(caption = "Table 8. List of high and medium sensitive habitats under high levels of scallop dredging activity between 2009 and 2014 in England.") %>%
+        kable_styling(position = "left", full_width = TRUE)
+```
 
 
 # Discussion
