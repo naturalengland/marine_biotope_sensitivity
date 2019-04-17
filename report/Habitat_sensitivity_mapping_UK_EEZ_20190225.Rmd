@@ -121,8 +121,8 @@ Marine habitat sensitivity maps were generated for English waters from the shore
 <br>
 
 ```{r english_waters, fig.cap="Figure 1. The United Kingdom's boundaries, showing English Territorial Waters (inshore) and offshore areas used in this study." ,echo = FALSE, out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
-getwd()
-english_waters_img_path <- "./report/figures/UK_waters.png"
+rpt_d <- getwd()
+english_waters_img_path <- paste0(rpt_d,"/figures/UK_waters.png")
 knitr::include_graphics(english_waters_img_path, dpi  = 150)
 ```
 *to redo map - limit to English waters (0 - 200NM)*
@@ -171,29 +171,24 @@ tblActivityLUT %>%
         #kable_styling(position = "left", full_width = F)
 
 close(conn)
-setwd(rpt.dir)
 ```
 
 ``` {r pressures, fig.cap="Table 2. The 39 standrdised pressures against which habitat sensitivities were assessed", echo = FALSE}
-library(RODBC)
+library(RODBC) 
 library(DBI)
 library(tidyverse)
 
-#power pc path to database
-db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
-drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
+# path to database
 
-#Below prints the list of options for the user to read, and then make a selection to enter below
-#see key below
-rpt.dir <- getwd()
-setwd("F:/projects/marine_biotope_sensitivity")
-
-
-db.p  <-  db.path
-drv.p <-  drv.path
+rpt_d <- getwd()
+db.path <- paste0(rpt_d, "/input_data/PD_AoO.accdb") #D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database
+drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for isntallation, and will not work without it!
 
 #specificy the connection to the database
-connection.path <- paste0("Driver={",drv.path,"};DBQ=",db.path)#server=",srv.host,"; #server may need to be defined for other SQL database formats
+connection.path <- paste0("Driver={",drv.path,"};DBQ=",db.path)#server=",srv.host,"; #server may need to be defined for other SQL database formats 
+# System requirements: AccessDatabaseEngine_X64 (it has to match the version of R that is install i.t.o. 64 or 32 bit, i.e. AccessDAtabaseEngine for 32 bit access and 32 bit R)
+#download driver here: https://www.microsoft.com/en-us/download/details.aspx?id=54920
+# see https://stackoverflow.com/questions/46255557/how-to-connect-to-accdb-database-from-r
         
 # Connect to Access db to allow reading the data into R environment.
 conn <- odbcDriverConnect(connection.path)
@@ -210,7 +205,6 @@ tblPressureLUT %>%
         #kable_styling(position = "left", full_width = F)
 
 close(conn)
-setwd(rpt.dir)
 ```
 
 ```{r sens_levels, fig.cap="Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.", echo = FALSE}
@@ -297,7 +291,8 @@ Only the quality of evidence (QoE) for overall sensitivity was displayed as a ma
 The benthic habitat map used by NE (Marine_Evidence_Base_Internal.gdb, layer = BSH), was used as the basis to inform the spatial distribution of benthic habitats within English waters for this project. The habitat categories contained within NE's habitat map are based on the EUNIS classification developed in conjunction with the JNCC [@daviesEUNISHabitatClassification2004; @galparsoroUsingEUNISHabitat2012]. The habitat map is continuously updated as new information on habitat becomes available following a well defined process between NE and JNCC. The extent of the habitat map was: -24.2816553949999729,47.9878704700000753 : 3.7191888160000417,64.0702531440000485, in datum World Geodetic System 1984 (WGS84). The habitat map included over a million (1,207,497) polygons, each which have previously been attributed with a habitat type category following the [EUNIS habitat classification](https://www.eea.europa.eu/data-and-maps/data/eunis-habitat-classification). The map below shows the variety of habitats, and the differences in the levels of EUNIS habitats. The map also shows that more than one type of habitat may be associated with a given polygon. In this study, only the habitat category (EUNIS code) appearing first in the attribute table where a list of possible habitats were entered in field "HAB_TYPE" was used in this study. Attempting to create sensitivity maps for all possible habitat types listed in the "HAB_TYPE" column in the attribute table was beyond the scope of this project and would result in significant delays. The habitat type (EUNIS Code) listed first under "HAB_TYPE" in the attribute table was used as it was the most likely habitat or the most abundant within the polygon (Timothy Fegan, Lead Advisor, Marine GI, Evidence Services NE, personal comment). For example, if a polygon had EUNIS code A1.1/A1.2, only A1.1 would have been used. See the habitat map below for UK, and the legend which shows a sample from the "HAB_TYPE" column (Figure 2).
 
 ```{r habmap200, fig.cap= "Figure 2. The benthic habitat map for the United Kingdom from 0 to 200 NM offshore, showing a small sample of the multiple EUNIS habitat codes assocaited with some polygons, and the range in EUNIs levels spanning from 2 to 6." , echo = FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
-hab200nm_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/habitat_map_200NM.png"
+rpt_d <- getwd()
+hab200nm_img_path <- paste0(rpt_d,"/figures/habitat_map_200NM.png")
 
 knitr::include_graphics(hab200nm_img_path, dpi = 150)
 
@@ -316,7 +311,8 @@ The habitat map was comprised habitat categories which were of different EUNIS l
 A significant proportion (70 %) of the mapped area of inshore and offshore habitats corresponded to EUNIS habitat categories which have been assessed for sensitivity, but about 30% of the area included habitat categories which have not had not been assessed. The main reason for this was the mismatch in the habitat categories included in the habitat map and those that have been assessed for sensitivity to pressures. The habitat map includes EUNIS level 2 - 6, while the assessments only cover EUNIS level 4 - 6. 
 
 ```{r eunis_mismatch, fig.cap= "Figure 3: The overlap and mismatch between the EUNIS levels which have had sensitivity assessments and those on the habitat map.",  echo = FALSE}
-eunis_mismatch_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/EUNIS_mismatch_20190319.png"
+rpt_d <- getwd()
+eunis_mismatch_img_path <- paste0(rpt_d,"/figures/EUNIS_mismatch_20190319.png")
 #eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
 knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 ```
@@ -326,7 +322,8 @@ In order to remedy the mismatch of EUNIS levels between the map and the database
 Fine-scale benthic habitats (EUNIS level 4 - 6) which are known to occur within sub-biogeoregions (Figure 4) within (0 - 12 NM) were identified by Dr Keith Hiscock in project for NE [@hiscockAssigningEUNISClassification2016]. The fine-scale habitats were then associated with the broad-scale habitats within each sub-biogeoregion, where the fine-scale habitat were 1) known to occur in the given sub-biogeoregion, and 2) a the assessed habitat is a "child" fine-scale habitat of a "parent" broad-scale habitat. i.e. the fine-scale habitat had to be related to the broad-scale habitat, such as a habitat with EUNIS code A5.12 is a parent of A5.127. Each broad-scale (parent) habitat could therefore have multiple fine-scale (child) habitats associated to it within the given sub-biogeoregion. The child habitat of the highest EUNIS level and the highest sensitivity was assigned to parent habitats to inform sensitivity assessments. Sensitivity assessments of higher EUNIS levels were therefore preferred over sensitivity assessments at lower levels, where available. This habitat category replacement was justified under the assumption that fine-scale habitats would provide a more realistic assessment of the true sensitivity to a pressure, than the lower EUNIUS level (parent). This was based on the idea that an understanding of the sensitivity of benthic communities and the substrate would be more informative than sensitivity of the substrate alone. This information was not currently available for the offshore, but JNCC is working on such a project [@tillinAssiningEUNISClassification2017], and when the data becomes available, it will be incorporated in to the offshore model, as for the inshore.
 <br>
 ```{r sub-biogeoregions, fig.cap= "Figure 4: The inshore sub-biogeoregions within which fine-scale habitats (EUNIS level 4 - 6) are known, and were assocaited with broad-scale habitats from which fine scale habitat on the habitat map.",  echo = FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
-sbgr_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/subbiogeoregions.png"
+rpt_d <- getwd()
+sbgr_img_path <- paste0(rpt_d,"/figures/subbiogeoregions.png")
 #eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
 knitr::include_graphics(sbgr_img_path, dpi = 150)
 ```
@@ -358,8 +355,8 @@ The GIS process for the inshore map can be depicted in flow diagram as follows, 
 <br>
 
 ```{r GI_process, fig.cap="Figure 5. The GIS processes followed to prepare the data set prior to implementing the R scripts.", echo =FALSE}
-
-GIS_process_path <- "F:/projects/marine_biotope_sensitivity/report/figures/gis_process_map.png"
+rpt_d <- getwd()
+GIS_process_path <- paste0(rpt_d,"/figures/gis_process_map.png")
 knitr::include_graphics(GIS_process_path, dpi = 150)
 
 ```
@@ -388,9 +385,9 @@ The spatial match of scallop dredging activity was compared to the distribution 
 A substantial inshore area was associated with relatively high levels of dredging activity.  The offshore areas between Worthing and Eastbourne was the largest contiguous area with relatively high levels (>10.8) of dredging activity. Dredging around this area was assumed to be largely focused on scallop dredging, as a large number of scallop dredgers operate from Shoreham Harbour, near Worthing. The Shoreham scallop dredgers effort was predominantly focused in the offshore area (Figure 6). Other areas with relatively high levels of dredging activity thought to be scallop dredging include Portsmouth, Brixham which had highest activity levels inshore. A large area between Falmouth and Plymouth had relatively high levels of dredging activity associated within the inshore area. There was an area with relatively high levels of dredging activity straddled across the inshore and the offshore between Newlyn and the Isles of Scilly. The offshore area between Isle of Man and Blackpool in the Irish Sea was another area with relatively high levels of scallop dredging. These core areas of interest were validated using MMO landings data [website](https://www.gov.uk/government/organisations/marine-management-organisation). 
 
 ```{r seafish, echo = FALSE}
-#fig.cap="Figure taken from Landgins distribution of fish in the UK."
+#fig.cap="Figure taken from Landinsg distribution of fish in the UK."
 #See map below for a spatial distribution of catch landings from the MMO Seafisheries report of landings data for 2017 [@dixonUKSeaFisheries2017].
-#seafish_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/Port_based_landings_no_text_2017.png"
+#seafish_img_path <- paste0(rpt_d,"/figures/Port_based_landings_no_text_2017.png"
 #include_graphics(seafish_img_path, dpi = 150)
 ```
 
@@ -415,7 +412,8 @@ The spatial distribution of dredging activity in relation to the current Marine 
 <br>
 
 ```{r dredge, fig.cap= "Figure 6. Dredging activity in English waters from MMO VMS data.", echo = FALSE}
-dredge_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/Fishing_pressure_dredge.png"
+rpt_d <- getwd()
+dredge_img_path <- paste0(rpt_d, "/figures/Fishing_pressure_dredge.png")
 
 knitr::include_graphics(dredge_img_path, dpi = 150)
 
@@ -436,7 +434,8 @@ The spatial distribution of benthic habitat sensitivity to abrasion from dredgin
 
 <br>
 ```{r hab_sens_dredge_abras, fig.cap= "Figure 8: The benthic habitat sensitivity to abrsation from dredging activities in the UK's Exclusive Economic Zone (EEZ)", echo = FALSE}
-hs_drdg_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/Habitat_sensitivity_abrasion_dredging.png"
+rpt_d <- getwd()
+hs_drdg_img_path <- paste0(rpt_d,"/figures/Habitat_sensitivity_abrasion_dredging.png")
 
 knitr::include_graphics(hs_drdg_img_path, dpi = 150)
 ```
@@ -445,9 +444,8 @@ knitr::include_graphics(hs_drdg_img_path, dpi = 150)
 The proportional area per habitat sensitivity category for the inshore and offshore.
 <br>
 ```{r area_stats_z5d6, fig_cap = "Table.7 The proportional area of confidence according the quality of the evidence in the inshore (0 - 12NM).", echo = FALSE}
-
-inshore.prop.area <- readRDS("F:/projects/marine_biotope_sensitivity/report/prop_area_tbl.RDS")
-offshore.prop.area <- readRDS("F:/projects/offshore_sensitivity/marine_offshore_sensitivity/output/offshore_prop_area_tbl.RDS")
+inshore.prop.area <- readRDS("./input_data/prop_area_tbl.RDS")
+offshore.prop.area <- readRDS("./input_data/offshore_prop_area_tbl.RDS")
 
 prop.area <- dplyr::left_join(inshore.prop.area, offshore.prop.area, by = "Sensitivity") %>%
         rename(`Proportion area inshore` = Proportion_area.x, `Proportion area offshore`= Proportion_area.y)
@@ -477,7 +475,8 @@ The outputs from the model provides the fine-scale (child) habitat (EUNIS level 
 <br>
 
 ```{r assessed_habs_inshore, fig.cap= "Figure 9. The assessed fine scale benthic habitats, modelled within the broad-scale habitats in the English territorial (0- 12NM) zone", echo = FALSE}
-hab_assessed_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/inshore_fine_assessed_habs.png"
+rpt_d <- getwd()
+hab_assessed_img_path <- paste0(rpt_d,"/figures/inshore_fine_assessed_habs.png")
 
 knitr::include_graphics(hab_assessed_img_path, dpi = 150)
 ```
@@ -490,7 +489,8 @@ The confidence of the sensitivity assessments for the inshore and offshore based
 <br>
 
 ```{r conf_map, fig.cap="Figure 10. Map showing the spatial distribution of confidence based on quality of Evidence for habitat sensitivity assessments in UK waters.", echo = FALSE}
-conf_map_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/confidence_in_off_shore.png"
+rpt_d <- getwd()
+conf_map_img_path <- paste0(rpt_d,"/figures/confidence_in_off_shore.png")
 include_graphics(conf_map_img_path, dpi = 150)
 ```
 
@@ -503,8 +503,8 @@ Eight areas of interest were initially identified from the spatial distribution 
 <br>
 
 ```{r dredge_aois, fig.cap="Figure 11. Areas with relatively high levels of dredging actvity between 2009 and 2014 in English fishing waters.", echo = FALSE}
-
-aois_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/AOI_Fishing_pressure_dredge.png"
+rpt_d <- getwd()
+aois_img_path <- paste0(rpt_d,"/figures/AOI_Fishing_pressure_dredge.png")
 
 knitr::include_graphics(aois_img_path, dpi = 150)
 ```
@@ -512,32 +512,39 @@ knitr::include_graphics(aois_img_path, dpi = 150)
 
 ### Area per habitat sensitivity in areas with high levels of fishing pressure. 
 The habitats within areas of high levels of scallop dredging activity ranged from low to high levels of sensitivity to abrasion, and there were no insensitive benthic habitats within these areas, nor habitats which have either not been assessed or had insufficient data. Therefore, all areas currently within english scallop dredging areas were sensitive to abrasion to a varying degree.
+
 <br>
+
 The majority (58 %) of inshore habitats subject high levels of scallop dredging activity (more than 10 passess between 2009 and 2014) were of low sensitivity. A third of the inshore area consisted of habitats with medium sensitivity and a further 9 % of high levels of sensitivity to abrasion  caused by scallop dredging. In the offshore 96 % of sampling points in high levels of dredging overlapped with low sensitivity habitat, and the remaining 4 % overlapped with habitat with levels of sensitivity.
-<br>
-Eight habitat categories which were highly sensitive were impacted by scallop dredging, including EUNIS habitats A3.311,A4.111, A4.131, A4.231, A5.321, A5.421, A5.421, A5.441, A5.511 in the inshore. No highly sensitive habitats were impacted in the offshore (Table 8). Areas of low sensitivity were derivitives of EUNIS benthic habitat A5.1, such as A5.141 and A5.151, and similarly A5.2 and A5.4 (Table 8). The largest concentration of highly sensitive habitats within scalloped dredged areas inside the 12 NM inshore boundary (mean = 4.83,0 +- 0.68 s.d.) and in the offshore (4.46 +- 0.5) areas were between Falmouth to Plymouth (INSERT MAP). The inshore sensitivty was informed by fine-scale benthic habitat A5.421 attributed to a large polygon on the habitat map offically classified as habitat type A5.4. *this suggests that these areas require careful scrutinity and ground truthing to ensure that the result is robust - overlay validation points to see if these habitats occur?* 
+
+<br> 
 
 ```{r habitat_sens_inside_dredged_aois, fig.cap="Figure 12. Habitat sensitivity inside areas with more than 10 scallop dredge passess between 2009 and 2014",  echo = FALSE}
-
-hab_sens_in_aois_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/habitat_sensitivity_inside_dredged_areas.png"
+rpt_d <- getwd()
+hab_sens_in_aois_img_path <- paste0(rpt_d,"/figures/habitat_sensitivity_inside_dredged_areas.png")
 
 knitr::include_graphics(hab_sens_in_aois_img_path, dpi = 150)
 
 ```
 
+<br>
+
+Eight habitat categories which were highly sensitive were impacted by scallop dredging, including EUNIS habitats A3.311,A4.111, A4.131, A4.231, A5.321, A5.421, A5.421, A5.441, A5.511 in the inshore. No highly sensitive habitats were impacted in the offshore (Table 8). Areas of low sensitivity were derivitives of EUNIS benthic habitat A5.1, such as A5.141 and A5.151, and similarly A5.2 and A5.4 (Table 8).
 
 <br>
 
 ```{r high_and_medium_sensitive_table, fig.cap="Table 8. List of high and medium sensitive habitats under high levels of scallop dredging activity between 2009 and 2014 in England.", echo = FALSE}
+
 hm_sens_habs <- readRDS("./tables/high_and_medium_sensitive_habitats.RDS")
 hm_sens_habs %>%
         knitr::kable(caption = "Table 8. List of high and medium sensitive habitats under high levels of scallop dredging activity between 2009 and 2014 in England.") %>%
         kable_styling(position = "left", full_width = TRUE)
 ```
-
+<br>
+The largest concentration of highly sensitive habitats within scalloped dredged areas inside the 12 NM inshore boundary (mean = 4.83,0 +- 0.68 s.d.) and in the offshore (4.46 +- 0.5) areas were between Falmouth to Plymouth (Figure 13). The inshore sensitivty was informed by fine-scale benthic habitat A5.421 attributed to a large polygon on the habitat map offically classified as habitat type A5.4. *this suggests that these areas require careful scrutinity and ground truthing to ensure that the result is robust - overlay validation points to see if these habitats occur?* 
 <br>
 ```{r habitat_sens_inside_falmouth, fig.cap="Figure 13. Habitat sensitivity inside areas Falmouth, showing the sensitivity of habitat overlaid onto the assessed habitat", echo = FALSE}
-img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/falmouth_example.png"
+img_path <- paste0(rpt_d,"/figures/falmouth_example.png")
 knitr::include_graphics(img_path, dpi = 150)
 ```
 
