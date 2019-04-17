@@ -121,7 +121,8 @@ Marine habitat sensitivity maps were generated for English waters from the shore
 <br>
 
 ```{r english_waters, fig.cap="Figure 1. The United Kingdom's boundaries, showing English Territorial Waters (inshore) and offshore areas used in this study." ,echo = FALSE, out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
-english_waters_img_path <- "F:/projects/marine_biotope_sensitivity/report/figures/UK_waters.png"
+getwd()
+english_waters_img_path <- "./report/figures/UK_waters.png"
 knitr::include_graphics(english_waters_img_path, dpi  = 150)
 ```
 *to redo map - limit to English waters (0 - 200NM)*
@@ -136,25 +137,21 @@ Two main data sets were used to map the sensitivities for the marine benthic hab
 Sensitivity assessments of each benthic habitat categories have been carried out for most EUNIS habitats using the MarESA methods [@tillinAssessingSensitivitySubtidal2014] as part of NE's ongoing Advice on Operations programme. The sensitivity of the EUNIS habitats levels 4 to 6 were assessed against 39 standardised pressures for each activity. The ten fishing activities in the Advice on Operations database were included in this project (see Table 1). The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect caused by the pressure is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying direction of a pressure rather than one parameter stating non-directional change (Table 2). For example, instead of one pressure stating a change of 0.5&deg; C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014]. One of six levels of sensitivity were assigned to each habitat category in response to each of the 39 pressures, each with their own defined benchmark (Table 3). The sensitivity score was based on the resistance and resilience of the habitat. See [@tillinAssessingSensitivitySubtidal2014] for details.
 
 ```{r fishing_acts, fig.cap="Table 1. Fishing activities", echo = FALSE}
-library(RODBC)
+library(RODBC) 
 library(DBI)
 library(tidyverse)
 
-#power pc path to database
-db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
+# path to database
+
+rpt_d <- getwd()
+db.path <- paste0(rpt_d, "/input_data/PD_AoO.accdb") #D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for isntallation, and will not work without it!
 
-#Below prints the list of options for the user to read, and then make a selection to enter below
-#see key below
-rpt.dir <- getwd()
-setwd("F:/projects/marine_biotope_sensitivity")
-
-
-db.p  <-  db.path
-drv.p <-  drv.path
-
 #specificy the connection to the database
-connection.path <- paste0("Driver={",drv.path,"};DBQ=",db.path)#server=",srv.host,"; #server may need to be defined for other SQL database formats
+connection.path <- paste0("Driver={",drv.path,"};DBQ=",db.path)#server=",srv.host,"; #server may need to be defined for other SQL database formats 
+# System requirements: AccessDatabaseEngine_X64 (it has to match the version of R that is install i.t.o. 64 or 32 bit, i.e. AccessDAtabaseEngine for 32 bit access and 32 bit R)
+#download driver here: https://www.microsoft.com/en-us/download/details.aspx?id=54920
+# see https://stackoverflow.com/questions/46255557/how-to-connect-to-accdb-database-from-r
         
 # Connect to Access db to allow reading the data into R environment.
 conn <- odbcDriverConnect(connection.path)
