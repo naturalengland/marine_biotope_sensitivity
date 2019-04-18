@@ -11,7 +11,7 @@ read.network.geodatabase <- function(net.dir = "\\\\SAMVW3-GIREP02\\NEWorkingDat
                 prep.gdb.dir <- paste0(rplc_txt,"\\input\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg")
                 gis.layer <- "sbgr_input_poly_wgs84_internal_bgr_inside_12nm"
                 #gdb <- try(readOGR(dsn = prep.gdb.dir, layer = gis.layer))
-                gdb <- try(st_read(dsn = prep.gdb.dir, layer = gis.layer, geometry_column = NULL))
+                gdb <- try(sf::st_read(dsn = prep.gdb.dir, layer = gis.layer, geometry_column = NULL))
                 if("try-error" %in% class(gdb)) {
                         cat("Could not load back-up file, please specify the locality of the geodatabase./n")
                         gdb.path <- as.character(file.choose())
