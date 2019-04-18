@@ -5,10 +5,13 @@ read.network.geodatabase <- function(net.dir = "\\\\SAMVW3-GIREP02\\NEWorkingDat
         require(rgdal)
         gdb <- try(readOGR(dsn = net.dir, layer = gis.layer))
         if("try-error" %in% class(gdb)) {
-                cat("Caught an error during to read the network file, trying read a back up copy.\n")
-                prep.gdb.dir <- "F:\\projects\\marine_biotope_sensitivity\\input\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg"
+                cat("Caught an error during to read the network file: \\\\SAMVW3-GIREP02\\NEWorkingData\\GIS_Working_Data\\Marine\\Marine_Evidence_Geodatabase\\Marine_Evidence_Base_Internal.gdb,\n trying read a back up copy: input\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg in the input folder of the project directory: \n")
+                prj_wd <- getwd()
+                rplc_txt <- gsub("/","\\\\",prj_wd)
+                prep.gdb.dir <- paste0(rplc_txt,"\\input\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg")
                 gis.layer <- "sbgr_input_poly_wgs84_internal_bgr_inside_12nm"
-                gdb <- try(readOGR(dsn = prep.gdb.dir, layer = gis.layer))
+                #gdb <- try(readOGR(dsn = prep.gdb.dir, layer = gis.layer))
+                gdb <- try(st_read(dsn = prep.gdb.dir, layer = gis.layer, geometry_column = NULL))
                 if("try-error" %in% class(gdb)) {
                         cat("Could not load back-up file, please specify the locality of the geodatabase./n")
                         gdb.path <- as.character(file.choose())
