@@ -53,9 +53,9 @@ library(sf)# to allow for multiple layers being written
 # USER INPUT REQUIRED BELOW
 #-----
 
-## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACOCRDING TO YOUR COMPUTER CONFIGURATION!!!!
+## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
 
-# User to specify the path to the file activiate the below and comment out the default paths
+# User to specify the path to the database file activate the below and comment out the default paths
 db.path <- file.choose()
 # e.g. laptop path
 #db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
@@ -74,9 +74,9 @@ final_output <- "outputs"
 
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables") # name of geopackage file in final output
+dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "renewables_ops" # name of layer being put
+layer.name <- "fishing_ops" # name of layer being put
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
@@ -86,7 +86,7 @@ print(OpsAct)
 
 # Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
-ops.number <- 10
+ops.number <- 11
 
 
 # Run this to save your choice, and see what was saved
@@ -102,12 +102,14 @@ source(file = "./functions/set_user_ops_act_choice.R")
 source(file = "./functions/01_connect_to_ms_access_qry_data.R")
 
 # Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
-qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path)) 
+qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path)) #try error does not work yet. if it is not able to establish rodbc is not an open channel - it does not execute the try error corectly.
 if("try-error" %in% class(read.access.db(db.path,drv.path))) {
-        qryEUNIS_ActPressSens <- read.csv("C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/qryhabsens/qryEUNIS_ActPressSens.txt")
+        qryEUNIS_ActPressSens <- read.csv("./input/qryEUNIS_ActPressSens.txt") # should find an older copy of the query for the fishing activity from the database to replaceC:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/qryhabsens
 }
 
-# ensure EUNISCode is a character, as it reads converts to factor (which is incorrectand caannot join to other objects)
+
+
+# ensure EUNISCode is a character, as it reads converts to factor (which is incorrectand cannot join to other objects)
 qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) 
 # qryEUNIS_ActPressSens <- as.character(qryEUNIS_ActPressSens$ActSensRank)
 
