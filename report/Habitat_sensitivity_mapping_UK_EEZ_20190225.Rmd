@@ -554,7 +554,24 @@ knitr::include_graphics(img_path, dpi = 150)
 
 # Discussion
 
-The sensitivity maps 
+In this report a case study investigating some basic uses of habitat sensitivity maps with resepct to abrasion pressures from scallop dredging in English marine waters were used to illustrate potential application of such habitat sensitivty maps to investigate the impacts and spatial management options for damaging fisheries. The case study showed that habitat sensitivity maps were able to identify the level of sensitvity and type of benthic habitat impacted on by abrasive pressures from scallop dredging. Within the areas where scallop dredging activities were greatest, it was clear that there was substantial variation in the sensitivities between dredged habitats. The ability to map sensitive areas and the areas used for such fishing activities provides the critical information to marine managers to inform and improve spatial management through regulations which restrict dredging activities to the habitat types that are least sensitive to fishing impacts.
+
+## Inshore benthic habitat senstivity
+The highly senstive inshore benthic
+
+## Offhsore benthic habitats
+The highly senstive offshore benthic habitats were... - and how realistic is it that they were impacted?/how are they impacted?
+
+
+The offshore habitats used in this study lacked subbiogeoregional classification as that was used for the inshore areas. This lack of subbiogeoregionalisation meant that all potential fine-scale (child) benthic habitats occuring within broader scale (parent) habitats were considered for each (parent) braod-scale habitat. The resulting sensitivity map for the offshore was therefore the maximum sensitivity assocaited with all possible fine-scale child habitats which were used to eplace their mapped broad-scale parent habitats. It is unlikely that all fine-scale child habtias occur within all broad-scale parent habitats. Consequently it is highly likely that offshore senstivity map is an over-estimate of the actual senstivity of the mapped broad-scale habitiats.While the precautionary principal is essential for effective conservation, subbioregional infomation will greatly improve the accuracy of the predicted fine-scale child habitats within the broad-scale habitats. Greater accuracy of offshore habitat maps will improve the ability to identify reas with high levels of sensitvity, and the confidence with which conservtion advice can be provided in the offshore. A study of the subbiogeoregions of the offshore area is currently being developed by JNCC and should be incorporated within the NE's models in due course.
+
+
+
+## Activity data
+The fishing data used in this study were based on VMS data from English waters covering the period between 2009 and 2014, and will require updating to illustrate the present scenario. The data available to this study were received as aggeregated into broad gear categories, which required separating scalloping from other kinds of dredging activities. Greater access to recent VMS data with a finer  level of aggeragation will facilitate better discrimiation between the habitats and their sensitivities impacted on by different metiers.
+
+Fishing activity data used in this case study were limited to VMS data, and did not include the vessels smaller than 12, as these vesels are not fitted with VMS. The smaller fishing fleet generally operates in the waters inshore from 12 NM boundary but is generlly not well understood. Previous efforts which mapped the fishing effort were based on qualitative descriptions from interviews with fishermen which are becoming increasingly outdated and thus have limited application. In order for objective inspection of the impacts that the inshore fishing fleet is having on the benthic substrate, higher resolution and objective data are required. 
+
 
 ## Future development of the research
 Future application of this data could be used to identify a) sensitive and not-fished, and b) not-sensitive and not-fished areas, as a potential source to inform management of options which identifies the spatial distribution of fishing effort which would minimise the impact on the benthic habitat. The requirement is distribution models of King and Queen scallops in English waters, upon which these data can be overlaid. The development of species distribution models for King and Queen scallops are curently being undertaken un a joint project by the MMO and Cefas.
