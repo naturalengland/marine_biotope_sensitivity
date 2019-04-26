@@ -73,7 +73,7 @@ Commercial fishing operations are widespread throughout the United Kingdom, and 
 Natural England (NE) provides statutory conservation advice on operations in English Territorial Waters (from the shore to 12 NM offshore) to Defra (Department for Environment, Food & Rural Affairs), regulators and developers. Natural England's statutory remit in the marine environment is principally directed towards protected habitats and species within English Territorial Waters, known as designated features. In many cases this remit relates to Marine Protected Areas (MPAs) and the features designated for protection within them. Natural England also provides advice out to 200 NM offshore for renewable energy through the delegation of responsibility from the Joint Nature Conservation Committee (JNCC). JNCC provides conservation advice on fishing activities outside of territorial waters in English waters to Defra. This work provides indicative sensitivity outputs for 0-200nm in English waters. Natural England uses sensitivity assessments of designated features including benthic habitats and species to inform its Conservation Advice (Advice on Operations). The habitat sensitivity assessments are comprised of three principal components, namely 1) habitat, 2) activity, and 3) pressure.
 
 ## Habitat
-This study was limited to the marine benthic habitats comprised from the substratum and the community of organisms adhered to or living in close contact to the seabed. The definition of the multitude of benthic habitat categories used by Natural England is based on the pan-European adopted habitat classification system, known as the European Nature Information System (EUNIS). The EUNIS benthic habitat classification is a hierarchical system within which fine-scale (child) habitat categories are nested within broader-scale (parent) habitat categories, referred to as EUNIS levels. EUNIS level 1 is at the top of the hierarchical classification system where the broadest definition of habitat discerns marine habitat (A) from other habitats like terrestrial or freshwater. The amount of thematic detail about the habitat increases progressively With an increase in the EUNIS level as shown in the example below: 
+This study was limited to the marine benthic habitats comprised from the substratum and the community of organisms adhered to or living in close contact to the seabed. The definition of the multitude of benthic habitat categories used by Natural England is based on the pan-European adopted habitat classification system, known as the European Nature Information System (EUNIS). The EUNIS benthic habitat classification is a hierarchical system within which fine-scale (child*) habitat categories are nested within broader-scale (parent*) habitat categories, referred to as EUNIS levels. EUNIS level 1 is at the top of the hierarchical classification system where the broadest definition of habitat discerns marine habitat (A) from other habitats like terrestrial or freshwater. The amount of thematic detail about the habitat increases progressively With an increase in the EUNIS level as shown in the example below: 
 
 EUNIS level 1: A: Marine,
 EUNIS level 2: A1 : Littoral rock and other hard substrata,
@@ -82,7 +82,8 @@ EUNIS level 4: A1.11 : Mussel and/or barnacle communities,
 EUNIS level 5: A1.113 : *Semibalanus balanoides* on exposed to moderately exposed or vertical sheltered eulittoral rock,
 EUNIS level 6: A1.1132 : *Semibalanus balanoides*, *Fucus vesiculosus* and red seaweeds on exposed to moderately exposed eulittoral rock. 
 
-*See the* [EUNIS-webpage](https://eunis.eea.europa.eu/habitats-code-browser.jsp) *for more examples on the hierarchical view of the EUNIS habitat classification system.*
+*See the* [EUNIS-webpage](https://eunis.eea.europa.eu/habitats-code-browser.jsp) *for more examples on the hierarchical view of the EUNIS habitat classification system.* 
+*The use of "parent" and "child" when refering to the nested hierarchy of fine-scale habitats within broad-scale habitats, is used to describe the nested fine-scale (child) habitats which include the same EUNIS codes as the parent habitat under which it is nested.
 
 Designated habitat features are represented at an intermediate scale of detail, equivalent to EUNIS level 3. Natural England's conservation advice is therefore limited to a subset of the area of English Territorial Waters, and provided at a coarser scale of habitat detail than is available for a substantial area of the UK seabed. Natural England holds a bespoke dataset which details potential fine-scale habitats (EUNIS level 4 - 6) which occur within the broader habitat categories (EUNIS level 1 - 3) within the sub-biogeographical sea regions in the inshore waters of England from 0 to 12 NM. The bespoke dataset was informed through expert consultation with Dr Keith Hiscock from the Marine Biological Association (Hiscock, K. 2016). There is currently work commissioned by JNCC which is identifying fine-scale habitats within broad-scale habits in the offshore (12 - 200 NM) using the same methodology. The latter data set will become incorporated into the overall data set in due course, but was not ready for implementation at the time of writing. 
 
@@ -97,7 +98,7 @@ Sensitivity assessments as used by NE are comprised of two components, namely 1)
 <br>
 Natural England's benthic habitat sensitivity assessments include 39 pressures associated with a 100 activities stemming from 18 operations in the marine environment. Other common concepts in NE's Conservation Advice include the Vulnerability and Exposure. Vulnerability is the measure of the degree of exposure of a receptor to a pressure to which it is sensitive (Based on [@hiscockAssessingSeabedSpecies1999;  @oakwoodenvironmentalltdDevelopmentMethodologyAssessment2002]). Exposure is the action of a pressure on a receptor, with regard to the extent, magnitude and duration of the pressure [@robinsonMarineAssessmentMonitoring2010].
 
-## Previous sensitvity mapping work
+## Previous sensitivity mapping work
 Previous studies have developed tools to predict the impacts of fishing effort displacement, which forecast a change in the spatial distribution of fishing effort and the effort allocation between different fishing metiers [@bastardieDISPLACEDynamicIndividualbased2013]. This project did not attempt to predict fishing effort displacement given the significant uncertainty and complexity in how Brexit would affect fishing opportunities and regulations throughout English waters. Instead, models of benthic habitat sensitivity to pressures arising from fishing activities allow a responsive assessment of the by overlaying fishing activity data onto habitat sensitivity models. The sensitivity mapping is a precautionary approach which could then be used to assess potential impacts from change in marine activities as they happen or as they are proposed. This response as opposed to predictive approach was preferred due to the multitude of uncertainties associated with fishing displacement and other activities in the marine environment arising from EU exit.
 <br>
 Previous attempts to use quantitative methods to delineate benthic habitat sensitivity were limited by the level of detail about the underlying benthic habitat upon which fishing activities impact. These studies have assumed that benthic habitat were comprised of four broad-scale categories, such as mud, muddy sand, sand and gravel. Current quantitative models therefore do not consider differences in living structures occurring within these habitats. These models are therefore likely to over- or under-estimate the sensitivity of fine-scale habitats within these very broad definitions of habitat. Alternative methods using score based or expert judged systems  to map out geographical distribution of habitat sensitivity e.g. [@tillinAssessingSensitivitySubtidal2014; @zachariasSensitivityVulnerabilityMarine2005] have been criticized for not being quantitative, and therefore not repeatable [@dupliseaSizebasedModelImpacts2002; @hiddinkAssessingPredictingRelative2007]. Despite this limitation, both quantitative and scored based systems of habitat sensitivity have commonly been based upon the same central tenet of resilience to pressures, and standardization of the pressures [@robertsReviewExistingApproaches2010].
@@ -118,17 +119,13 @@ Fishing activities have had profound effects on the UK's marine ecosystem, of wh
 
 ## Study Area
 Marine habitat sensitivity maps were generated for English waters from the shoreline to the edge of the continental shelf, approximately 200 NM offshore. The sensitivity maps were generated in two independent steps for two geographically adjacent areas: First for English Territorial Waters (0 - 12 NM, area in light blue in Figure 1), and second, the 12 - 200 NM offshore. 
-
 <br>
-
 ```{r english_waters, fig.cap="Figure 1. The United Kingdom's boundaries, showing English Territorial Waters (inshore) and offshore areas used in this study." ,echo = FALSE, out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
 rpt_d <- getwd()
 english_waters_img_path <- paste0(rpt_d,"/figures/official_waters.png")
 knitr::include_graphics(english_waters_img_path, dpi  = 150)
 ```
-
 <br>
-
 The English inshore and offshore areas were treated independently as NE holds fine-scale data on the composition of the benthic habitats in 0 - 12 NM in England which was not available for the offshore (12 - 200 NM) English waters and 0 - 200 NM for Devolved Administrations at the time of writing. The fine-scale information on habitat composition was utilised in an additional step within the R modelling routines, which allowed biotope prediction within mapped broader scale habitats. The biotope level habitat information was obtained from additional data and expert validation which describes the likely biotopes within sub-biogeoregions within English waters.
 
 ## Data sources
@@ -136,7 +133,7 @@ Two main data sets were used to map the sensitivities for the marine benthic hab
 
 ### Sensitivity assessments
 Sensitivity assessments of each benthic habitat categories have been carried out for most EUNIS habitats using the MarESA methods [@tillinAssessingSensitivitySubtidal2014] as part of NE's ongoing Advice on Operations programme. The sensitivity of the EUNIS habitats levels 4 to 6 were assessed against 39 standardised pressures for each activity. The ten fishing activities in the Advice on Operations database were included in this project (see Table 1). The pressures are standardised according to benchmarks, for which the benchmark value is defined at which point an effect caused by the pressure is expected [@tillinAssessingSensitivitySubtidal2014]. The 39 pressures include the 36 OSPAR standardised pressures and an additional three which allow specifying direction of a pressure rather than one parameter stating non-directional change (Table 2). For example, instead of one pressure stating a change of 0.5&deg; C, two separate pressures are included stating an increase of 0.5&deg; C and another a decrease of 0.5&deg; C. For details about the benchmarks please see Tillin et al  [-@tillinAssessingSensitivitySubtidal2014]. One of six levels of sensitivity were assigned to each habitat category in response to each of the 39 pressures, each with their own defined benchmark (Table 3). The sensitivity score was based on the resistance and resilience of the habitat. See [@tillinAssessingSensitivitySubtidal2014] for details.
-
+<br>
 ```{r fishing_acts, fig.cap="Table 1. Fishing activities", echo = FALSE}
 library(RODBC) 
 library(DBI)
@@ -173,7 +170,7 @@ tblActivityLUT %>%
 
 close(conn)
 ```
-
+<br>
 ``` {r pressures, fig.cap="Table 2. The 39 standrdised pressures against which habitat sensitivities were assessed", echo = FALSE}
 library(RODBC) 
 library(DBI)
@@ -207,7 +204,7 @@ tblPressureLUT %>%
 
 close(conn)
 ```
-
+<br>
 ```{r sens_levels, fig.cap="Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.", echo = FALSE}
 #library(tidyverse)
 # generate a sensitivity ranking score that will be used to replace characters/strings in sbgr.bap to allow selecting the highest, and lowest sensitivity, and genrate some confidence around this.
@@ -227,7 +224,7 @@ sens.rank %>%
         #kable_styling(position = "left", full_width = TRUE)
 
 ```
-
+<br>
 ```{r resistance_tbl, fig_cap = "Table 4. Assessment scale for resistance (tolerance) to a defined intensity of pressure.", echo = FALSE}
 
 tbl.resist <- tribble(
@@ -244,8 +241,7 @@ tbl.resist %>%
         kable(caption = "Table 4. Assessment scale for resistance (tolerance) to a defined intensity of pressure.") #%>%
         #kable_styling(position = "left", full_width = F)
 ```
-
-
+<br>
 ```{r resilience_tbl,fig_caption = "Table 5. Assessment scale for resilience (recovery)", echo = FALSE}
 
 tbl.resil <- tribble(
@@ -261,7 +257,7 @@ tbl.resil %>%
         kable(caption = "Table 5. Assessment scale for resilience (recovery)") #%>%
         #kable_styling(position = "left", full_width = F)
 ```
-
+<br>
 ```{r cross_tabulate_resist_resil, fig_cap = "Table 6. The combination of resistance and resilience scores to categorize sensitivity.", echo = FALSE}
 
 tbl.sens.crss <- tribble(
@@ -455,8 +451,8 @@ prop.area <- dplyr::left_join(inshore.prop.area, offshore.prop.area, by = "Sensi
         rename(`Proportion area inshore` = Proportion_area.x, `Proportion area offshore`= Proportion_area.y)
 
 prop.area %>%
-        kable(caption = "Table 7. The proportional area of sensitivity according the quality of the evidence in the inshore (0 - 12NM).") #%>%
- #       kable_styling(position = "left", full_width = TRUE)
+        kable(caption = "Table 7. The proportional area of sensitivity according the quality of the evidence in the inshore (0 - 12NM).") %>%
+        kable_styling(position = "left", full_width = TRUE)
 
 ``` 
 ### Overview of inshore and offshore habitat sensitivity
@@ -539,9 +535,13 @@ Eight habitat categories which were highly sensitive were impacted by scallop dr
 
 ```{r high_and_medium_sensitive_table, fig.cap="Table 8. List of high and medium sensitive habitats under high levels of scallop dredging activity between 2009 and 2014 in England.", echo = FALSE}
 
-hm_sens_habs <- readRDS("./tables/high_and_medium_sensitive_habitats.RDS")
-hm_sens_habs %>%
-        knitr::kable(caption = "Table 8. List of high and medium sensitive habitats under high levels of scallop dredging activity between 2009 and 2014 in England.") %>%
+hm_sens_habs <- readRDS("./tables/sensitive_habitats.RDS")
+#df[!(df$gender == "woman" & df$age > 40 & df$bp = "high"), ]
+dat <- hm_sens_habs[!(hm_sens_habs$`Assessed habitat` == "A4.231" & hm_sens_habs$sens_Z10_5_D6 == 6),]
+
+#hm_sens_habs %>% dplyr::filter(!`Assessed habitat` == "A4.231" & !sens_Z10_5_D6 == 6) %>% 
+dat %>% 
+       knitr::kable(caption = "Table 8. List of high and medium sensitive habitats under high levels of scallop dredging activity between 2009 and 2014 in England.") %>%
         kable_styling(position = "left", full_width = TRUE)
 ```
 <br>
@@ -554,23 +554,20 @@ knitr::include_graphics(img_path, dpi = 150)
 
 # Discussion
 
-In this report a case study investigating some basic uses of habitat sensitivity maps with respect to abrasion pressures from scallop dredging in English marine waters were used to illustrate potential application of such habitat sensitivity maps as a starting point to management of fising effort dispalcement. While this study did not assess displaced fishing effort per se, it provides the baseline information which may be used to inform the suitability of in the event a change in regulations that could lead to a displacement of fishing effort.
+In this report a case study investigating some basic uses of habitat sensitivity maps with respect to abrasion pressures from scallop dredging in English marine waters were used to illustrate potential application of such habitat sensitivity maps as a starting point to management of fising effort dispalcement. While this study did not assess displaced fishing effort *per se*, it provides the baseline information which may be used to inform the suitability of in the event a change in regulations that could lead to a displacement of fishing effort.
 
 The case study showed that habitat sensitivity maps were able to identify the level of sensitivity and type of benthic habitat impacted on by abrasive pressures from scallop dredging. Within the areas where scallop dredging activities were greatest, it was clear that there was substantial variation in the sensitivities between dredged habitats. The ability to map sensitive areas and the areas used for such fishing activities provides the critical information to marine managers to inform and improve spatial management through regulations which restrict dredging activities to the habitat types that are least sensitive to fishing impacts.
 
 ## Case study
-The impacts of scallop dredging on King (*Pecten maximus*) and Queen scallops (*Aequipecten opercularis*) (insert Howarth report and more papers), and concerns over the degradation effects on the benthic habitat and the associated invertebrate community suggests that a wide range of habitats, including soft sediment and hard benthic habitat substrates *insert some references*. It is important to understand the overlap of fishing activities and the distribution of sensitive benthic habitats to direct fishing activities to the habitats which are most resilient to the impacts and have the shortest time to recovery. The results from this case study shows the use of benthic habitat sensitivity maps to identify the habitats within historical core scallop dredging areas which require management intervention to prevent significant long-term damage to habitats and change to benthic invertebrate communities.
+The impacts of the dredge fishery for King (*Pecten maximus*) and Queen scallops (*Aequipecten opercularis*) [@howarthDredgeFisheryScallops2014], and concerns over the degradation effects on the benthic habitat and the associated invertebrate community suggests that a wide range of habitats, including soft sediment and hard benthic habitat substrates [@currieImpactsEfficiencyScallop1999; @hall-spencerScallopDredgingHas2000; @jenkinsImpactScallopDredging2001; @thrushsfImpactHabitatDisturbance1995]. It is important to understand the overlap of fishing activities and the distribution of sensitive benthic habitats to direct fishing activities to the habitats which are most resilient to the impacts and have the shortest time to recovery. The results from this case study shows the use of benthic habitat sensitivity maps to identify the habitats within historical core scallop dredging areas which require management intervention to prevent significant long-term damage to habitats and change to benthic invertebrate communities.
 
 ### Inshore benthic habitat senstivity
-Eight highly sensitive inshore benthic habitats are currently likely to be impacted on by scallop dredging activities. Four of these included infra and sub-tidal circalittoral rock habitats with algal or invertebrate communities which are not compatible with scallop dredging gear, and would suffer significant damage if dredged. The remaining four highly sensitive benthic habitats were sedimentary characterised by annelid, crustacean or cnidarian invertebrate communities which are had slow recovery periods and high levels of mortality associated with abrasion from scallop dredging. Of particular concern were *Phymatolithon calcareum* mearl beds which have been shown to undergo significant long term declines with no recovery after 4 years following scallop dredging in a previous study in the English Channel *Scallop dredging has profound, long-term impacts on maerl habitats*.
+Eight highly sensitive inshore benthic habitats are currently likely to be impacted on by scallop dredging activities. Four of these included infra and sub-tidal circalittoral rock habitats with algal or invertebrate communities which are not compatible with scallop dredging gear, and would suffer significant damage if dredged. The remaining four highly sensitive benthic habitats were sedimentary characterised by annelid, crustacean or cnidarian invertebrate communities which are had slow recovery periods and high levels of mortality associated with abrasion from scallop dredging. Of particular concern were *Phymatolithon calcareum* mearl beds which have been shown to undergo significant long term declines with no recovery after 4 years following scallop dredging in a previous study in the English Channel [@hall-spencerScallopDredgingHas2000].
 
 ### Offshore benthic habitats
 The lack of highly sensitive offshore benthic habitats was surprising given the precautionary approach followed to determine fine-scale child habitats within broad-scale benthic habitats.  - and how realistic is it that they were impacted?/how are they impacted?
 
-
 The offshore habitats used in this study lacked sub-biogeoregion classification as that was used for the inshore areas. This lack of sub-biogeoregion meant that all potential fine-scale (child) benthic habitats occurring within broader scale (parent) habitats were considered for each (parent) broad-scale habitat. The resulting sensitivity map for the offshore was therefore the maximum sensitivity associated with all possible fine-scale child habitats which were used to replace their mapped broad-scale parent habitats. It is unlikely that all fine-scale child habitats occur within all broad-scale parent habitats. Consequently it is highly likely that offshore sensitivity map is an over-estimate of the actual sensitivity of the mapped broad-scale habitats.While the precautionary principal is essential for effective conservation, sub-biogeoregion information will greatly improve the accuracy of the predicted fine-scale child habitats within the broad-scale habitats. Greater accuracy of offshore habitat maps will improve the ability to identify areas with high levels of sensitivity, and the confidence with which conservation advice can be provided in the offshore. A study of the sub-biogeoregions of the offshore area is currently being developed by JNCC and should be incorporated within the NE's models in due course.
-
-
 
 ## Activity data
 The fishing data used in this study were based on VMS data from English waters covering the period between 2009 and 2014, and will require updating to illustrate the present scenario. The data available to this study were received as aggregated into broad gear categories, which required separating scalloping from other kinds of dredging activities. Greater access to recent VMS data with a finer  level of aggregation will facilitate better discrimination between the habitats and their sensitivities impacted on by different metiers.
