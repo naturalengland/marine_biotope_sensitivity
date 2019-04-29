@@ -1,0 +1,149 @@
+Habitat sensitivity R-scripting: Follow the data
+========================================================
+author: Philip Haupt
+date: 2019-04-29
+autosize: true
+#width: 1440
+#height: 900
+
+Overview Slide
+========================================================
+left: 30%
+
+<div class="header" style="margin-top:-100px;"align="right">
+<img src="ne_logo.png" width=150 height=150 style="background-color:transparent; border:0px; box-shadow:none;"></img>
+</div>
+
+
+- Main script overview
+        - Libraries
+        - Functions (helper files)
+        - User input section
+- Stepwise process of following the data
+        - GI Geoprocessing of habitat and boundaries and sub-biogeoregions
+        - R Reading and processing
+- Output
+        - Written in R
+        - Investigate outputs GIS
+
+<div class="footer" style="margin-top:50px;">
+<img src="ne_marine_footer_template.png" style="background-color:transparent; border:0px; box-shadow:none;"></img>
+</div>
+
+        
+Main script
+========================================================
+- A single main script is used to call a list of functions to execute in  a stepwise manner
+- Readme at top provides some objective and basic instructions and infomration, like system requirements, for the user
+- All neccesary R libraries are specified
+- User input section is included at the top where universal variables are specified.
+
+![ms_readme](main_script_read_me.png)
+
+R Libraries used
+========================================================
+left: 50%
+- First two are to read and connect to the database using ODBC connections.
+- Tidyverse to stringr are to shape data and work with text data columns
+- Rgdal and sf are to deal with GI data.
+
+
+```{r, echo = FALSE}
+cat("library(RODBC)
+library(DBI)
+library(tidyverse)
+library(plyr)
+library(reshape2)
+library(magrittr)
+library(stringr)
+library(rgdal)
+library(sf)")
+```
+***
+![r_logo](R_logo.svg.png)
+
+***
+![rstudio](rstudio_logo.png)
+
+
+User input
+========================================================
+![user_input](user_input.png)
+
+
+Choose operations
+========================================================
+![operations](operations.png)
+
+
+Functions (helper files)
+========================================================
+<div align="left">
+<img src="functions_pic.png" width=350 height=500>
+</div>
+
+Each of these files contain commands to read, clean, shape, recombine the database data with the GIS data. They are called in a particular sequence from the Main script. Their outputs are passed into the R environemnt, where the next function picks up the output from the previous and and does the next step.
+
+GI file preparation
+========================================================
+left: 60%
+
+![habitat_map](habitat_map_200NM.png)
+Fig. Habitat map
+
+NE's *Benthic habitat* is **intersected** with *sub-bioregions* and *inshore/offshore boundaries*.
+The benthic habitat layer is similar to the open source available on EMODnet, but includes a few classifications which NE have internally approved and have not ben accepted externally yet. This process developed is in clse collaboration with JNCC.
+
+***
+![sbgr](subbiogeoregions_20190418.png)
+Fig. Sub-biogeoregions (inshore)
+
+![uk_boundaries](official_waters.png)
+Fig. UK marine boundaries
+
+R data processing steps: overview
+========================================================
+```{r, echo = FALSE}
+library(tidyverse)
+library(kableExtra)
+steps <- tribble(
+        ~Step, ~Objective,
+        #-------/------------
+        1, "Read sensitivity data",
+        2, "Obtain a list of distinct EUNIS codes with their sensitivity assessments (ranked)",
+        3, "Read GIS habitat map file",
+        4, "Clean geodata file; done from attribute table – optional stored table",
+        5, "Assign EUNIS levels based on number of characters in EUNISCode",
+        6, "Match biotopes between assessed and matched within each sbgr and within level of mapped EUNIS",
+        7, "Populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA.",
+        8, "Loads and runs script to join pressures to sbgr generated above.",
+        9, "Compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.",
+        10, "Associate maximum sensitivity with GIS polygon Ids (and the habitat type assessed and the confidence of the assessments).",
+        11, "Save single GIS file as final output."
+)
+
+steps %>%
+ kableExtra::kable(caption = "Table. The 11 steps in the R code used to assign sensitivity levels to habitats in relation to the 39 standardised pressures.") %>% kable_styling(position = "left", full_width = TRUE)
+```
+
+
+R data processing steps: step 1
+========================================================
+```{r, echo = FALSE}
+#phil to set directory for laptop
+# copy the file to a sensible location and use here: currently in PROJECT/Fishing_effort_displacement/2_subprojects_and_data/Other/NE/Habitat_sensitivity/qryhabsens
+library(dplyr)
+qryEUNIS_ActPressSens <- read.csv("F:/copy_data/qryEUNIS_ActPressSens.txt") 
+cat("Column names:")
+names(qryEUNIS_ActPressSens)
+
+cat("Example of the data:")
+qryEUNIS_ActPressSens %>% filter(PressureCode == "D6") %>% 
+        filter(ActivityCode == "Z10.6") %>% 
+        select(-(EUNISName)) %>%
+        sample_n(5)
+
+
+```
+
+
