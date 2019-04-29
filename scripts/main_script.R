@@ -60,7 +60,7 @@ db.path <- file.choose()
 # e.g. laptop path
 #db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
 #power pc path
-#db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
+db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
 
 # USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
@@ -119,7 +119,7 @@ qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode)
 #List of sensitivity_per_pressure for each assessed EUNIS code (biotopes/fine-scale assessed habitat codes from Access database)
 
 # add ranking of sensitivity to access database-object
-source("./functions/sensitivity_rank_tbl.R")
+source("./functions/sensitivity_rank_tbl.R") #generates variables sens.rank
 sens.act.rank <- left_join(qryEUNIS_ActPressSens,sens.rank, by = "ActSensRank")
 sens.act.rank$EUNISCode <- as.character(sens.act.rank$EUNISCode)# ensure EUNIS codes are character not factors!
 
@@ -129,8 +129,8 @@ eunis.lvl.assessed <- sens.act.rank %>%
         distinct()
 eunis.lvl.assessed$EUNISCode <- as.character(eunis.lvl.assessed$EUNISCode) # ensure EUNIS codes are character not factors!
 
-
-# Obtain sensitvity tables, one for each acitivty, with each EUNIS code assessed against each pressure code: 
+#--------------------------------
+# Obtain sensitvity tables, one for each acitivity, with each EUNIS code assessed against each pressure code: 
 # a list of data frames called "act.press.list" is created, which contains the unique combinations of ranked sensivities to pressure for each activity for each of the assessed biotope (i.e. from the Access database)
 source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 
@@ -150,7 +150,7 @@ hab_map <- read.network.geodatabase()  #temporarily disabled to avoid reading in
 
 #------------------------------
 #04
-#Clean geodata file; done from attribute table - i.e. remove the geomotry to make the file small and managable to work with.
+# Clean geodata file; done from attribute table - i.e. remove the geometry to make the file small and managable to work with.
 
 #function that loads the GIs attributes from the GIs file (seperate it foreasier manipulation).Reads file from specified locality, or defaults to a back-up locality,
 source(file = "./functions/load_gis_attributes_fn.R")
@@ -179,7 +179,7 @@ names(EunisAssessed) <- c(names(eunis.lvl.assessed), names(ind.eunis.lvl.tmp))
 rm(ind.eunis.lvl.tmp)
 
 #----------------------------
-#06
+#06 Match biotopes
 source("./functions/match_eunis_to_biotope_fn.R") # load function that will match the biotopes
 # THIS NEEDS TO BE FUNCTIONALISED: but currenbtly runs as a long section of code
 
@@ -217,14 +217,15 @@ setwd(file.path(mainDir, subDir))
 
 # below is a for loop in which the EUNIsAssessed is split into a list of dataframes 1st being the most detailed biotope level (6), and then down to the broadest biotope level (4) that were assessed in the PD_AoO access database: outnames:bgr.dfs.lst is a list of habtypes within each subbgr, and the eunis level from the gis - it is used wihtin the for loop to write the sbgr file which is the match between gis and database
 for (g in seq_along(x.dfs.lst)) {
-        #determine the number of characters for substring limit to feed into substring statement
+        #determine the number of characters for substring limit to feed into substring statement (5 characters = EUNIs level 4, and so on)
         sbstr.nchr <- unique(nchar(as.character(x.dfs.lst[[g]]$EUNISCode)))
         #Obtain the EUNIs code by copying only the number of characters at the level assessed.
         x <- substr(as.character(x.dfs.lst[[g]]$EUNISCode), 1,sbstr.nchr)
+        
         #obtain the EUNIS level:
         mx.lvl <- unique(x.dfs.lst[[g]]$level)
         
-        #r obj to save results per level
+        #r obj to save results per level (generates a named matrix with length 1, in which the column names are the assessed EUNIS Codes for all levels; it adds sbgr, h.lvl (assessed eunis code-level); l.lvl (mapped eunis code-level). and the eunis.code.gis; eunis code is the mapped eunis code level which will come from hab.type; e.g. file output name: subBGR_2a_match_biotope_eunis_high_5_eunis_mapped_2)
         level.result.tbl[[g]] <- data.frame(matrix(ncol = length(x)+4), stringsAsFactors = FALSE) # +4 to cater for the added columns, sbgr, etc
         names(level.result.tbl[[g]]) <- c(as.character(x.dfs.lst[[g]][[1]]),"sbgr", "h.lvl", "l.lvl","eunis.code.gis") #names should be x (highest level assessed against) 
         
@@ -247,7 +248,7 @@ rm(mainDir, subDir, bgr.dfs.lst)
 source(file = "./functions/read_temporary_sbgr_results_fn.R")
 # Outstored as result.files
 
-#Take each dataframe in the list, and split it again according the finest eunis level that has been assessed (high level indicates this, or h.lvl), then amalgamate the h level resutls keeping onl;y the highest level
+#Take each dataframe in the list, and split it again according the finest eunis level that has been assessed (high level indicates this, or h.lvl), then amalgamate the h level results keeping only the highest level
 source(file = "./functions/sqntl_eunis_lvl_code_replacement_fn.R")
 # Output stored as: sbgr.matched.btpt.w.rpl
 
@@ -288,7 +289,7 @@ rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
 
 #--------------
 #11
-#save singel GIS file as final output
+#save single GIS file as final output
 # attach sensitivity results to the habitat map's geodatabase
 hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) 
 writeRDS(act.sbgr.bps.gis, "./act.sbgr.bps.gis.R", compress = FALSE) # save the data as an object for analysis - it contains the shape_area field which can be used with sensitivity codes to do analysis.
