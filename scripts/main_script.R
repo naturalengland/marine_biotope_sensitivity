@@ -35,8 +35,8 @@
 
 # START
 #clear workspace
-#rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-rm(list=setdiff(ls(), "hab_map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+#rm(list=setdiff(ls(), "hab_map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
 #-----
 # R libraries
 ## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
@@ -56,7 +56,7 @@ library(sf)# to allow for multiple layers being written
 ## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
 
 # User to specify the path to the database file activate the below and comment out the default paths
-db.path <- file.choose()
+#db.path <- file.choose()
 # e.g. laptop path
 #db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
 #power pc path
@@ -74,15 +74,16 @@ final_output <- "outputs"
 
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing") # name of geopackage file in final output
+dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_sample") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "fishing_ops" # name of layer being put
+layer.name <- "inshore_fishing_ops" # name of layer being put
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
 source(file = "./functions/read_access_operations_and_activities.R")
-OpsAct <- read.access.op.act()
-print(OpsAct)
+OpsAct <- try(read.access.op.act())
+if("try-error" %in% class(OpsAct)){print("Choice could not be set. Make sure your your Access Driver software is set-up correctly. Defaulting to 11. Fishing (Z10)")}
+if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
 
 # Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
@@ -103,7 +104,7 @@ source(file = "./functions/01_connect_to_ms_access_qry_data.R")
 
 # Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
 qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path)) #try error does not work yet. if it is not able to establish rodbc is not an open channel - it does not execute the try error corectly.
-if("try-error" %in% class(read.access.db(db.path,drv.path))) {
+if("try-error" %in% class(qryEUNIS_ActPressSens)) {
         qryEUNIS_ActPressSens <- read.csv("./input/qryEUNIS_ActPressSens.txt") # should find an older copy of the query for the fishing activity from the database to replaceC:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/qryhabsens
 }
 
@@ -276,13 +277,15 @@ source(file = "./functions/min_max_sbgr_bap_fn.R")
 rm(xap.ls)
 
 #housekeeping
-rm(hab_map, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
+rm(x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
 
 #--------------
-#10 assocaite maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
+#10 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
 
 source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 # Output stored as: act.sbgr.bps.gis
+
+
 
 #housekeeping
 rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
