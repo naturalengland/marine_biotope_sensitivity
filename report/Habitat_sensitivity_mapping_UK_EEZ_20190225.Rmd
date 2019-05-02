@@ -155,7 +155,6 @@ connection.path <- paste0("Driver={",drv.path,"};DBQ=",db.path)#server=",srv.hos
 conn <- odbcDriverConnect(connection.path)
         
 # Get individual data tables
-        #----------------------------------------------------------------------------------------
 #sql statements to translate Microsoft Access table into R objects - these will be needed make joined tables to arrive at the required datatable
 tblActivityLUT <- sqlQuery(conn, paste("SELECT tblActivityLUT.*
                                        FROM tblActivityLUT;"))
@@ -165,8 +164,8 @@ tblActivityLUT$OperationCode <- as.integer(tblActivityLUT$OperationCode)
 tblActivityLUT %>% 
         filter(OperationCode == 11) %>%
         select(ActivityName, Description) %>%
-        kable(caption = "Table 1: Fishing activities in Advice on Operations (AoO) database") #%>%
-        #kable_styling(position = "left", full_width = F)
+        kable(caption = "Table 1: Fishing activities in Advice on Operations (AoO) database") %>%
+        kable_styling(position = "left", full_width = F)
 
 close(conn)
 ```
@@ -199,8 +198,8 @@ tblPressureLUT <- sqlQuery(conn, paste("SELECT tblPressureLUT.*
 tblPressureLUT <- as.data.frame(sapply(X = tblPressureLUT, FUN = as.character), stringsAsFactors=FALSE)
 
 tblPressureLUT %>% 
-        kable(caption = "Table 2: Standardised 39 ppressures in Operations (AoO) database") #%>%
-        #kable_styling(position = "left", full_width = F)
+        kable(caption = "Table 2: Standardised 39 ppressures in Operations (AoO) database") %>%
+        kable_styling(position = "left", full_width = F)
 
 close(conn)
 ```
@@ -209,8 +208,8 @@ close(conn)
 #library(tidyverse)
 # generate a sensitivity ranking score that will be used to replace characters/strings in sbgr.bap to allow selecting the highest, and lowest sensitivity, and genrate some confidence around this.
 sens.rank <- tribble(
-        ~rank.value, ~ActSensRank,
-        #-------/------------
+        ~Rank, ~Sensitivity,
+        #-/-------------
         1, "Not sensitive",
         2, "Insufficient evidence",
         3, "Not assessed",
@@ -220,8 +219,8 @@ sens.rank <- tribble(
 )
 
 sens.rank %>%
-        kable(caption = "Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.") #%>%
-        #kable_styling(position = "left", full_width = TRUE)
+        kable(caption = "Table 3. The six sensitivity levels which were assigned to habitats in relation to the 39 standardised pressures.") %>%
+        kable_styling(position = "left", full_width = TRUE, row_label_position = "l")
 
 ```
 <br>
@@ -238,8 +237,8 @@ tbl.resist <- tribble(
 
 
 tbl.resist %>%
-        kable(caption = "Table 4. Assessment scale for resistance (tolerance) to a defined intensity of pressure.") #%>%
-        #kable_styling(position = "left", full_width = F)
+        kable(caption = "Table 4. Assessment scale for resistance (tolerance) to a defined intensity of pressure.") %>%
+        kable_styling(position = "left", full_width = F)
 ```
 <br>
 ```{r resilience_tbl,fig_caption = "Table 5. Assessment scale for resilience (recovery)", echo = FALSE}
@@ -254,8 +253,8 @@ tbl.resil <- tribble(
 )
 
 tbl.resil %>% 
-        kable(caption = "Table 5. Assessment scale for resilience (recovery)") #%>%
-        #kable_styling(position = "left", full_width = F)
+        kable(caption = "Table 5. Assessment scale for resilience (recovery)") %>%
+        kable_styling(position = "left", full_width = F)
 ```
 <br>
 ```{r cross_tabulate_resist_resil, fig_cap = "Table 6. The combination of resistance and resilience scores to categorize sensitivity.", echo = FALSE}
@@ -271,8 +270,8 @@ tbl.sens.crss <- tribble(
 
 #print("          Resisistence")
 tbl.sens.crss %>%
-        kable(caption = "Table 6. The combination of resistance and resilience scores to categorize sensitivity.")# %>%
-        #kable_styling(position = "left", full_width = FALSE)
+        kable(caption = "Table 6. The combination of resistance and resilience scores to categorize sensitivity.") %>%
+        kable_styling(position = "left", full_width = FALSE)
 
 
 ```
@@ -294,13 +293,9 @@ hab200nm_img_path <- paste0(rpt_d,"/figures/habitat_map_200NM.png")
 knitr::include_graphics(hab200nm_img_path, dpi = 150)
 
 ```
-
 <br>
-
 The EUNIS benthic habitat categories which appear on the habitat map were associated with habitat categories contained within the sensitivity assessment database. By joining these datasets sensitivity maps for benthic habitat to the various pressures and activities were generated. The following steps were taken to produce the habitat sensitivity maps from the aforementioned data sources.
-
 <br>
-
 The habitat map was comprised habitat categories which were of different EUNIS levels (2 - 6). The differences in the habitat categories (EUNIS levels) is a result of different amounts of data available for the different areas in English waters. The habitat map and habitat classification system is updated by NE and JNCC as new information becomes available. As such, there is variability in the amount of detail about the habitat (substrate and benthos), as well as variability in confidence between the mapped areas (referred to as polygons hereafter). The habitat map is therefore comprised of a patchwork of polygons which may differ in their shape, area and the habitat category (and EUNIS level) which they represent, as well as the level of confidence with which the habitat was category was assigned to it. The confidence associated with habitat classification of each polygon is represented by a MESH (Mapping European Seabed Habitats) score (*Annex MESH confidence*). MESH scores are derived from the confidence associated with different data sources used to inform the classification of the habitat category assigned to a polygon. The data sources used to generate the benthic habitat map are based on a variety of methods and data sources, such as remote sensing, side-scan sonar, sediment grabs and SCUBA-diver surveys. While The MESH confidence assessment applies directly to the sensitivity map, it is not explored further in this report, as it is the standard existing confidence assessment of habitat category assignment associated with the habitat map. The MESH score is included as a column in the outputs but not presented here.
 
 ### Addressing the mismatch in EUNIS habitat assessments and the habitat map.
@@ -312,8 +307,14 @@ eunis_mismatch_img_path <- paste0(rpt_d,"/figures/EUNIS_mismatch_20190319.png")
 #eunis_mismatch_img_path <- "E:/stats/ne/marine_biotope_sensitivity/report/Habitat_sensitivity_mapping_UK_EEZ_20#190225_files/figure-html/EUNIS_mismatch_20190319.png"
 knitr::include_graphics(eunis_mismatch_img_path, dpi = 150)
 ```
+<br>
 
 <br>
+```{r mapped_eunis_area_polys, fig.cap="Figure 4. The area and number of polygons in the natural England's habitat map for the UK", echo = FALSE }
+rpt_d <- getwd()
+mapped_eunis_area_plys_path <- paste0(rpt_d,"./figures/eunis_area_polys_plot.png")
+knitr::include_graphics(mapped_eunis_area_plys_path, dpi = 150)
+```
 
 In order to remedy the mismatch of EUNIS levels between the map and the database, an approach was adopted in which the sensitivities of fine-scale habitats were assigned to the mapped polygons which did not have sensitivity assessments. This assignment of fine-scale habitats to broad-scale habitats within the inshore (0 - 12 NM) were done as follows:
 
@@ -394,9 +395,7 @@ A substantial inshore area was associated with relatively high levels of dredgin
 #include_graphics(seafish_img_path, dpi = 150)
 #Note: In future this layer may be replaced by another, but here it is meant to be proof of concept for internal use. Future reports should include more information on background of Fishermap_JNCC_NE\MMO_UK_VMS_Fishing_Activity.gdb data to spell out details around the layer; and describe the values on the table.* 
 ```
-
 <br>
-
 ### Habitat sensitivity inside areas with high dredging activity
 
 The habitat sensitivity within areas of high scallop dredging activity was analysed using a 100 by 100m grid of randomly stratified points within each high activity area. The point-grid was overlaid onto the inshore and offshore benthic habitat sensitivity maps in a GIS, and the underlying habitat sensitivity and fishing activity was obtained where the points intersected these maps. 
@@ -408,9 +407,7 @@ The habitat sensitivity within areas of high scallop dredging activity was analy
 
 
 The spatial distribution of dredging activity in relation to the current Marine Conservation Zone (MCZ). The map shows that there was very limited spatial overlap between the dredged areas with high levels of activity (>10.8) and MCZs (Figure 6).
-
 <br>
-
 ```{r dredge, fig.cap= "Figure 6. Dredging activity in English waters from MMO VMS data.", echo = FALSE}
 rpt_d <- getwd()
 dredge_img_path <- paste0(rpt_d, "/figures/Fishing_pressure_dredge.png")
@@ -607,6 +604,13 @@ Confidence Range (%) | Confidence Level        | Explanation
 The R-code steps to process the habitat assessment and GI data are outlined below.	
 
 ## R-code steps
+
+```{r flowdiagram, fig.cap="Flow diagram of data processing in R.",echo = FALSE}
+fd_path <- "./figures/flowdiagram_20190502.png"
+knitr::include_graphics(fd_path, dpi = 150)
+
+```
+
 The code is structured as a main script which calls sixteen helper functions to run the separate processes sequentially over 11 steps.
 In the main script, the user provides input, such as the locality of the input data sources, e.g. Microsoft Access database, and habitat maps. Furthermore, the location of outputs generated, and the choice of file names. Once the user enters these inputs, the main body of the code can be run, where upon the user will be prompted to select one of the 18 Operations for which to generate habitat sensitivity maps. Once the user has entered their selection, the code runs without further user input requirements.
 
