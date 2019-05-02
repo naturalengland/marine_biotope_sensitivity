@@ -12,3 +12,4 @@ act.press.list <- sens.act.rank %>%
                 
                 
         })
+cat("The output variable is `act.press.list`, which is a list containing separate dataframes with sensititivty assessments for each activity within the selected operation")
