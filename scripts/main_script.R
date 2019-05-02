@@ -48,7 +48,8 @@ library(reshape2)
 library(rgdal)
 library(magrittr)
 library(stringr)
-library(sf)# to allow for multiple layers being written
+library(sf)
+library(sp)# to allow for multiple layers being written
 
 # USER INPUT REQUIRED BELOW
 #-----
@@ -81,7 +82,7 @@ layer.name <- "inshore_fishing_ops" # name of layer being put
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
 source(file = "./functions/read_access_operations_and_activities.R")
-OpsAct <- try(read.access.op.act())
+OpsAct <- try(suppressWarnings(read.access.op.act())) #suppressWarnings(expr) turns warnigns off, as this warning will just tell you which data were not selected, and may be unneccessarily confusing.
 if("try-error" %in% class(OpsAct)){print("Choice could not be set. Make sure your your Access Driver software is set-up correctly. Defaulting to 11. Fishing (Z10)")}
 if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
 
@@ -89,12 +90,10 @@ if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
 ops.number <- 11
 
-
 # Run this to save your choice, and see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
 
 # END OF USER INPUT REQUIREMENT, you can now run scripts below to produce biotope sensitivity data.
-
 
 #---------------------------------
 # 01_connect_to_access_db.R
@@ -103,12 +102,16 @@ source(file = "./functions/set_user_ops_act_choice.R")
 source(file = "./functions/01_connect_to_ms_access_qry_data.R")
 
 # Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
-qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path)) #try error does not work yet. if it is not able to establish rodbc is not an open channel - it does not execute the try error corectly.
+qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path))
 if("try-error" %in% class(qryEUNIS_ActPressSens)) {
         qryEUNIS_ActPressSens <- read.csv("./input/qryEUNIS_ActPressSens.txt") # should find an older copy of the query for the fishing activity from the database to replaceC:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/qryhabsens
+        cat(paste0("The R script that obtains the senstivity data appears was UNABLE to connect to the database from the specified file location ",db.path, ", in the user input section above."))
+        cat("An older back-up copy stored as a text file was read in, and is limited to sensititivity to Fishing operations data only! The text file is:", (Sys.time() - file.info("./input/qryEUNIS_ActPressSens.txt")$mtime), "days old. Make sure you are using the latest version if you are updating formal outputs.")
 }
-
-
+if(class(qryEUNIS_ActPressSens) == "data.frame") {
+        cat(paste0("The R script that obtains the senstivity data appears to have connected and read the senstivity data from the specified file location ",db.path, ", created: ", file.info(db.path)$ctime, ", selected according to the user input section above."))
+        cat("The Access database file is:", (Sys.time() - file.info(db.path)$mtime), "days old. Make sure you are using the latest version if you are updating formal outputs.")
+        }
 
 # ensure EUNISCode is a character, as it reads converts to factor (which is incorrectand cannot join to other objects)
 qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) 
@@ -145,8 +148,8 @@ rm(qryEUNIS_ActPressSens, sens.rank)
 # status: the current network file specified is the full file - this will have to be changed to a directory where the latest preprocessed file is saved.
 source(file = "./functions/read_gis_hab_lr_fn.R")
 
-# calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea)
-hab_map <- read.network.geodatabase()  #temporarily disabled to avoid reading in the GIs file - remove the "#" to reactivate this cammand, and change top command rm...so taht the habitat map is removed ....
+# calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea, or read some email)
+hab_map <- read.network.geodatabase()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
 # TO CHANGE USING read_st(dsn = "", layer = "") as only data frame is needed at the start.
 
 #------------------------------
@@ -255,7 +258,7 @@ source(file = "./functions/sqntl_eunis_lvl_code_replacement_fn.R")
 
 #CAUTION: THIS WILL REMOVE ALL FILES IN THE SPECIFIED DIRECTORY!!! remove all the csv files written - this is a temporary work-around. If the results table can be stored as a R object rather than tables, this would not be neccessary
 do.call(file.remove, list(list.files(paste(getwd(),folder, sep = "/"), full.names = TRUE)))
-rm(results.files, folder)
+#rm(results.files, folder)
 
 #-------------
 #08
