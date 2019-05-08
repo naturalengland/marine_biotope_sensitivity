@@ -1,4 +1,4 @@
-Habitat sensitivity R-scripting: Follow the data
+Habitat sensitivity R-scripting
 ========================================================
 author: Philip Haupt
 date: 2019-04-29
@@ -102,63 +102,10 @@ Fig. Sub-biogeoregions (inshore)
 ![uk_boundaries](official_waters.png)
 Fig. UK marine boundaries
 
+
 R data processing steps: overview
 ========================================================
-<table class="table" style="">
-<caption>Table. The 11 steps in the R code used to assign sensitivity levels to habitats in relation to the 39 standardised pressures.</caption>
- <thead>
-  <tr>
-   <th style="text-align:right;"> Step </th>
-   <th style="text-align:left;"> Objective </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:left;"> Read sensitivity data </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> Obtain a list of distinct EUNIS codes with their sensitivity assessments (ranked) </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:left;"> Read GIS habitat map file </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:left;"> Clean geodata file; done from attribute table – optional stored table </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 5 </td>
-   <td style="text-align:left;"> Assign EUNIS levels based on number of characters in EUNISCode </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 6 </td>
-   <td style="text-align:left;"> Match biotopes between assessed and matched within each sbgr and within level of mapped EUNIS </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:left;"> Populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 8 </td>
-   <td style="text-align:left;"> Loads and runs script to join pressures to sbgr generated above. </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:left;"> Compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination. </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:left;"> Associate maximum sensitivity with GIS polygon Ids (and the habitat type assessed and the confidence of the assessments). </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:left;"> Save single GIS file as final output. </td>
-  </tr>
-</tbody>
-</table>
+![plot of chunk unnamed-chunk-2](F:/projects/marine_biotope_sensitivity/report/figures/flowdiagram_20190502.png)
 
 
 R data processing steps: step 1
@@ -179,23 +126,23 @@ Example of the data:
 
 ```
     ActivityCode   ActivityName PressureCode
-27         Z10.6 Demersal trawl           D6
-262        Z10.6 Demersal trawl           D6
-149        Z10.6 Demersal trawl           D6
-308        Z10.6 Demersal trawl           D6
-43         Z10.6 Demersal trawl           D6
+299        Z10.6 Demersal trawl           D6
+312        Z10.6 Demersal trawl           D6
+154        Z10.6 Demersal trawl           D6
+6          Z10.6 Demersal trawl           D6
+289        Z10.6 Demersal trawl           D6
                                                           PressureName
-27  Abrasion/disturbance of the substrate on the surface of the seabed
-262 Abrasion/disturbance of the substrate on the surface of the seabed
-149 Abrasion/disturbance of the substrate on the surface of the seabed
-308 Abrasion/disturbance of the substrate on the surface of the seabed
-43  Abrasion/disturbance of the substrate on the surface of the seabed
+299 Abrasion/disturbance of the substrate on the surface of the seabed
+312 Abrasion/disturbance of the substrate on the surface of the seabed
+154 Abrasion/disturbance of the substrate on the surface of the seabed
+6   Abrasion/disturbance of the substrate on the surface of the seabed
+289 Abrasion/disturbance of the substrate on the surface of the seabed
     EUNISCode ActSensRank
-27     A1.223      Medium
-262    A5.244         Low
-149    A3.312      Medium
-308    A5.433         Low
-43     A1.324        High
+299   A5.3741         Low
+312   A5.4411      Medium
+154   A3.3131         Low
+6      A1.121      Medium
+289   A5.3541      Medium
 ```
 
 
