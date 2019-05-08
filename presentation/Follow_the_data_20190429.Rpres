@@ -1,4 +1,4 @@
-Habitat sensitivity R-scripting: Follow the data
+Habitat sensitivity R-scripting
 ========================================================
 author: Philip Haupt
 date: 2019-04-29
@@ -101,29 +101,33 @@ Fig. Sub-biogeoregions (inshore)
 ![uk_boundaries](official_waters.png)
 Fig. UK marine boundaries
 
+
 R data processing steps: overview
 ========================================================
 ```{r, echo = FALSE}
 library(tidyverse)
 library(kableExtra)
-steps <- tribble(
-        ~Step, ~Objective,
-        #-------/------------
-        1, "Read sensitivity data",
-        2, "Obtain a list of distinct EUNIS codes with their sensitivity assessments (ranked)",
-        3, "Read GIS habitat map file",
-        4, "Clean geodata file; done from attribute table – optional stored table",
-        5, "Assign EUNIS levels based on number of characters in EUNISCode",
-        6, "Match biotopes between assessed and matched within each sbgr and within level of mapped EUNIS",
-        7, "Populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA.",
-        8, "Loads and runs script to join pressures to sbgr generated above.",
-        9, "Compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.",
-        10, "Associate maximum sensitivity with GIS polygon Ids (and the habitat type assessed and the confidence of the assessments).",
-        11, "Save single GIS file as final output."
-)
+fd_path <- "F:/projects/marine_biotope_sensitivity/report/figures/flowdiagram_20190502.png"
+knitr::include_graphics(fd_path, dpi = 75)
 
-steps %>%
- kableExtra::kable(caption = "Table. The 11 steps in the R code used to assign sensitivity levels to habitats in relation to the 39 standardised pressures.") %>% kable_styling(position = "left", full_width = TRUE)
+#steps <- tribble(
+#        ~Step, ~Objective,
+#        #-------/------------
+#        1, "Read sensitivity data",
+#        2, "Obtain a list of distinct EUNIS codes with their sensitivity #assessments (ranked)",
+#        3, "Read GIS habitat map file",
+#        4, "Clean geodata file; done from attribute table – optional stored #table",
+#        5, "Assign EUNIS levels based on number of characters in EUNISCode",
+#        6, "Match biotopes between assessed and matched within each sbgr and #within level of mapped EUNIS",
+#        7, "Populate the sbgr biotope codes and replacing NA values with eunis #codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving #the rest as NA.",
+#        8, "Loads and runs script to join pressures to sbgr generated above.",
+#        9, "Compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.",
+#        10, "Associate maximum sensitivity with GIS polygon Ids (and the habitat type assessed and the confidence of the assessments).",
+#        11, "Save single GIS file as final output."
+#)
+
+#steps %>%
+# kableExtra::kable(caption = "Table. The 11 steps in the R code used to assign sensitivity levels to habitats in relation to the 39 standardised pressures.") %>% kable_styling(position = "left", full_width = TRUE)
 ```
 
 
