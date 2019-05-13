@@ -368,7 +368,7 @@ The spatial distribution of benthic habitat sensitivity to abrasion from dredgin
 <br>
 ```{r hab_sens_dredge_abras, fig.cap= "Figure 8: The benthic habitat sensitivity to abrsation from dredging activities in the English waters.", echo = FALSE}
 rpt_d <- getwd()
-hs_drdg_img_path <- paste0(rpt_d,"/figures/Habitat_sensitivity_abrasion_dredging_England.png")
+hs_drdg_img_path <- paste0(rpt_d,"/figures/Habitat_sensitivity_abrasion_dredging_z10p5_d6.png")
 
 knitr::include_graphics(hs_drdg_img_path, dpi = 150)
 ```
@@ -423,7 +423,7 @@ The confidence of the sensitivity assessments for the inshore and offshore based
 
 ```{r conf_map, fig.cap="Figure 10. Map showing the spatial distribution of confidence based on quality of Evidence for habitat sensitivity assessments in UK waters.", echo = FALSE}
 rpt_d <- getwd()
-conf_map_img_path <- paste0(rpt_d,"/figures/confidence_in_off_shore_England.png")
+conf_map_img_path <- paste0(rpt_d,"/figures/confidence_in_off_shore_dredge_abras_z10p5_d6.png")
 include_graphics(conf_map_img_path, dpi = 150)
 ```
 
