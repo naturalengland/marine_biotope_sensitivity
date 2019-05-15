@@ -47,32 +47,42 @@ scallop_drdg_pts <- bind_rows(inshore_scallop_drdg_pts, offshore_scallop_drdg_pt
 sens.rank <- source("./functions/sensitivity_rank_tbl.r")
 sens.rank <- sens.rank$value
 
+join_var <- "sens_Z10_5_D6" #should be able to turn this into a function
+
 scallop_drdg_pts <- scallop_drdg_pts %>% left_join(sens.rank, by = c("sens_Z10_5_D6"="rank.value")) %>%
-        rename(Sensitivity = ActSensRank)
+        rename(AbrasionSensitivity = ActSensRank)
+
+scallop_drdg_pts <- scallop_drdg_pts %>% left_join(sens.rank, by = c("sens_Z10_5_D2"="rank.value")) %>%
+        rename(PenetrtationSensitivity = ActSensRank)
+
+scallop_drdg_pts <- scallop_drdg_pts %>% left_join(sens.rank, by = c("sens_Z10_5_D5"="rank.value")) %>%
+        rename(SiltationSensitivity = ActSensRank)
+
 
 # reorder columns to put location column first
-scallop_drdg_pts <- scallop_drdg_pts %>% select(location, Sensitivity, pt_id:conf_Z10_5_D6)
+scallop_drdg_pts <- scallop_drdg_pts %>% select(location, AbrasionSensitivity, PenetrtationSensitivity, SiltationSensitivity, pt_id:conf_Z10_5_D6)
 # make column location a factor to group the results by:
 scallop_drdg_pts$location <- as.factor(scallop_drdg_pts$location)
 
 # total number of points per location
-total_number_of_sampling_pts <- scallop_drdg_pts %>%
+(total_number_of_sampling_pts <- scallop_drdg_pts %>%
         group_by(location) %>%
         select(location, sens_Z10_5_D6) %>%
         drop_na() %>%
-        summarise(total_pts =n())
+        summarise(total_pts =n()))
 
 #total number of points per sensitivity category
 sens_counts_per_pressure <- scallop_drdg_pts %>%
         drop_na() %>%
-        group_by(location, sens_Z10_5_D6) %>%
-        summarise(number_pts = n())
+        group_by(location, eval(join_var)) %>%
+                summarise(number_pts = n());sens_counts_per_pressure #%>%
+        #dplyr::rename(eval(join_var) = `eval(join_var)`)))
 
 #total number of points per sensitivity category
 sens_counts_per_aoi <- scallop_drdg_pts %>%
         drop_na() %>%
         group_by(location, aoi) %>%
-        summarise(mean(sens_Z10_5_D6), sd(sens_Z10_5_D6),SE = plotrix::std.error(sens_Z10_5_D6))
+        summarise(mean(eval(join_var)), sd(eval(join_var)),SE = plotrix::std.error(eval(join_var))); sens_counts_per_aoi # needs to remove the "" around eval to make it work
 
 #percentage sampling points per pressure
 perc_sampling_pts_per_pressure <- sens_counts_per_pressure %>%
@@ -112,7 +122,7 @@ saveRDS(sens_habs_named, "./report/tables/sensitive_habitats.RDS")
 rm(sens_habs)
 
 
-
+#sens_habs_named <-readRDS("./report/tables/sensitive_habitats.RDS")
 
 
 
