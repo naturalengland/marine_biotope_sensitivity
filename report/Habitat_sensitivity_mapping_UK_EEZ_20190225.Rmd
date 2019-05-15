@@ -91,7 +91,7 @@ This project therefore used existing benthic habitat maps and sensitivity assess
 The large amount of possible combinations of fishing activities and pressures, were distilled into a case study for this report to showcase a few key outputs and analyses as a proof of concept to illustrate the potential application of habitat sensitivity maps as essential data to inform decision making in the marine environment. The specific objectives of the case study were to identify the amount of sensitive benthic habitat and the type of benthic habitats currently impacted upon by scallop dredging activities within English waters.
 
 ## Case study description
-Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which have altered benthic habitats, composition and trophic structure of fish and invertebrate communities over the last century of industrial fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010]. Bottom towed fishing gears impact the habitat through penetration of the seabed, abrasion as the gear is being towed, and smothering from sedimentation caused in the wake of the towed gear [@oneillPhysicalImpactTowed2016]. The dredge fishery targeting King (*Pecten maximus*) and Queen scallops (*Aequipecten opercularis*) is of particular concern becuase its significant long term impacts on sensitive benthic habitat [@currieImpactsEfficiencyScallop1999; @howarthDredgeFisheryScallops2014]. Newhaven scallop dredges cause significant long-term degradation of the benthic habitat and the associated invertebrate communities [@howarthDredgeFisheryScallops2014] in a wide range of habitats, including soft sediment and hard benthic habitat substrates [@currieImpactsEfficiencyScallop1999; @hall-spencerScallopDredgingHas2000; @jenkinsImpactScallopDredging2001; @thrushImpactHabitatDisturbance1995]. Furthermore, the king scallop fishery is the most valuable single species fishery [@lawlerAssessmentScallopStock2019] and it does not have Total Allowable Catch (TAC) or quota limits [@curtisUKKingScallop2016]. This combination of highly incentivised activity without TAC or quota regulatios creates conditions which can intensivy and spread the significant impacts of the fishery to other areas. For these reasons, the sensitivity of benthic habitats to scallop dredging was focused on in the case study. The objective of the case study was to quantify the proportion of low, medium and highly sensitive habitat currently under three pressures, including, i) penetration, ii) abrasion and iii) sedimentation, from  scallop dredging. The types of sensitve benthic habitats that are impacted by scallop dredging are identified and discussed. Sensitivity to pressures from demersal trawling in English waters were mapped, to illustrate the wider application of habitat sensitivity maps, which were produced in this project, but not further analysed in this report. **Duncan, Mark - I think for proof of concept we can drop the other examples. Not sure the repetion adds much at this stage. If we had more up to date fishing activity data, with better discrimination between the fishing metiers, I think this would be a useful excercise, perhas for a journal article, but as the fishing activity data is limited, I think it will make the report longer than it needs to be to get the point accross. Let me know your thoughts, then we can drop this last statement, or think how we incorporate it succinctly.**
+Fishing activities have had profound effects on the UK's marine ecosystem, of which bottom towed fishing gears is one of the most damaging activities which have altered benthic habitats, composition and trophic structure of fish and invertebrate communities over the last century of industrial fishing [@kaiserChangesMegafaunalBenthic1998; @jenningsImpactsTrawlingDisturbance2001; @hiddinkCumulativeImpactsSeabed2006; @tillinChronicBottomTrawling2006; @thurstanEffects118Years2010]. Bottom towed fishing gears impact the habitat through penetration of the seabed, abrasion as the gear is being towed, and smothering from sedimentation caused in the wake of the towed gear [@oneillPhysicalImpactTowed2016]. The dredge fishery targeting King (*Pecten maximus*) and Queen scallops (*Aequipecten opercularis*) is of particular concern becuase its significant long term impacts on sensitive benthic habitat [@currieImpactsEfficiencyScallop1999; @howarthDredgeFisheryScallops2014]. Newhaven scallop dredges cause significant long-term degradation of the benthic habitat and the associated invertebrate communities [@howarthDredgeFisheryScallops2014] in a wide range of habitats, including soft sediment and hard benthic habitat substrates [@currieImpactsEfficiencyScallop1999; @hall-spencerScallopDredgingHas2000; @jenkinsImpactScallopDredging2001; @thrushImpactHabitatDisturbance1995]. Furthermore, the king scallop fishery is the most valuable single species fishery [@lawlerAssessmentScallopStock2019] and it does not have Total Allowable Catch (TAC) or quota limits [@curtisUKKingScallop2016]. This combination of highly incentivised activity without TAC or quota regulatios creates conditions which can intensivy and spread the significant impacts of the fishery to other areas. For these reasons, the sensitivity of benthic habitats to scallop dredging was focused on in the case study. The objective of the case study was to quantify the proportion of low, medium and highly sensitive habitat currently under three pressures, including, i) penetration, ii) abrasion and iii) sedimentation, from  scallop dredging. The types of sensitve benthic habitats that are impacted by scallop dredging are identified and discussed. Sensitivity to pressures from demersal trawling in English waters were mapped, to illustrate the wider application of habitat sensitivity maps, which were produced in this project, but not further analysed in this report. 
 
 # Methods
 
@@ -112,7 +112,7 @@ The English inshore and offshore areas were treated independently as NE holds fi
 Two main data sets were used to map the sensitivities for the marine benthic habitats within English waters, including 1) habitat sensitivity assessments and 2) a marine habitat map of the English seabed. In essence, the two data sources shared a common field namely, the EUNIS habitat code, in the datasets and could therefore be joined to associate the sensitivity of habitat categories to the mapped habitat categories. The complexity of the actual process is described in greater detail in the Annex.
 
 ### Sensitivity assessments
-Sensitivity assessments of each benthic habitat categories, as defined within the EUNIs classification system, have been carried out using the MarESA methods [@tillinAssessingSensitivitySubtidal2014] and is used as part of NE's ongoing Advice on Operations programme. The sensitivity of the EUNIS habitats levels 4 to 6 (biological community level information) were assessed against 39 standardised pressures for each activity. The ten fishing activities in the Advice on Operations database were included in this project (see Table 1). 
+Sensitivity assessments of each benthic habitat categories, as defined within the EUNIS classification system, have been carried out using the MarESA methods [@tillinAssessingSensitivitySubtidal2014] and is used as part of NE's ongoing Advice on Operations programme. The sensitivity of the EUNIS habitats levels 4 to 6 (biological community level information) were assessed against 39 standardised pressures for each activity. The ten fishing activities in the Advice on Operations database were included in this project (see Table 1). 
 
 <br>
 ```{r fishing_acts, fig.cap="Table 1. Fishing activities for which sensitivity assessments were available in the Advice on Operations (AoO) database", echo = FALSE}
@@ -270,36 +270,48 @@ knitr::include_graphics(sbgr_img_path, dpi = 150)
 <br>
 
 ### Data processing
-GIS steps were used to split the original English waters habitat map into an inshore (0 - 12 NM) and offshore component (12 - 200 NM). All other technical data manipulation was carried out using the R statistical environment in effort to make the data processing was transparrent, repeatable and easy to update outputs following changes to the sensitivity assessment database or updates to the benthic habitat map in future.
+GIS steps were used to split the original English waters habitat map into an inshore (0 - 12 NM) and offshore component (12 - 200 NM). All other technical data manipulation was carried out using the R statistical environment in effort to make the data processing transparrent, repeatable and easy to update outputs following changes to the sensitivity assessment database or updates to the benthic habitat map in future.
 
 ### GIS steps 
-The inshore (0 - 12 NM) and offshore (12 - 200 NM) habitat areas were produced using geoprocessing tools in QGIS. A mask was created which delineates the inshore and areas, respectively (Figure Mask). The habitat map (Marine_Evidence_Base_Internal.gdb) was (step 1) separated into the inshore and offshore using a difference- intersection of the habitat map and a masks of the inshore and offshore (Figure Mask). This newly created inshore habitat layer was intersected with the sub-biogeoregional shapefile (step 2) associate the sub-biogeoregions (subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp) to the individual polygons comprising the inshore habitat map (Figure 5).
+The inshore (0 - 12 NM) and offshore (12 - 200 NM) habitat areas were produced using geoprocessing tools in QGIS (function name stated in bold). A mask was created which delineates the inshore and offshore English territorial waters respectively (Figure 6). The habitat map (Figure 4) was (step 1) separated into the inshore and offshore using intersections (CLIP) with the masks of the inshore and offshore (Figure 6). This newly created inshore habitat layer was (step 2) intersected (INTERSECT)  with the sub-biogeoregional shapefile (Figure 5) associate the sub-biogeoregions  to the individual polygons comprising the inshore habitat map.
 <br>
-```{r masks, fig.cap = "Figure Mask. The mask files used to preapre the habitat map to the English inshore and offshore territorial waters.", echo = False}
+```{r masks, fig.cap = "Figure 6. The mask polygon used to prepare the habitat map to the English inshore (0 - 12 NM) and offshore territorial waters.", echo = False}
 rpt_d <- getwd()
 mask_path <- paste0(rpt_d,"/figures/masks.png")
 knitr::include_graphics(mask_path, dpi = 150)
 
 ```
 <br>
-**Phil to do still: Update the below flow diagram to a more readable version of the data and the processing.**
-The files used to generate the inshore (inside 12NM) habitat map are specified below:
-Step 1 & 2:
+
 <br>
 ```{r GI_filenames, echo=FALSE}
-print("Marine_Evidence_Base_Internal.gdb  DIFFERENCE with mask_minus_12nm_and_land_WGS84.shp
---> Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg")
+#(File names to be added in the Annex, or flow diagrams: subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp)
+#**Phil to do still: Update the below flow diagram to a more readable version of the data and the processing.**
+#The files used to generate the inshore (inside 12NM) habitat map are specified below:
+#Step 1 & 2:
+#print("Marine_Evidence_Base_Internal.gdb DIFFERENCE with mask_minus_12nm_and_land_WGS84.shp
+#--> Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg")
  #------------
 
-print("Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg INTERSECT with subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
---> sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg")
+#print("Input_Polys_WGS84_Internal_BGR_inside_12nm.gpkg INTERSECT with #subbiogeoregions_clipped12nm_joined_sbgr_PH_wgs84.shp
+#--> sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg")
+```
+
+
+<br>
+The offshore habitat map was prepared using geoprocessing tools in QGIS (CLIP) using a mask , to remove all areas outside of English offshore waters, as well as the area inside the English 12 NM boundary, from the UK waters. A column was added to the offshore dataset (built into the R script described below), equivalent to the sub-biogeoregion column added to the inshore habitat map, but here labelling all polygons as "offshore", to allow merging of the end products. The files used for the offshore data layer are specified below.
+<br>
+
+```{r GI_offshore_files, echo=FALSE, , out.extra='style="background-color: #FFFFFF; padding:20px; display: inline-block;"'}
+#print("Offshore (outside 12 NM) habitat map
+#F:/copy_data/Marine_Evidence_Base_Internal.gdb → CLIP (Difference) with D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/masks/mask_minus_12nm_and_land.shp")
 ```
 
 The GIS process for the inshore map can be depicted in flow diagram as follows, where the files shown above were the input to the GI geoprocessing tools shown below.
 
 <br>
 
-```{r GI_process, fig.cap="Figure 6. The GIS processes followed to prepare the data set prior to implementing the R scripts.", echo =FALSE}
+```{r GI_process, fig.cap="Figure 7. The GIS processes followed to prepare the data set prior to implementing the R scripts.", echo =FALSE}
 rpt_d <- getwd()
 gis_process_path <- paste0(rpt_d,"/figures/gis_process_map.png")
 knitr::include_graphics(gis_process_path, dpi = 150)
