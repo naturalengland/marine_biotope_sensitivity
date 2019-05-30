@@ -75,9 +75,9 @@ final_output <- "outputs"
 
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_sample") # name of geopackage file in final output
+dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "inshore_fishing_ops" # name of layer being put
+layer.name <- "inshore_renewables_ops" # name of layer being put
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
@@ -88,7 +88,7 @@ if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
 
 # Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
-ops.number <- 11
+ops.number <- 10
 
 # Run this to save your choice, and see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
