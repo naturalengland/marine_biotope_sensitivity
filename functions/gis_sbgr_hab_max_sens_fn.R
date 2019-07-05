@@ -8,6 +8,16 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 require(DBI)
                 source("./functions/name_column_fn.R")
                 
+                
+                #sbgr.BAP.max.sens is passed through as variable "x"
+                #note that the data has unassessed biotopes that have been assocaited with habitats, they will show up as NA in database, and not be expanded to include all the PressureCodes aper Activity
+                #to remove them:
+                x %<>%
+                        filter(!is.na(PressureCode)) #removes the NA pressure group
+                #to see the list of unassessed biotope associations:
+                unassessed.biotopes <- x %>% filter(is.na(PressureCode))
+                
+                
                 #join the GIS file to the dataframes coming from sbgr.BAP.max.sens to obtain the ID number for the individual polygons into the data set.
                 sbgr.hab.gis <- dplyr::left_join(hab.types, x, by = c("bgr_subreg_id" = "sbgr", "hab.1" = "eunis.code.gis")) %>% #  composite join, e.g.: left_join(d1, d2, by = c("x" = "x2", "y" = "y2"))
                         dplyr::select(pkey, sbgr = bgr_subreg_id, eunis.code.gis = hab.1, eunis.match.assessed, ActivityCode, PressureCode, max.sens)
@@ -36,24 +46,32 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                         dplyr::select(EUNISCode, PressureCode, SensitivityQoE) %>%
                         distinct()
                 
-                # Obtain the maximum habitat sensitivity per polygon, and retain the assessed EUNIS habitat and the assocaited confidence score of the habitat with the maximum sensitivity
-                #sbgr.hab.max.sens.assessed  <-  sbgr.hab.gis %>%
-                #        dplyr::ungroup() %>%
-                #        dplyr::group_by(PressureCode, pkey) %>%
-                #        dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE)) 
-                        #dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE), eunis.match.assessed) 
+                
+                #Code to correct error: introduce dummy variable for values that are missing becuase the habitat has not been assessed.
+                sbgr.hab.gis$eunis.match.assessed[is.na(sbgr.hab.gis$eunis.match.assessed)] <- "no_biotope_assigned"
+                sbgr.hab.gis$PressureCode[is.na(sbgr.hab.gis$PressureCode)] <- "not_assessed"
+                sbgr.hab.gis$max.sens[is.na(sbgr.hab.gis$max.sens)] <- "not_assessed"
                 
                 # Select rows with maximum value for sensitivity, retaining the additional row information (such as assessed habitat)
                 sbgr.hab.max.sens.assessed  <-  sbgr.hab.gis %>%
                         dplyr::ungroup() %>%
-                        dplyr::group_by(PressureCode, pkey) %>%
-                        dplyr::filter(max.sens == max(max.sens, na.rm=TRUE)) %>%
+                        dplyr::group_by(PressureCode, pkey) %>%# Point of error: this is where the polygons are removed - see tests.! we need to assign dummy values for NA or they will be removed!
+                        dplyr::filter(max.sens == max(max.sens)) %>% #, na.rm=TRUE
                         dplyr::rename(max.sens.consolidate = max.sens)
 
                 
                 #join confidence of eunis habitats to the assessed eunis habitat
                 sbgr.hab.max.sens.assessed.conf <- dplyr::left_join(sbgr.hab.max.sens.assessed, confidence_sens_eunis, by = c("PressureCode" = "PressureCode", "eunis.match.assessed" = "EUNISCode"))
                 rm(sbgr.hab.max.sens.assessed)
+                # Obtain the maximum habitat sensitivity per polygon, and retain the assessed EUNIS habitat and the assocaited confidence score of the habitat with the maximum sensitivity
+                #sbgr.hab.max.sens.assessed  <-  sbgr.hab.gis %>%
+                #        dplyr::ungroup() %>%
+                #        dplyr::group_by(PressureCode, pkey) %>%
+                #        dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE)) 
+                #dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE), eunis.match.assessed) 
+                
+                
+                
                 #--------------------------
                 #Remove if below works:
                 #generate a single maximum value per column (there are currently multiple sensitivity scores associated with each)
@@ -63,13 +81,11 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 #        dplyr::summarise(max.sens.consolidate = max(max.sens, na.rm=TRUE)) %>%
                 #        tidyr::spread(key = PressureCode, value = max.sens.consolidate)
                 
-                #generate a single maximum value per column (there are currently multiple sensitivity scores associated with each)
+                #generate a single maximum value per Pressure/pkey combination (there are currently multiple sensitivity scores associated with each)
                 sbgr.hab.gis.spread <- sbgr.hab.max.sens.assessed.conf %>%
                         dplyr::select(PressureCode, pkey, max.sens.consolidate) %>%
                         tidyr::spread(key = PressureCode, value = max.sens.consolidate)
                 sbgr.hab.gis.spread <- column_naming_fn(x = x, w= sbgr.hab.gis.spread, prfix = "sens")
-                
-                
                 
                 #catch EUNIS assessed of assessed habitat with max sensitivity
                 sbgr.hab.assessed.spread  <-  sbgr.hab.max.sens.assessed.conf %>%
@@ -83,20 +99,16 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                         dplyr::select(PressureCode, pkey, SensitivityQoE) %>%
                         tidyr::spread(key = PressureCode, value = SensitivityQoE)
                 sbgr.hab.conf.spread <- column_naming_fn(x = x, w = sbgr.hab.conf.spread, prfix = "conf")
-                rm(sbgr.hab.max.sens.assessed.conf)
+                #rm(sbgr.hab.max.sens.assessed.conf)
                 
                 #join three datasets together
                 sbgr.hab.gis.tmp <- left_join(sbgr.hab.gis.spread, sbgr.hab.assessed.spread, by = "pkey")
                 sbgr.hab.gis.assessed.conf.spread <- left_join(sbgr.hab.gis.tmp, sbgr.hab.conf.spread, by = "pkey")
-                rm(sbgr.hab.gis.spread, sbgr.hab.assessed.spread, sbgr.hab.conf.spread, sbgr.hab.gis.tmp)
+                #rm(sbgr.hab.gis.spread, sbgr.hab.assessed.spread, sbgr.hab.conf.spread, sbgr.hab.gis.tmp)
                 
                 
 #--------------------------
-                
-                
-                
-                
-                #Remove below from final product/only for testing
+                # Remove below from final product/only for testing
                 # Error test: there are too many NA values being produced - I am not sure why. the code below isolates a single polygon with pkey 601959 - which from the map we know appears as if missing data 
                 #create subset from data
                 #test.dat <- sbgr.hab.gis %>%
