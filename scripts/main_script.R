@@ -51,6 +51,7 @@ library(stringr)
 library(sf)
 library(sp)# to allow for multiple layers being written
 
+setwd("F:/projects/marine_biotope_sensitivity")
 # USER INPUT REQUIRED BELOW
 #-----
 
@@ -75,9 +76,9 @@ final_output <- "outputs"
 
 #define variables
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables") # name of geopackage file in final output
+dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables_sbgr") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "inshore_renewables_ops" # name of layer being put
+layer.name <- "inshore_renewables_ops_4a" # name of layer being put
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
@@ -116,6 +117,7 @@ if(class(qryEUNIS_ActPressSens) == "data.frame") {
 # ensure EUNISCode is a character, as it reads converts to factor (which is incorrectand cannot join to other objects)
 qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) 
 # qryEUNIS_ActPressSens <- as.character(qryEUNIS_ActPressSens$ActSensRank)
+
 
 
 #--------------------------------
@@ -170,7 +172,7 @@ hab.types <- gis.hab.bgr.dat(gis.attr)
 #EUNIS level
 eunis.lvl.assessed$level <- nchar(as.character(eunis.lvl.assessed$EUNISCode), type = "chars", allowNA = T, keepNA = T)-1 # THIS NEEDS TO BE + 1
 
-#specify he function to run: columns of levels with Eunis codes under themn]
+#specify the function to run: columns of levels with Eunis codes under themn
 source(file = "./functions/eunis_code_per_level_fn.R")
 
 #specify temporary variable into which the data is tored before being bound to EunisAssessed
@@ -183,6 +185,11 @@ names(EunisAssessed) <- c(names(eunis.lvl.assessed), names(ind.eunis.lvl.tmp))
 rm(ind.eunis.lvl.tmp)
 
 #----------------------------
+# 01_beta (step 2)
+source("./functions/01beta_connect_to_ms_access_qry_data.R")
+tbl_eunis_sbgr <- read.sbgr.db(db.path,drv.path) # follow this with 01_2_beta_join_sbgr_to_eunis_assessments script
+
+
 #06 Match biotopes
 source("./functions/match_eunis_to_biotope_fn.R") # load function that will match the biotopes
 # THIS NEEDS TO BE FUNCTIONALISED: but currenbtly runs as a long section of code
@@ -206,6 +213,10 @@ distinct.mapped.habt.types <- hab.types %>%
 bgr.dfs.lst <- split(distinct.mapped.habt.types, distinct.mapped.habt.types$bgr_subreg_id)
 
 
+
+
+
+#The below function is the main part to work on!
 # All EUNIS Biotopes that have been assessed 
 #this list of data tables holds the assessed level data from the Access database - all habitats assessed per habitat level. this will be used with the above to generate the cross tabulate matrices in the "match_eunis_to_biotope_fn"
 x.dfs.lst <- split(EunisAssessed,f = EunisAssessed$level)
@@ -242,7 +253,7 @@ for (g in seq_along(x.dfs.lst)) {
 }
 setwd(file.path(mainDir))
 #getwd()
-rm(mainDir, subDir, bgr.dfs.lst)
+#rm(mainDir, subDir, bgr.dfs.lst)
 
 
 
@@ -267,7 +278,7 @@ source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 # Output stored as xap.ls
 
 #housekeeping: remove objects no longer required
-rm(sbgr.matched.btpt.w.rpl)
+#rm(sbgr.matched.btpt.w.rpl)
 
 #----------------
 #09
@@ -277,10 +288,10 @@ source(file = "./functions/min_max_sbgr_bap_fn.R")
 # Output stored as: sbgr.BAP.max.sens
 
 #housekeeping - remove temporary object (list) now
-rm(xap.ls)
+#rm(xap.ls)
 
 #housekeeping
-rm(x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
+#rm(x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
 
 #--------------
 #10 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
@@ -297,12 +308,22 @@ rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
 #11
 #save single GIS file as final output
 # attach sensitivity results to the habitat map's geodatabase
-hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) 
-writeRDS(act.sbgr.bps.gis, "./act.sbgr.bps.gis.R", compress = FALSE) # save the data as an object for analysis - it contains the shape_area field which can be used with sensitivity codes to do analysis.
+class(act.sbgr.bps.gis)
+act.sbgr.bps.gis <- as.data.frame(act.sbgr.bps.gis)
+sens_map <- bind_cols(hab_map, act.sbgr.bps.gis)
+
+#hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) #old function when data was read in using readOGR
+saveRDS(act.sbgr.bps.gis, "./act.sbgr.bps.gis.R", compress = FALSE) # save the data as an object for analysis - it contains the shape_area field which can be used with sensitivity codes to do analysis.
 rm(act.sbgr.bps.gis)
 
 # write the sensitivity data to the geodatabase/geopackage Or #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
 #rm(list=setdiff(ls(), "hab_map", "driver.choice", "layer.name"))
-writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = TRUE)
+#writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = FALSE)
 
+
+#library(sf)
+
+#st_write(nc,     "nc.gpkg", "nc")
+sf::st_write(sens_map, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = layer.name, update = TRUE)
+st_layers(dsn.path)
 
