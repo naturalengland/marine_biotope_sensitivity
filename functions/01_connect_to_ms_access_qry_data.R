@@ -9,7 +9,7 @@ read.access.db <- function(db.p = db.path, drv.p = drv.path){
         # Connect to Access db to allow reading the data into R environment.
         conn <- odbcDriverConnect(connection.path)
         
-        
+
         #------------------------------------------------------------------------------------------------
         #1: Step 1 if queries are in Access this step is NOT required, but can be run to VIEW the data; if queries not housed in PD_AoO database this step is neccessary
         qryEUNISFeatAct <- sqlQuery(conn , paste("SELECT tblEUNISFeature.EUNISCode, tblFeatureActivity.FeatSubHabCode, tblFeatureActivity.FARelevant, tblActivityLUT.OperationCode, tblFeatureActivity.ActivityCode, tblActivityLUT.ActivityName 
