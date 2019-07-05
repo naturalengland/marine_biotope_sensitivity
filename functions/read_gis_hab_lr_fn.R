@@ -8,10 +8,13 @@ read.network.geodatabase <- function(net.dir = "\\\\SAMVW3-GIREP02\\NEWorkingDat
                 cat("Caught an error during to read the network file: \\\\SAMVW3-GIREP02\\NEWorkingData\\GIS_Working_Data\\Marine\\Marine_Evidence_Geodatabase\\Marine_Evidence_Base_Internal.gdb,\n trying read a back up copy: input\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg in the input folder of the project directory: \n")
                 prj_wd <- getwd()
                 rplc_txt <- gsub("/","\\\\",prj_wd)
-                prep.gdb.dir <- paste0(rplc_txt,"\\input\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg")#paste0(rplc_txt,"\\input\\sample_hab_data_20190429_wgs84.gpkg")#
-                gis.layer <- "sbgr_input_poly_wgs84_internal_bgr_inside_12nm"#"sample_hab_data_20190429_wgs84"#
+                #prep.gdb.dir <- paste0(rplc_txt,"\\input\\sbgr_input_poly_wgs84_internal_bgr_inside_12nm.gpkg") #paste0(rplc_txt,"\\input\\sample_hab_data_20190429_wgs84.gpkg")#
+                prep.gdb.dir <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\hab_clip_to_mmo_plan_areas//marine_habitat_bsh_internal_evidence_sbgr.gpkg"#this directory is for teh clipped sbgrs.
+                gis.layer <- "inshore_bsh_sbgr_4b" #this needs a module to specify which sbgr we are interested in in future. 
+                #other whole map options, clipped to different 12 NM zones for this were: #gis.layer <- "sbgr_input_poly_wgs84_internal_bgr_inside_12nm"#"sample_hab_data_20190429_wgs84"#
                 #gdb <- try(readOGR(dsn = prep.gdb.dir, layer = gis.layer))
-                gdb <- try(readOGR(dsn = prep.gdb.dir, layer = gis.layer))# sf::st_read, geometry_column = NULL
+                #gdb <- try(readOGR(dsn = prep.gdb.dir, layer = gis.layer))# sf::st_read, geometry_column = NULL
+                gdb <- sf::st_read(dsn = prep.gdb.dir, layer = gis.layer)
                 if("try-error" %in% class(gdb)) {
                         cat("Could not load back-up file, please specify the locality of the geodatabase.\n")
                         gdb.path <- as.character(file.choose())
