@@ -1,5 +1,5 @@
 #clean GIS attribute (habitat type) data
-gis.hab.bgr.dat <- function(dat = gis.attr){
+clean_hab_type_dat <- function(dat = gis.attr){
         require(dplyr)
         d <- rownames(dat)
         #if(is.null(dat$pkey)) # there are duplcaited pkeys - as this was a column in the GIS, which got split when intersected with sbgr...think about updating the pkey in the GIS
