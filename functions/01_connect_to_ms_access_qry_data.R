@@ -63,7 +63,7 @@ read.access.db <- function(db.p = db.path, drv.p = drv.path){
         #TEMPORARY JOIN TABLES/QUERIES - to make above query in case it gets removed from database
         #1 Joins pressure to sensitivity, and (only) allows to filter out by SensPriority
         tmp_jn_tbl_eunis_pressure_sens_lut <- left_join(tblEUNISPressure, tblSensitivityLUT, by = c("Sensitivity" = "EPSens")) %>%
-                select(EUNISCode, PressureCode, ActSensRank, SensPriority, Confidence) %>% # TO DO: CHANGE THE FILED TO SELECT THE MOST APROPRIATE FILED FOR CONFIDENCE
+                select(EUNISCode, PressureCode, ActSensRank, SensPriority) %>% # removed, as this gets added in later: confidence
                 filter(SensPriority < 8) # filter for less than 8 to avoid nonsense values
         #str(tmp_jn_tbl_eunis_pressure_sens_lut)
         
@@ -75,7 +75,7 @@ read.access.db <- function(db.p = db.path, drv.p = drv.path){
         tbl_relevant_activity_pressures <- right_join(tblPressureLUT, tblActivityPressure, by = "PressureCode") %>%
                 select(ActivityCode, PressureCode, PressureName, APRelevant) %>%
                 filter(grepl(main.act.code,ActivityCode), APRelevant == "Yes") %>%
-                select(-c(APRelevant))# filter keep[ing only the Activitt Pressure which match the "Z10." - this can be changed to match an input variable #!grepl("Z10.",ActivityCode) AND filter only relevant pressure and activitiy combinations
+                select(-c(APRelevant))# filter keeping only the Activity-Pressure which match the "Z10." - this can be changed to match an input variable #!grepl("Z10.",ActivityCode) AND filter only relevant pressure and activitiy combinations
         
         #4 is a join of #2 and #3  (joins named EUNIS grp act to Activity Pressure combinations)
         tbl_relevant_activity_pressure_eunis <- left_join(tbl_relevant_activity_pressures, tmp_jn_tbl_eunis_lut_qry_eunis_grp_act, by = "ActivityCode")
