@@ -314,43 +314,43 @@ rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
 
 #--------------
 #11 remove not assessed columns to reduce the size of the data
-not_all_na <- function(x) any(!is.na(x))
+#not_all_na <- function(x) any(!is.na(x))
 #not_any_na <- function(x) all(!is.na(x))
-act.sbgr.bps.gis.clean <- act.sbgr.bps.gis %>% 
-        dplyr::select_if(not_all_na) %>% 
-        dplyr::select(-contains("not_assessed"))
+#act.sbgr.bps.gis.clean <- act.sbgr.bps.gis %>% 
+#        dplyr::select_if(not_all_na) %>% 
+#        dplyr::select(-contains("not_assessed"))
 
 #--------------
 #12
 
 # separate the three components (sensitivity score, confidence assessment and the assessed biotope) into three data.frames to allow binding them as seperate layers to the geopackage - for easier opening.
 
-sens_dat <- act.sbgr.bps.gis.clean %>% 
-        dplyr::select(pkey, contains("sens"))
-qoe_dat <- act.sbgr.bps.gis.clean %>% 
-        dplyr::select(pkey, contains("conf"))
+#sens_dat <- act.sbgr.bps.gis.clean %>% 
+#        dplyr::select(pkey, contains("sens"))
+#qoe_dat <- act.sbgr.bps.gis.clean %>% 
+#        dplyr::select(pkey, contains("conf"))
 #hab_info <- hab.types %>% 
 #        select(HAB_TYPE,pkey) %>% 
 #        filter(!is.na(HAB_TYPE)) %>%
 #        distinct() %>% arrange(pkey)
 
-biotope_dat <- act.sbgr.bps.gis.clean %>% 
-        dplyr::select(pkey, contains("assessed")) #%>%
+#biotope_dat <- act.sbgr.bps.gis.clean %>% 
+#        dplyr::select(pkey, contains("assessed")) #%>%
 
-biotope_dat <- hab.types %>% 
-        left_join(biotope_dat, by = "pkey")
+sens_dat <- hab.types %>% 
+        left_join(act.sbgr.bps.gis, by = "pkey")
 
 #attach the geomotry column from hab_map
 sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
-qoe_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = qoe_dat)
-biotope_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = biotope_dat)
+#qoe_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = qoe_dat)
+#biotope_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = biotope_dat)
 
 #library(sf)
 
 #st_write(nc,     "nc.gpkg", "nc")
 sf::st_write(sens_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = sens.layer.name, update = TRUE)
-sf::st_write(qoe_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = qoe.layer.name, update = TRUE)
-sf::st_write(biotope_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = biot.layer.name, update = TRUE)
+#sf::st_write(qoe_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = qoe.layer.name, update = TRUE)
+#sf::st_write(biotope_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = biot.layer.name, update = TRUE)
 #st_layers(dsn.path)
 
 
