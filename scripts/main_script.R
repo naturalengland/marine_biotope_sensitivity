@@ -37,6 +37,7 @@
 #clear workspace
 rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
 #rm(list=setdiff(ls(), "hab_map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+
 #-----
 # R libraries
 ## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
@@ -49,13 +50,15 @@ library(rgdal)
 library(magrittr)
 library(stringr)
 library(sf)
-library(sp)# to allow for multiple layers being written
+library(sp)# to allow for multiple layers being written - not sure tha tthis is being used any longer.
 
-setwd("F:/projects/marine_biotope_sensitivity")
+
 # USER INPUT REQUIRED BELOW
 #-----
 
 ## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
+
+#setwd("F:/projects/marine_biotope_sensitivity")
 
 # User to specify the path to the database file activate the below and comment out the default paths
 #db.path <- file.choose()
@@ -68,17 +71,23 @@ drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driv
 # USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
 folder <- "tmp_output/"
 
-# Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
+# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
 group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
 
 #  USER: Give the final output folder for GIS geopackage a name.
 final_output <- "outputs"
 
-#define variables
+# NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
 dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables_sbgr") # name of geopackage file in final output
-driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "inshore_renewables_ops_4a" # name of layer being put
+driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
+
+#set the THREE (of the four) layer names
+#1 sensitivity
+sens.layer.name <- "inshore_renewables_ops_4a_sens" # name of layer being put
+qoe.layer.name <- "inshore_renewables_ops_4a_qoe"
+biot.layer.name <- "inshore_renewables_ops_4a_biotope"
+
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
@@ -158,13 +167,11 @@ hab_map <- read.network.geodatabase()  #temporarily set to a sample dataset to m
 #04
 # Clean geodata file; done from attribute table - i.e. remove the geometry to make the file small and managable to work with.
 
-#function that loads the GIs attributes from the GIs file (seperate it foreasier manipulation).Reads file from specified locality, or defaults to a back-up locality,
-source(file = "./functions/load_gis_attributes_fn.R")
-gis.attr <- load.gis.attrib()
-
 # Cleans the HABTYPE column in the attribute, keeping on ly a single habitat type (not multiple within the same cell, as this cannot be assessed)
 source(file = "./functions/clean_gis_attrib_habtype_fn.R")
-hab.types <- gis.hab.bgr.dat(gis.attr)
+gis.attr <- hab_map #create a copy of hab_map, which we can remove the geomoetry column from
+gis.attr$geom <- NULL #remove geometry column, so that it is easier to work with the data frame object rather than an S4 or sf object.
+hab.types <- clean_hab_type_dat(gis.attr)
 
 #-------------------------------
 #05 
@@ -275,19 +282,20 @@ do.call(file.remove, list(list.files(paste(getwd(),folder, sep = "/"), full.name
 #08
 #loads and runs script to join pressures to sbgr generated above
 source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
-# Output stored as xap.ls
+# Output stored as xap.ls 
+# Consider saving the output into a database - from here minimum, range etc can be calculated (and should be more or less in line with the process that JNCC followed to aggeregate its EUNIS data.
 
-#housekeeping: remove objects no longer required
+# housekeeping: remove objects no longer required
 #rm(sbgr.matched.btpt.w.rpl)
 
 #----------------
-#09
-# compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
-# reads and runs the function
-source(file = "./functions/min_max_sbgr_bap_fn.R")
+# 09
+# compare the biotope sensitivity assessment values associated with each broad-scale habitat, and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
+# Below reads and runs the function
+source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renamed this to be more accurate reflection of the function.
 # Output stored as: sbgr.BAP.max.sens
 
-#housekeeping - remove temporary object (list) now
+# housekeeping - remove temporary object (list) now
 #rm(xap.ls)
 
 #housekeeping
@@ -305,25 +313,59 @@ source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
 
 #--------------
-#11
-#save single GIS file as final output
+#11 remove not assessed columns to reduce the size of the data
+not_all_na <- function(x) any(!is.na(x))
+#not_any_na <- function(x) all(!is.na(x))
+act.sbgr.bps.gis.clean <- act.sbgr.bps.gis %>% 
+        dplyr::select_if(not_all_na) %>% 
+        dplyr::select(-contains("not_assessed"))
+
+#--------------
+#12
+
+# separate the three components (sensitivity score, confidence assessment and the assessed biotope) into three data.frames to allow binding them as seperate layers to the geopackage - for easier opening.
+
+sens_dat <- act.sbgr.bps.gis.clean %>% 
+        dplyr::select(pkey, contains("sens"))
+qoe_dat <- act.sbgr.bps.gis.clean %>% 
+        dplyr::select(pkey, contains("conf"))
+#hab_info <- hab.types %>% 
+#        select(HAB_TYPE,pkey) %>% 
+#        filter(!is.na(HAB_TYPE)) %>%
+#        distinct() %>% arrange(pkey)
+
+biotope_dat <- act.sbgr.bps.gis.clean %>% 
+        dplyr::select(pkey, contains("assessed")) #%>%
+
+biotope_dat <- hab.types %>% 
+        left_join(biotope_dat, by = "pkey")
+
+#attach the geomotry column from hab_map
+sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
+qoe_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = qoe_dat)
+biotope_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = biotope_dat)
+
+#library(sf)
+
+#st_write(nc,     "nc.gpkg", "nc")
+sf::st_write(sens_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = sens.layer.name, update = TRUE)
+sf::st_write(qoe_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = qoe.layer.name, update = TRUE)
+sf::st_write(biotope_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = biot.layer.name, update = TRUE)
+#st_layers(dsn.path)
+
+
+##save GIS layers as final output
 # attach sensitivity results to the habitat map's geodatabase
-class(act.sbgr.bps.gis)
-act.sbgr.bps.gis <- as.data.frame(act.sbgr.bps.gis)
-sens_map <- bind_cols(hab_map, act.sbgr.bps.gis)
+
+#sens_map <- bind_cols(hab_map, act.sbgr.bps.gis.clean)
 
 #hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) #old function when data was read in using readOGR
-saveRDS(act.sbgr.bps.gis, "./act.sbgr.bps.gis.R", compress = FALSE) # save the data as an object for analysis - it contains the shape_area field which can be used with sensitivity codes to do analysis.
-rm(act.sbgr.bps.gis)
+#saveRDS(act.sbgr.bps.gis, "./act.sbgr.bps.gis.R", compress = FALSE) # save the data as an object for analysis - it contains the shape_area field which can be used with sensitivity codes to do analysis.
+#rm(act.sbgr.bps.gis)
 
 # write the sensitivity data to the geodatabase/geopackage Or #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
 #rm(list=setdiff(ls(), "hab_map", "driver.choice", "layer.name"))
 #writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = FALSE)
 
 
-#library(sf)
-
-#st_write(nc,     "nc.gpkg", "nc")
-sf::st_write(sens_map, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = layer.name, update = TRUE)
-st_layers(dsn.path)
 
