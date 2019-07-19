@@ -12,7 +12,7 @@ sbgr.BAP.max.sens <- xap.ls %>%
                                 #filter for maximum sensitivity        
                                 all_sens_per_mapped_eunis <- as.tibble(y) %>% 
                                         group_by(eunis.code.gis, PressureCode) %>% 
-                                        dplyr::filter(rank.value == max(rank.value)) %>%
+                                        dplyr::filter(rank.value == min(rank.value)) %>% #the lowest rank number has the highest sensitivity in the Access database - so, this was changed from a max filter to a min filter! (I used supply a custom table, but now it is being read from the Access db to avoid not detecting a change in the system)
                                         ungroup() %>% 
                                         select(ActivityCode, sbgr, PressureCode, eunis.code.gis, eunis.match.assessed, max.sens = rank.value, biotope_level)%>%#, # maximum sensitivity value, done using mutate to preserve the "eunis.match.assessed" column
                                         arrange(PressureCode, eunis.code.gis, eunis.match.assessed)
