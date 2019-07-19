@@ -36,7 +36,7 @@
 # START
 #clear workspace
 rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-#rm(list=setdiff(ls(), "hab_map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+#rm(list=setdiff(ls(), c("sens_dat","hab_map"))) #useful command to remove all but hte habitat map which takes long to read - useful during testing
 
 #-----
 # R libraries
@@ -85,8 +85,8 @@ driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as i
 #set the THREE (of the four) layer names
 #1 sensitivity
 sens.layer.name <- "inshore_renewables_ops_4a_sens" # name of layer being put
-qoe.layer.name <- "inshore_renewables_ops_4a_qoe"
-biot.layer.name <- "inshore_renewables_ops_4a_biotope"
+#qoe.layer.name <- "inshore_renewables_ops_4a_qoe"
+#biot.layer.name <- "inshore_renewables_ops_4a_biotope"
 
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
@@ -134,7 +134,9 @@ qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode)
 #List of sensitivity_per_pressure for each assessed EUNIS code (biotopes/fine-scale assessed habitat codes from Access database)
 
 # add ranking of sensitivity to access database-object
-source("./functions/sensitivity_rank_tbl.R") #generates variables sens.rank
+#source("./functions/sensitivity_rank_tbl.R") #generates variables sens.rank
+source("./functions/read_sensitivity_tbl_from_access.R")
+sens.rank <- read_sensitivity_lut(db.path, drv.path)
 sens.act.rank <- left_join(qryEUNIS_ActPressSens,sens.rank, by = "ActSensRank")
 sens.act.rank$EUNISCode <- as.character(sens.act.rank$EUNISCode)# ensure EUNIS codes are character not factors!
 
@@ -268,7 +270,7 @@ setwd(file.path(mainDir))
 #07 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
 # loads and runs the function: read in all the restuls generated in a single file as lists of dataframes: r object output name: results.files
 source(file = "./functions/read_temporary_sbgr_results_fn.R")
-# Outstored as result.files
+# Output stored as result.files
 
 #Take each dataframe in the list, and split it again according the finest eunis level that has been assessed (high level indicates this, or h.lvl), then amalgamate the h level results keeping only the highest level
 source(file = "./functions/sqntl_eunis_lvl_code_replacement_fn.R")
@@ -337,17 +339,20 @@ rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
 #biotope_dat <- act.sbgr.bps.gis.clean %>% 
 #        dplyr::select(pkey, contains("assessed")) #%>%
 
+# Joins the habitat type information to teh sensitivity assessments
 sens_dat <- hab.types %>% 
         left_join(act.sbgr.bps.gis, by = "pkey")
 
-#attach the geomotry column from hab_map
+#attach the geometry column from hab_map
 sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 #qoe_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = qoe_dat)
 #biotope_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = biotope_dat)
 
-#library(sf)
+#test:
+qa_dat <- sens_dat %>% filter(HAB_TYPE == "A5.2") %>% select(contains("sens"))
 
-#st_write(nc,     "nc.gpkg", "nc")
+qa_dat %>% filter(is.na(sens_Z7_1_D1))
+
 sf::st_write(sens_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = sens.layer.name, update = TRUE)
 #sf::st_write(qoe_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = qoe.layer.name, update = TRUE)
 #sf::st_write(biotope_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = biot.layer.name, update = TRUE)
