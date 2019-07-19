@@ -45,7 +45,7 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 sbgr.hab.max.sens.assessed  <-  sbgr.hab.gis %>%
                         dplyr::ungroup() %>%
                         dplyr::group_by(PressureCode, pkey) %>%# Point of error: this is where the polygons are removed - see tests.! we need to assign dummy values for NA or they will be removed!
-                        dplyr::filter(max.sens == max(max.sens)) %>% #, na.rm=TRUE
+                        dplyr::filter(max.sens == min(max.sens)) %>% #Note that the minimum rank value represents the highest sensitivity level 1 = high, 6 = not sensitive
                         dplyr::rename(max.sens.consolidate = max.sens) # at this point, there should be only one maximum sensitivity associated with each of the unique combinations of pkey, pressure
                 
                 #------------------------
