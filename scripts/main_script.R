@@ -36,7 +36,7 @@
 # START
 #clear workspace
 rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-#rm(list=setdiff(ls(), c("sens_dat","hab_map"))) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+#rm(list=setdiff(ls(), c("hab_map"))) #useful command to remove all but hte habitat map which takes long to read - useful during testing
 
 #-----
 # R libraries
@@ -85,8 +85,6 @@ driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as i
 #set the THREE (of the four) layer names
 #1 sensitivity
 sens.layer.name <- "inshore_renewables_ops_4a_sens" # name of layer being put
-#qoe.layer.name <- "inshore_renewables_ops_4a_qoe"
-#biot.layer.name <- "inshore_renewables_ops_4a_biotope"
 
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
@@ -109,7 +107,6 @@ source(file = "./functions/set_user_ops_act_choice.R")
 # 01_connect_to_access_db.R
 
 # Load the function that reads the Access database
-source(file = "./functions/01_connect_to_ms_access_qry_data.R") # original function
 # ** This was added to error check  - line below - which overwrites the orignial function in the line above - remove if not happy
 source(file = "./scripts/EXPERIMENTAL/functions_beta/01_read_access_db_beta.R") # #beta version: removes the filters and adds two variables !
 
@@ -126,29 +123,22 @@ if(class(qryEUNIS_ActPressSens) == "data.frame") {
         }
 
 # ensure EUNISCode is a character, as it reads converts to factor (which is incorrectand cannot join to other objects)
-qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) 
-# qryEUNIS_ActPressSens <- as.character(qryEUNIS_ActPressSens$ActSensRank)
-
-
+qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) # ensure EUNIS codes are character not factors, as this will cause trouble when joining to other tables with a mismatch in the number of eunis codes
+# rename SensPriority: When sens.act.rank was dropped by simply keeping this column, it no longer needed joining to the sensitivty table - but the old code used rank.value as the field name - and to keep it consistent 
+qryEUNIS_ActPressSens <- qryEUNIS_ActPressSens %>% 
+        dplyr::rename(rank.value = SensPriority) #this renaming is legacy issue from code developement: coudl be kept as SensPriority - but then needs to be checked and changed back to this throughout all code
 
 #--------------------------------
 #02
-#List of sensitivity_per_pressure for each assessed EUNIS code (biotopes/fine-scale assessed habitat codes from Access database)
-
-# add ranking of sensitivity to access database-object
-#source("./functions/sensitivity_rank_tbl.R") #generates variables sens.rank
-source("./functions/read_sensitivity_tbl_from_access.R")
-sens.rank <- read_sensitivity_lut(db.path, drv.path)
-sens.act.rank <- left_join(qryEUNIS_ActPressSens,sens.rank, by = "ActSensRank")
-sens.act.rank$EUNISCode <- as.character(sens.act.rank$EUNISCode)# ensure EUNIS codes are character not factors!
 
 # Obtain a table of the distinct EUNIS codes for which sensitivity data exists; this table will be used in joins to ensure that each EUNIs code gets checked against the Pressure Sensitivity assessments
-eunis.lvl.assessed <- sens.act.rank %>% 
+eunis.lvl.assessed <- qryEUNIS_ActPressSens %>% 
         select(EUNISCode) %>% 
         distinct()
 eunis.lvl.assessed$EUNISCode <- as.character(eunis.lvl.assessed$EUNISCode) # ensure EUNIS codes are character not factors!
 
 #--------------------------------
+#03
 # Obtain sensitvity tables, one for each acitivity, with each EUNIS code assessed against each pressure code: 
 # a list of data frames called "act.press.list" is created, which contains the unique combinations of ranked sensivities to pressure for each activity for each of the assessed biotope (i.e. from the Access database)
 source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
@@ -157,7 +147,7 @@ source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 rm(qryEUNIS_ActPressSens, sens.rank)
 
 #-------------------------------
-# 03 Read GIS habitat map file
+# 04 Read GIS habitat map file
 
 # Read geodatabase from network, it it fails read a preprocessed file (a back-up copy that should not be changed unless certain that it is working)
 # status: the current network file specified is the full file - this will have to be changed to a directory where the latest preprocessed file is saved.
@@ -168,7 +158,7 @@ hab_map <- read.network.geodatabase()  #temporarily set to a sample dataset to m
 # TO CHANGE USING read_st(dsn = "", layer = "") as only data frame is needed at the start.
 
 #------------------------------
-#04
+#05
 # Clean geodata file; done from attribute table - i.e. remove the geometry to make the file small and managable to work with.
 
 # Cleans the HABTYPE column in the attribute, keeping on ly a single habitat type (not multiple within the same cell, as this cannot be assessed)
@@ -176,9 +166,10 @@ source(file = "./functions/clean_gis_attrib_habtype_fn.R")
 gis.attr <- hab_map #create a copy of hab_map, which we can remove the geomoetry column from
 gis.attr$geom <- NULL #remove geometry column, so that it is easier to work with the data frame object rather than an S4 or sf object.
 hab.types <- clean_hab_type_dat(gis.attr)
+rm(gis.attr)
 
 #-------------------------------
-#05 
+#06 
 # Assign EUNIS levels based on number of characters in EUNISCode
 #EUNIS level
 eunis.lvl.assessed$level <- nchar(as.character(eunis.lvl.assessed$EUNISCode), type = "chars", allowNA = T, keepNA = T)-1 # THIS NEEDS TO BE + 1
@@ -193,20 +184,21 @@ EunisAssessed <- cbind(eunis.lvl.assessed, ind.eunis.lvl.tmp)
 #assign names to columns in the dataframe
 names(EunisAssessed) <- c(names(eunis.lvl.assessed), names(ind.eunis.lvl.tmp))
 #housekeeping, remove unused object
-rm(ind.eunis.lvl.tmp)
+rm(eunis.lvl.assessed, ind.eunis.lvl.tmp)
 
 #----------------------------
-# 01_beta (step 2)
-source("./functions/01beta_connect_to_ms_access_qry_data.R")
-tbl_eunis_sbgr <- read.sbgr.db(db.path,drv.path) # follow this with 01_2_beta_join_sbgr_to_eunis_assessments script
+# 07 Imports a table of valid biotopes in each sub-Biogeoregion from the Access database
+source("./functions/sbgr_biotopes_from_db.R")
+tbl_eunis_sbgr <- read.sbgr.db(db.path,drv.path) # this tbl is fed into the match_eunis_to_biotope_fn.R where it filters out invalid combinations of biotope and sbgr:
 
+#-------------------------------
+#08 Match biotopes (using the sbgr filter imported above)
+source("./functions/match_eunis_to_biotope_fn.R") # loads function that will match the biotopes
+#this function will be passed through a loop below to repeat it for each Activity grup
 
-#06 Match biotopes
-source("./functions/match_eunis_to_biotope_fn.R") # load function that will match the biotopes
-# THIS NEEDS TO BE FUNCTIONALISED: but currenbtly runs as a long section of code
+# THE NEEDS TO BE FURTHER FUNCTIONALISED: but currently runs as a long section of code
 
 # input data
-
 # SPATIAL data for join (y):
 # y - from spatial data; all possible EUNIS codes per BGR
 # in order to do so, define the EUNIS level of the hab.1 column
@@ -222,9 +214,6 @@ distinct.mapped.habt.types <- hab.types %>%
 
 #generate multiple dataframes in a list, for the various habitat types within subBGRs, per hab level. this holds the gis data used to generate cross tabulated data matrices in the "match_eunis_to_biotope_fn"
 bgr.dfs.lst <- split(distinct.mapped.habt.types, distinct.mapped.habt.types$bgr_subreg_id)
-
-
-
 
 
 #The below function is the main part to work on!
@@ -269,7 +258,7 @@ setwd(file.path(mainDir))
 
 
 #---------------
-#07 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
+#09 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
 # loads and runs the function: read in all the restuls generated in a single file as lists of dataframes: r object output name: results.files
 source(file = "./functions/read_temporary_sbgr_results_fn.R")
 # Output stored as result.files
@@ -283,7 +272,7 @@ do.call(file.remove, list(list.files(paste(getwd(),folder, sep = "/"), full.name
 #rm(results.files, folder)
 
 #-------------
-#08
+#10
 #loads and runs script to join pressures to sbgr generated above
 source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 # Output stored as xap.ls 
@@ -293,7 +282,7 @@ source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 #rm(sbgr.matched.btpt.w.rpl)
 
 #----------------
-# 09
+# 11
 # compare the biotope sensitivity assessment values associated with each broad-scale habitat, and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
 # Below reads and runs the function
 source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renamed this to be more accurate reflection of the function.
@@ -306,7 +295,7 @@ source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renam
 #rm(x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
 
 #--------------
-#10 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
+#12 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
 
 source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
 # Output stored as: act.sbgr.bps.gis
@@ -347,32 +336,13 @@ sens_dat <- hab.types %>%
 
 #attach the geometry column from hab_map
 sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
-#qoe_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = qoe_dat)
-#biotope_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = biotope_dat)
+
+#write the sens_dat to file, stored in the output folder in the R project file
+sf::st_write(sens_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = sens.layer.name, update = TRUE)
 
 #test:
-qa_dat <- sens_dat %>% filter(HAB_TYPE == "A5.2") %>% select(contains("sens"))
+qa_dat <- sens_dat %>% filter(HAB_TYPE == "A5.25") %>% select(contains("sens"))
 
-qa_dat %>% filter(is.na(sens_Z7_1_D1))
+qa_dat_Z7_1_D6 <- qa_dat %>% filter(is.na(sens_Z7_1_D1))
 
-sf::st_write(sens_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = sens.layer.name, update = TRUE)
-#sf::st_write(qoe_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = qoe.layer.name, update = TRUE)
-#sf::st_write(biotope_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = biot.layer.name, update = TRUE)
-#st_layers(dsn.path)
-
-
-##save GIS layers as final output
-# attach sensitivity results to the habitat map's geodatabase
-
-#sens_map <- bind_cols(hab_map, act.sbgr.bps.gis.clean)
-
-#hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) #old function when data was read in using readOGR
-#saveRDS(act.sbgr.bps.gis, "./act.sbgr.bps.gis.R", compress = FALSE) # save the data as an object for analysis - it contains the shape_area field which can be used with sensitivity codes to do analysis.
-#rm(act.sbgr.bps.gis)
-
-# write the sensitivity data to the geodatabase/geopackage Or #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
-#rm(list=setdiff(ls(), "hab_map", "driver.choice", "layer.name"))
-#writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = FALSE)
-
-
-
+#TO DO where na values appear these need to be checked - can I assign the values of 5.2 to 5.25 perhaps? we did these not get sensitivity scores: to folow up                
