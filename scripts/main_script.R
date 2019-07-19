@@ -109,7 +109,9 @@ source(file = "./functions/set_user_ops_act_choice.R")
 # 01_connect_to_access_db.R
 
 # Load the function that reads the Access database
-source(file = "./functions/01_connect_to_ms_access_qry_data.R")
+source(file = "./functions/01_connect_to_ms_access_qry_data.R") # original function
+# ** This was added to error check  - line below - which overwrites the orignial function in the line above - remove if not happy
+source(file = "./scripts/EXPERIMENTAL/functions_beta/01_read_access_db_beta.R") # #beta version: removes the filters and adds two variables !
 
 # Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
 qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path))
