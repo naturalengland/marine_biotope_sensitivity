@@ -79,12 +79,12 @@ final_output <- "outputs"
 
 # NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_renewables_sbgr") # name of geopackage file in final output
+dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_sbgr") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
 
 #set the THREE (of the four) layer names
 #1 sensitivity
-sens.layer.name <- "inshore_renewables_ops_4a_sens" # name of layer being put
+sens.layer.name <- "inshore_fishing_ops_4a_sens" # name of layer being put
 
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
@@ -96,7 +96,7 @@ if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
 
 # Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
-ops.number <- 10
+ops.number <- 11
 
 # Run this to save your choice, and see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
@@ -249,7 +249,8 @@ for (g in seq_along(x.dfs.lst)) {
         
         match_eunis_to_biotopes_fn(x,bgr.dfs.lst,mx.lvl) # this calls the FUNCTION which generates the results tables which are written to CSV - this should rather be stored as R objects which can be removed in due course than saving files - but needs further work
         
-        #level.result.tbl[[g]] <- out # this does not yet work...at this stage all results are being wriiten to Results table csv and then read back in later
+        #level.result.tbl[[g]] <- out # this does not yet work...
+        #OUTPUT: at this stage all results are being wriiten to Results table csv(s) and then read back in later as result.files
 }
 setwd(file.path(mainDir))
 #getwd()
@@ -261,9 +262,9 @@ setwd(file.path(mainDir))
 #09 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
 # loads and runs the function: read in all the restuls generated in a single file as lists of dataframes: r object output name: results.files
 source(file = "./functions/read_temporary_sbgr_results_fn.R")
-# Output stored as result.files
+# Output stored as result.files (note that this contains biotope candidates for EUNIS levels 4,5,6 which are cross-tabulated with the GIS habitat type, BUT ONLY ones which are knwon to occur within each of the sub-biogeoregions (sbgr))
 
-#Take each dataframe in the list, and split it again according the finest eunis level that has been assessed (high level indicates this, or h.lvl), then amalgamate the h level results keeping only the highest level
+#Take each dataframe in the list, and split it again according the finest eunis level that has been assessed (high level indicates this, or h.lvl), then amalgamate the high level results keeping only the highest level
 source(file = "./functions/sqntl_eunis_lvl_code_replacement_fn.R")
 # Output stored as: sbgr.matched.btpt.w.rpl
 
