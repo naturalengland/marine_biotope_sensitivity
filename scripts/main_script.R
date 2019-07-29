@@ -55,36 +55,53 @@ library(sp)# to allow for multiple layers being written - not sure tha tthis is 
 
 # USER INPUT REQUIRED BELOW
 #-----
+#PHIL TO REMOVE THIS FROM USER INPUT
+# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
+group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
+
+# TO DO: Phil remove this user input - and provide the user with a message of where the folder is.
+#  USER: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
+final_output <- "outputs"
+
+
 
 ## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
 
-#setwd("F:/projects/marine_biotope_sensitivity")
+# setwd("F:/projects/marine_biotope_sensitivity")
+
+
 
 # User to specify the path to the database file activate the below and comment out the default paths
 #db.path <- file.choose()
 # e.g. laptop path
 #db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
-#power pc path
+#power pc path specified below
 db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
+
+# Define gis input for habitat map(s)
+input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\hab_clip_to_mmo_plan_areas//marine_habitat_bsh_internal_evidence_sbgr.gpkg"#this directory is for teh clipped sbgrs.
+# Run this to see the available layers in the gis file
+sf::st_layers(input_habitat_map)
+# Now supply the layer name that you are interest in
+input_gis_layer <- "inshore_bsh_sbgr_1a"
+
+
+
+## USER DEFINED OUTPUT
 
 # USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
 folder <- "tmp_output/"
 
-# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
-group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
-
-#  USER: Give the final output folder for GIS geopackage a name.
-final_output <- "outputs"
-
 # NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_sbgr") # name of geopackage file in final output
+dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_sbgr") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
+
 
 #set the THREE (of the four) layer names
 #1 sensitivity
-sens.layer.name <- "inshore_fishing_ops_4a_sens" # name of layer being put
+sens_layer_name_output <- "inshore_fishing_ops_1a_sens" # name of layer being put
 
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
@@ -151,10 +168,10 @@ rm(qryEUNIS_ActPressSens, sens.rank)
 
 # Read geodatabase from network, it it fails read a preprocessed file (a back-up copy that should not be changed unless certain that it is working)
 # status: the current network file specified is the full file - this will have to be changed to a directory where the latest preprocessed file is saved.
-source(file = "./functions/read_gis_hab_lr_fn.R")
+source(file = "./functions/read_gis_hab_input.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea, or read some email)
-hab_map <- read.network.geodatabase()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
+hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
 # TO CHANGE USING read_st(dsn = "", layer = "") as only data frame is needed at the start.
 
 #------------------------------
@@ -287,7 +304,7 @@ source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 # compare the biotope sensitivity assessment values associated with each broad-scale habitat, and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
 # Below reads and runs the function
 source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renamed this to be more accurate reflection of the function.
-# Output stored as: sbgr.BAP.max.sens
+# Output stored as: sbgr.BAP.max.sens - key output - this can be translated into min, max, range etc. NE is currently only taking the MAXIMUM value forward, but this can be changed inside of this function/or preferbaly creating a new function based on this one.
 
 # housekeeping - remove temporary object (list) now
 #rm(xap.ls)
@@ -298,7 +315,7 @@ source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renam
 #--------------
 #12 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
 
-source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
+source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") # this takes a while - get a cup of tea, read emails,or stare out the window.
 # Output stored as: act.sbgr.bps.gis
 
 
@@ -316,8 +333,19 @@ rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
 
 #--------------
 #12
+# Joins the habitat type information to the sensitivity assessments
+sens_dat <- hab.types %>% 
+        left_join(act.sbgr.bps.gis, by = "pkey")
 
-# separate the three components (sensitivity score, confidence assessment and the assessed biotope) into three data.frames to allow binding them as seperate layers to the geopackage - for easier opening.
+#attach the geometry column from hab_map
+sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
+
+#write the sens_dat to file, stored in the output folder in the R project file
+sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, update = TRUE)
+
+
+
+# If seperate layer are required for each, the following can be used: # separate the three components (sensitivity score, confidence assessment and the assessed biotope) into three data.frames to allow binding them as seperate layers to the geopackage - for easier opening.
 
 #sens_dat <- act.sbgr.bps.gis.clean %>% 
 #        dplyr::select(pkey, contains("sens"))
@@ -331,19 +359,5 @@ rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
 #biotope_dat <- act.sbgr.bps.gis.clean %>% 
 #        dplyr::select(pkey, contains("assessed")) #%>%
 
-# Joins the habitat type information to teh sensitivity assessments
-sens_dat <- hab.types %>% 
-        left_join(act.sbgr.bps.gis, by = "pkey")
 
-#attach the geometry column from hab_map
-sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 
-#write the sens_dat to file, stored in the output folder in the R project file
-sf::st_write(sens_dat, dsn = paste0(dsn.path, ".GPKG", sep = ''), layer = sens.layer.name, update = TRUE)
-
-#test:
-qa_dat <- sens_dat %>% filter(HAB_TYPE == "A5.25") %>% select(contains("sens"))
-
-qa_dat_Z7_1_D6 <- qa_dat %>% filter(is.na(sens_Z7_1_D1))
-
-#TO DO where na values appear these need to be checked - can I assign the values of 5.2 to 5.25 perhaps? we did these not get sensitivity scores: to folow up                
