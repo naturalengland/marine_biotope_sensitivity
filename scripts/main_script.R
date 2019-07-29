@@ -84,7 +84,7 @@ input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data
 # Run this to see the available layers in the gis file
 sf::st_layers(input_habitat_map)
 # Now supply the layer name that you are interest in
-input_gis_layer <- "inshore_bsh_sbgr_1a"
+input_gis_layer <- "inshore_bsh_sbgr_3c"
 
 
 
@@ -101,7 +101,7 @@ driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as i
 
 #set the THREE (of the four) layer names
 #1 sensitivity
-sens_layer_name_output <- "inshore_fishing_ops_1a_sens" # name of layer being put
+sens_layer_name_output <- "inshore_fishing_ops_3c_sens" # name of layer being produced (final output layer name)
 
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
@@ -321,7 +321,7 @@ source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") # this takes a while - g
 
 
 #housekeeping
-rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
+rm(sbgr.BAP.max.sens)
 
 #--------------
 #11 remove not assessed columns to reduce the size of the data
@@ -340,6 +340,8 @@ sens_dat <- hab.types %>%
 #attach the geometry column from hab_map
 sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 
+
+sf::st_layers(paste0(dsn_path_output, ".GPKG", sep = '')) # run this to check which ones have been completed
 #write the sens_dat to file, stored in the output folder in the R project file
 sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, update = TRUE)
 
