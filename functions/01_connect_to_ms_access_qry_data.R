@@ -9,18 +9,20 @@ read.access.db <- function(db.p = db.path, drv.p = drv.path){
         # Connect to Access db to allow reading the data into R environment.
         conn <- odbcDriverConnect(connection.path)
         
-        
+
         #------------------------------------------------------------------------------------------------
-        #1: Step 1 if queries are in Access this step is NOT required, but can be run to VIEW the data; if queries not housed in PD_AoO database this step is neccessary
+        #1: Step 1: Query selects EUNIS codes and their FeatSubHabCode (as defined by Natural England (NE) which will allow for filtering of... ) and then filers by Feature Activity interaction is relevant - last line of code
         qryEUNISFeatAct <- sqlQuery(conn , paste("SELECT tblEUNISFeature.EUNISCode, tblFeatureActivity.FeatSubHabCode, tblFeatureActivity.FARelevant, tblActivityLUT.OperationCode, tblFeatureActivity.ActivityCode, tblActivityLUT.ActivityName 
                                                  FROM tblActivityLUT INNER JOIN (tblFeatureActivity INNER JOIN tblEUNISFeature ON tblFeatureActivity.FeatSubHabCode = tblEUNISFeature.FeatSubHabCode) ON tblActivityLUT.ActivityCode = tblFeatureActivity.ActivityCode 
-                                                 WHERE (((tblFeatureActivity.FARelevant)='Yes') );")) #by changing the very last value '11' to any other , it will change the operation considered. by remvoing it, all operations will be included.
-        qryEUNISFeatAct <- filter(qryEUNISFeatAct, OperationCode == ops.number)
-        qryEUNISFeatAct <- as.data.frame(sapply(X = qryEUNISFeatAct, FUN = as.character), stringsAsFactors=FALSE)
+                                                 WHERE (((tblFeatureActivity.FARelevant)='Yes') );")) # keeps only FARelevant, 
         
+        qryEUNISFeatAct <- filter(qryEUNISFeatAct, OperationCode == ops.number) # filters by the operation number selected by the user - this cuts down the processing reuired ( as maps are being produced for activities which belong to a single operation to limit the output file size - but this could be changed in future to do a single run fo rall operations)
+        qryEUNISFeatAct <- as.data.frame(sapply(X = qryEUNISFeatAct, FUN = as.character), stringsAsFactors=FALSE) # makes sure that all fileds are characters (to avoid problems with R coercing characters into factors, and then trying to join factors with different levels)
         
+        View(qryEUNISFeatAct)
         
-        # step 2a if queries are in Access this step is NOT required, but can be run to VIEW the data; if queries not housed in PD_AoO database, skip to next step
+        qryEUNISFeatAct %>% select(FARelevant) %>% distinct()
+        # step 2a 
         qryEUNIS_grp_act <- qryEUNISFeatAct %>% select(EUNISCode, 
                                                        ActivityCode,
                                                        ActivityName,
@@ -28,7 +30,7 @@ read.access.db <- function(db.p = db.path, drv.p = drv.path){
                 group_by(EUNISCode,ActivityCode, ActivityName) %>%
                 distinct()
         
-        qryEUNIS_grp_act <- as.data.frame(sapply(X = qryEUNIS_grp_act, FUN = as.character), stringsAsFactors=FALSE)
+        qryEUNIS_grp_act <- as.data.frame(sapply(X = qryEUNIS_grp_act, FUN = as.character), stringsAsFactors=FALSE) # makes sure that all fileds are characters (to avoid problems with R coercing characters into factors, and then trying to join factors with different levels)
         
         # Get individual data tables
         #----------------------------------------------------------------------------------------
@@ -63,9 +65,8 @@ read.access.db <- function(db.p = db.path, drv.p = drv.path){
         #TEMPORARY JOIN TABLES/QUERIES - to make above query in case it gets removed from database
         #1 Joins pressure to sensitivity, and (only) allows to filter out by SensPriority
         tmp_jn_tbl_eunis_pressure_sens_lut <- left_join(tblEUNISPressure, tblSensitivityLUT, by = c("Sensitivity" = "EPSens")) %>%
-                select(EUNISCode, PressureCode, ActSensRank, SensPriority, Confidence) %>% # TO DO: CHANGE THE FILED TO SELECT THE MOST APROPRIATE FILED FOR CONFIDENCE
-                filter(SensPriority < 8) # filter for less than 8 to avoid nonsense values
-        #str(tmp_jn_tbl_eunis_pressure_sens_lut)
+                select(EUNISCode, PressureCode, ActSensRank, SensPriority) %>% # temporarily commented out the filter below - i think that this is where the values are being removed that cause missing values in the outputs.
+                filter(SensPriority < 8) # filter for less than 8 to avoid "Not relevant" values
         
         #2 (only) adds the EUNIS names to the qryEUNIS_grp_act
         tmp_jn_tbl_eunis_lut_qry_eunis_grp_act <- right_join(qryEUNIS_grp_act, tblEUNISLUT, by = "EUNISCode")
@@ -75,7 +76,7 @@ read.access.db <- function(db.p = db.path, drv.p = drv.path){
         tbl_relevant_activity_pressures <- right_join(tblPressureLUT, tblActivityPressure, by = "PressureCode") %>%
                 select(ActivityCode, PressureCode, PressureName, APRelevant) %>%
                 filter(grepl(main.act.code,ActivityCode), APRelevant == "Yes") %>%
-                select(-c(APRelevant))# filter keep[ing only the Activitt Pressure which match the "Z10." - this can be changed to match an input variable #!grepl("Z10.",ActivityCode) AND filter only relevant pressure and activitiy combinations
+                select(-c(APRelevant))# filter keeping only the Activity-Pressure which match the "Z10." - this can be changed to match an input variable #!grepl("Z10.",ActivityCode) AND filter only relevant pressure and activitiy combinations
         
         #4 is a join of #2 and #3  (joins named EUNIS grp act to Activity Pressure combinations)
         tbl_relevant_activity_pressure_eunis <- left_join(tbl_relevant_activity_pressures, tmp_jn_tbl_eunis_lut_qry_eunis_grp_act, by = "ActivityCode")

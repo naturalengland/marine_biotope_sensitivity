@@ -1,4 +1,4 @@
-#genereate a list of sbgr matched biotopes from the results files, and sequentially assess the EUNIS levels from 6 to 4. Where an empty value at a higher EUNIs level is found it will look in the next lower level, until it runs out at level four, when it leaves the value at NA.
+#genereate a list of biotopes matched to the mapped habitat (based on EUNIS codes) within sub-biogeoregions from the results files. The function sequentially assesses the EUNIS levels from 6 to 4. Where an empty value at a higher EUNIS level is found it will look in the next lower level, until it runs out at level four, when it leaves the value at NA.
 
 sbgr.matched.btpt.w.rpl <- results.files %>% 
         plyr::llply(function(x){ 
@@ -27,8 +27,6 @@ sbgr.matched.btpt.w.rpl <- results.files %>%
                 # QA code to test that this is working
                 #all.equal(l.tmp, l6) # at this point the answer should be/is TRUE!, run again after ifelse statemetns to check that it is not, if NA values have been changed in places.
                 #-----------------------
-                
-                
                 
                 # replace NA values in eunis level matrix, with actual eunis values at level 5, to obtain as comprehensive as possible a data matrix
                 # i used two embedded for loops to ensure that element for element is being compared, and I get a table of the same dimensions as output. I am certain that there are smoother ways of doing this!

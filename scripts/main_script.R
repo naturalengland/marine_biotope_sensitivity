@@ -36,7 +36,8 @@
 # START
 #clear workspace
 rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-#rm(list=setdiff(ls(), "hab_map")) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+#rm(list=setdiff(ls(), c("hab_map"))) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+
 #-----
 # R libraries
 ## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
@@ -49,35 +50,59 @@ library(rgdal)
 library(magrittr)
 library(stringr)
 library(sf)
-library(sp)# to allow for multiple layers being written
+library(sp)# to allow for multiple layers being written - not sure tha tthis is being used any longer.
+
 
 # USER INPUT REQUIRED BELOW
 #-----
+#PHIL TO REMOVE THIS FROM USER INPUT
+# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
+group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
+
+# TO DO: Phil remove this user input - and provide the user with a message of where the folder is.
+#  USER: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
+final_output <- "outputs"
+
+
 
 ## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
+
+# setwd("F:/projects/marine_biotope_sensitivity")
+
+
 
 # User to specify the path to the database file activate the below and comment out the default paths
 #db.path <- file.choose()
 # e.g. laptop path
 #db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
-#power pc path
+#power pc path specified below
 db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
+
+# Define gis input for habitat map(s)
+input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\hab_clip_to_mmo_plan_areas//marine_habitat_bsh_internal_evidence_sbgr.gpkg"#this directory is for teh clipped sbgrs.
+# Run this to see the available layers in the gis file
+sf::st_layers(input_habitat_map)
+# Now supply the layer name that you are interest in
+input_gis_layer <- "inshore_bsh_sbgr_3c"
+
+
+
+## USER DEFINED OUTPUT
 
 # USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
 folder <- "tmp_output/"
 
-# Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
-group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
-
-#  USER: Give the final output folder for GIS geopackage a name.
-final_output <- "outputs"
-
-#define variables
+# NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn.path <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_sample") # name of geopackage file in final output
-driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage
-layer.name <- "inshore_fishing_ops" # name of layer being put
+dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_sbgr") # name of geopackage file in final output
+driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
+
+
+#set the THREE (of the four) layer names
+#1 sensitivity
+sens_layer_name_output <- "inshore_fishing_ops_3c_sens" # name of layer being produced (final output layer name)
+
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
 #see key below
@@ -99,7 +124,8 @@ source(file = "./functions/set_user_ops_act_choice.R")
 # 01_connect_to_access_db.R
 
 # Load the function that reads the Access database
-source(file = "./functions/01_connect_to_ms_access_qry_data.R")
+# ** This was added to error check  - line below - which overwrites the orignial function in the line above - remove if not happy
+source(file = "./scripts/EXPERIMENTAL/functions_beta/01_read_access_db_beta.R") # #beta version: removes the filters and adds two variables !
 
 # Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
 qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path))
@@ -114,26 +140,22 @@ if(class(qryEUNIS_ActPressSens) == "data.frame") {
         }
 
 # ensure EUNISCode is a character, as it reads converts to factor (which is incorrectand cannot join to other objects)
-qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) 
-# qryEUNIS_ActPressSens <- as.character(qryEUNIS_ActPressSens$ActSensRank)
-
+qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) # ensure EUNIS codes are character not factors, as this will cause trouble when joining to other tables with a mismatch in the number of eunis codes
+# rename SensPriority: When sens.act.rank was dropped by simply keeping this column, it no longer needed joining to the sensitivty table - but the old code used rank.value as the field name - and to keep it consistent 
+qryEUNIS_ActPressSens <- qryEUNIS_ActPressSens %>% 
+        dplyr::rename(rank.value = SensPriority) #this renaming is legacy issue from code developement: coudl be kept as SensPriority - but then needs to be checked and changed back to this throughout all code
 
 #--------------------------------
 #02
-#List of sensitivity_per_pressure for each assessed EUNIS code (biotopes/fine-scale assessed habitat codes from Access database)
-
-# add ranking of sensitivity to access database-object
-source("./functions/sensitivity_rank_tbl.R") #generates variables sens.rank
-sens.act.rank <- left_join(qryEUNIS_ActPressSens,sens.rank, by = "ActSensRank")
-sens.act.rank$EUNISCode <- as.character(sens.act.rank$EUNISCode)# ensure EUNIS codes are character not factors!
 
 # Obtain a table of the distinct EUNIS codes for which sensitivity data exists; this table will be used in joins to ensure that each EUNIs code gets checked against the Pressure Sensitivity assessments
-eunis.lvl.assessed <- sens.act.rank %>% 
+eunis.lvl.assessed <- qryEUNIS_ActPressSens %>% 
         select(EUNISCode) %>% 
         distinct()
 eunis.lvl.assessed$EUNISCode <- as.character(eunis.lvl.assessed$EUNISCode) # ensure EUNIS codes are character not factors!
 
 #--------------------------------
+#03
 # Obtain sensitvity tables, one for each acitivity, with each EUNIS code assessed against each pressure code: 
 # a list of data frames called "act.press.list" is created, which contains the unique combinations of ranked sensivities to pressure for each activity for each of the assessed biotope (i.e. from the Access database)
 source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
@@ -142,35 +164,34 @@ source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 rm(qryEUNIS_ActPressSens, sens.rank)
 
 #-------------------------------
-# 03 Read GIS habitat map file
+# 04 Read GIS habitat map file
 
 # Read geodatabase from network, it it fails read a preprocessed file (a back-up copy that should not be changed unless certain that it is working)
 # status: the current network file specified is the full file - this will have to be changed to a directory where the latest preprocessed file is saved.
-source(file = "./functions/read_gis_hab_lr_fn.R")
+source(file = "./functions/read_gis_hab_input.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea, or read some email)
-hab_map <- read.network.geodatabase()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
+hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
 # TO CHANGE USING read_st(dsn = "", layer = "") as only data frame is needed at the start.
 
 #------------------------------
-#04
+#05
 # Clean geodata file; done from attribute table - i.e. remove the geometry to make the file small and managable to work with.
-
-#function that loads the GIs attributes from the GIs file (seperate it foreasier manipulation).Reads file from specified locality, or defaults to a back-up locality,
-source(file = "./functions/load_gis_attributes_fn.R")
-gis.attr <- load.gis.attrib()
 
 # Cleans the HABTYPE column in the attribute, keeping on ly a single habitat type (not multiple within the same cell, as this cannot be assessed)
 source(file = "./functions/clean_gis_attrib_habtype_fn.R")
-hab.types <- gis.hab.bgr.dat(gis.attr)
+gis.attr <- hab_map #create a copy of hab_map, which we can remove the geomoetry column from
+gis.attr$geom <- NULL #remove geometry column, so that it is easier to work with the data frame object rather than an S4 or sf object.
+hab.types <- clean_hab_type_dat(gis.attr)
+rm(gis.attr)
 
 #-------------------------------
-#05 
+#06 
 # Assign EUNIS levels based on number of characters in EUNISCode
 #EUNIS level
 eunis.lvl.assessed$level <- nchar(as.character(eunis.lvl.assessed$EUNISCode), type = "chars", allowNA = T, keepNA = T)-1 # THIS NEEDS TO BE + 1
 
-#specify he function to run: columns of levels with Eunis codes under themn]
+#specify the function to run: columns of levels with Eunis codes under themn
 source(file = "./functions/eunis_code_per_level_fn.R")
 
 #specify temporary variable into which the data is tored before being bound to EunisAssessed
@@ -180,15 +201,21 @@ EunisAssessed <- cbind(eunis.lvl.assessed, ind.eunis.lvl.tmp)
 #assign names to columns in the dataframe
 names(EunisAssessed) <- c(names(eunis.lvl.assessed), names(ind.eunis.lvl.tmp))
 #housekeeping, remove unused object
-rm(ind.eunis.lvl.tmp)
+rm(eunis.lvl.assessed, ind.eunis.lvl.tmp)
 
 #----------------------------
-#06 Match biotopes
-source("./functions/match_eunis_to_biotope_fn.R") # load function that will match the biotopes
-# THIS NEEDS TO BE FUNCTIONALISED: but currenbtly runs as a long section of code
+# 07 Imports a table of valid biotopes in each sub-Biogeoregion from the Access database
+source("./functions/sbgr_biotopes_from_db.R")
+tbl_eunis_sbgr <- read.sbgr.db(db.path,drv.path) # this tbl is fed into the match_eunis_to_biotope_fn.R where it filters out invalid combinations of biotope and sbgr:
+
+#-------------------------------
+#08 Match biotopes (using the sbgr filter imported above)
+source("./functions/match_eunis_to_biotope_fn.R") # loads function that will match the biotopes
+#this function will be passed through a loop below to repeat it for each Activity grup
+
+# THE NEEDS TO BE FURTHER FUNCTIONALISED: but currently runs as a long section of code
 
 # input data
-
 # SPATIAL data for join (y):
 # y - from spatial data; all possible EUNIS codes per BGR
 # in order to do so, define the EUNIS level of the hab.1 column
@@ -206,6 +233,7 @@ distinct.mapped.habt.types <- hab.types %>%
 bgr.dfs.lst <- split(distinct.mapped.habt.types, distinct.mapped.habt.types$bgr_subreg_id)
 
 
+#The below function is the main part to work on!
 # All EUNIS Biotopes that have been assessed 
 #this list of data tables holds the assessed level data from the Access database - all habitats assessed per habitat level. this will be used with the above to generate the cross tabulate matrices in the "match_eunis_to_biotope_fn"
 x.dfs.lst <- split(EunisAssessed,f = EunisAssessed$level)
@@ -238,21 +266,22 @@ for (g in seq_along(x.dfs.lst)) {
         
         match_eunis_to_biotopes_fn(x,bgr.dfs.lst,mx.lvl) # this calls the FUNCTION which generates the results tables which are written to CSV - this should rather be stored as R objects which can be removed in due course than saving files - but needs further work
         
-        #level.result.tbl[[g]] <- out # this does not yet work...at this stage all results are being wriiten to Results table csv and then read back in later
+        #level.result.tbl[[g]] <- out # this does not yet work...
+        #OUTPUT: at this stage all results are being wriiten to Results table csv(s) and then read back in later as result.files
 }
 setwd(file.path(mainDir))
 #getwd()
-rm(mainDir, subDir, bgr.dfs.lst)
+#rm(mainDir, subDir, bgr.dfs.lst)
 
 
 
 #---------------
-#07 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
+#09 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
 # loads and runs the function: read in all the restuls generated in a single file as lists of dataframes: r object output name: results.files
 source(file = "./functions/read_temporary_sbgr_results_fn.R")
-# Outstored as result.files
+# Output stored as result.files (note that this contains biotope candidates for EUNIS levels 4,5,6 which are cross-tabulated with the GIS habitat type, BUT ONLY ones which are knwon to occur within each of the sub-biogeoregions (sbgr))
 
-#Take each dataframe in the list, and split it again according the finest eunis level that has been assessed (high level indicates this, or h.lvl), then amalgamate the h level results keeping only the highest level
+#Take each dataframe in the list, and split it again according the finest eunis level that has been assessed (high level indicates this, or h.lvl), then amalgamate the high level results keeping only the highest level
 source(file = "./functions/sqntl_eunis_lvl_code_replacement_fn.R")
 # Output stored as: sbgr.matched.btpt.w.rpl
 
@@ -261,48 +290,76 @@ do.call(file.remove, list(list.files(paste(getwd(),folder, sep = "/"), full.name
 #rm(results.files, folder)
 
 #-------------
-#08
+#10
 #loads and runs script to join pressures to sbgr generated above
 source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
-# Output stored as xap.ls
+# Output stored as xap.ls 
+# Consider saving the output into a database - from here minimum, range etc can be calculated (and should be more or less in line with the process that JNCC followed to aggeregate its EUNIS data.
 
-#housekeeping: remove objects no longer required
-rm(sbgr.matched.btpt.w.rpl)
+# housekeeping: remove objects no longer required
+#rm(sbgr.matched.btpt.w.rpl)
 
 #----------------
-#09
-# compare and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
-# reads and runs the function
-source(file = "./functions/min_max_sbgr_bap_fn.R")
-# Output stored as: sbgr.BAP.max.sens
+# 11
+# compare the biotope sensitivity assessment values associated with each broad-scale habitat, and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
+# Below reads and runs the function
+source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renamed this to be more accurate reflection of the function.
+# Output stored as: sbgr.BAP.max.sens - key output - this can be translated into min, max, range etc. NE is currently only taking the MAXIMUM value forward, but this can be changed inside of this function/or preferbaly creating a new function based on this one.
 
-#housekeeping - remove temporary object (list) now
-rm(xap.ls)
+# housekeeping - remove temporary object (list) now
+#rm(xap.ls)
 
 #housekeeping
-rm(x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
+#rm(x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
 
 #--------------
-#10 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
+#12 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
 
-source(file = "./functions/gis_sbgr_hab_max_sens_fn.R")
+source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") # this takes a while - get a cup of tea, read emails,or stare out the window.
 # Output stored as: act.sbgr.bps.gis
 
 
 
 #housekeeping
-rm(sbgr.BAP.max.sens, sbgr.hab.gis.assessed.conf.spread, hab_types)
+rm(sbgr.BAP.max.sens)
 
 #--------------
-#11
-#save single GIS file as final output
-# attach sensitivity results to the habitat map's geodatabase
-hab_map@data <- cbind(hab_map@data, act.sbgr.bps.gis) 
-writeRDS(act.sbgr.bps.gis, "./act.sbgr.bps.gis.R", compress = FALSE) # save the data as an object for analysis - it contains the shape_area field which can be used with sensitivity codes to do analysis.
-rm(act.sbgr.bps.gis)
+#11 remove not assessed columns to reduce the size of the data
+#not_all_na <- function(x) any(!is.na(x))
+#not_any_na <- function(x) all(!is.na(x))
+#act.sbgr.bps.gis.clean <- act.sbgr.bps.gis %>% 
+#        dplyr::select_if(not_all_na) %>% 
+#        dplyr::select(-contains("not_assessed"))
 
-# write the sensitivity data to the geodatabase/geopackage Or #driver.choice <- "ESRI Shapefile" #to do: save as shapefile
-#rm(list=setdiff(ls(), "hab_map", "driver.choice", "layer.name"))
-writeOGR(hab_map, dsn = dsn.path, layer = layer.name, driver = driver.choice, overwrite_layer = TRUE)
+#--------------
+#12
+# Joins the habitat type information to the sensitivity assessments
+sens_dat <- hab.types %>% 
+        left_join(act.sbgr.bps.gis, by = "pkey")
+
+#attach the geometry column from hab_map
+sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
+
+
+sf::st_layers(paste0(dsn_path_output, ".GPKG", sep = '')) # run this to check which ones have been completed
+#write the sens_dat to file, stored in the output folder in the R project file
+sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, update = TRUE)
+
+
+
+# If seperate layer are required for each, the following can be used: # separate the three components (sensitivity score, confidence assessment and the assessed biotope) into three data.frames to allow binding them as seperate layers to the geopackage - for easier opening.
+
+#sens_dat <- act.sbgr.bps.gis.clean %>% 
+#        dplyr::select(pkey, contains("sens"))
+#qoe_dat <- act.sbgr.bps.gis.clean %>% 
+#        dplyr::select(pkey, contains("conf"))
+#hab_info <- hab.types %>% 
+#        select(HAB_TYPE,pkey) %>% 
+#        filter(!is.na(HAB_TYPE)) %>%
+#        distinct() %>% arrange(pkey)
+
+#biotope_dat <- act.sbgr.bps.gis.clean %>% 
+#        dplyr::select(pkey, contains("assessed")) #%>%
+
 
 
