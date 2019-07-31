@@ -12,11 +12,9 @@ match_eunis_to_biotopes_fn <- function(x = x, y = bgr.dfs.lst, high.lvl = mx.lvl
         # high.lvl is a integer value, specifying the maximum EUNIS level at which results are dealt with, which is required for running of the script
         
         # specify a large table into which results can be written outside of for loops
-        #big.result.tbl <<- data.frame(matrix(ncol = 95))
-        #names(big.result.tbl) <- c(as.character(x.dfs.lst[[3]][[1]]),"sbgr", "h.lvl", "l.lvl","eunis.code.gis") #names should be x (highest level assessed against) 
-        
         result.btp.lvl <- vector("list", length(x))
         names(result.btp.lvl) <- paste0("h.lvl_",names(x))
+
         #process per biogeographic region, as the matches are different between them (some biotopes are not relevant within certain broader levels)
         for (h in seq_along(y)) {
                 
@@ -45,7 +43,7 @@ match_eunis_to_biotopes_fn <- function(x = x, y = bgr.dfs.lst, high.lvl = mx.lvl
                         #this filters the list of all biotopes in the 0 - 12 NM offshore to the list that ocur within a particular subbioregion (remember that this is already limited to the EUNIS level wihtin which we are looking). thi sis done so that biotopes that occur in other areas are not assigned to ones in the specific sbgr of interest.
                         # NEW 2019-07-04: x (assessed habitats, at given level, which needs filtering by the sub-biogeoregion in which they are occuring)
                         sbgr.list.MBA <- valid_eunis_sbgr %>% 
-                                filter(SRCode == sBGR & NE_Empirical_Conclusion == "Yes")
+                                filter(SRCode == sBGR & RelevantToRegion == "Yes")
                         
                         x_df <- as.data.frame(x, stringsAsFactors = FALSE)
                         x_df <- x_df %>% dplyr::rename(EUNISCode = x)
