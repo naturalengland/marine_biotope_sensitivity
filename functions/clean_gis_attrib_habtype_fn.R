@@ -19,11 +19,9 @@ clean_hab_type_dat <- function(dat = gis.attr){
                 tidyr::separate(HAB_TYPE, into = c("hab.1", "hab.2", "hab.3", "hab.4"), sep = "/", remove = F)
         # Remove any leading or trailing white spaces which could cause problems when matching the eunis columns between gis and database.
         hab.types <- purrr::map_df(hab.types, function(x) trimws(x, which = c("both")))
-        str(hab.types) # changed integer top char for all!
+        #str(hab.types) # changed integer top char for all!
         hab.types$pkey <- as.integer(hab.types$pkey)
-        
-        
-        
+              
         #check if there are values in all columns, and drop columns with no values
         hab.types %>%
                 distinct(hab.4)
