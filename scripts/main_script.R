@@ -80,7 +80,7 @@ db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_d
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
 
 # Define gis input for habitat map(s)
-input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\hab_clip_to_mmo_plan_areas//marine_habitat_bsh_internal_evidence_sbgr.gpkg"#this directory is for teh clipped sbgrs.
+input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_sbgr.gpkg"#this directory is for teh clipped sbgrs.
 # Run this to see the available layers in the gis file
 sf::st_layers(input_habitat_map)
 # Now supply the layer name that you are interest in
@@ -125,7 +125,7 @@ source(file = "./functions/set_user_ops_act_choice.R")
 
 # Load the function that reads the Access database
 # ** This was added to error check  - line below - which overwrites the orignial function in the line above - remove if not happy
-source(file = "./scripts/EXPERIMENTAL/functions_beta/01_read_access_db_beta.R") # #beta version: removes the filters and adds two variables !
+source(file = "./functions/read_access_db.R") # #beta version: removes the filters and adds two variables !
 
 # Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
 qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path))
@@ -161,7 +161,7 @@ eunis.lvl.assessed$EUNISCode <- as.character(eunis.lvl.assessed$EUNISCode) # ens
 source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
 
 # housekeeping: remove the initial database query, and keep only the last R object
-rm(qryEUNIS_ActPressSens, sens.rank)
+rm(qryEUNIS_ActPressSens)
 
 #-------------------------------
 # 04 Read GIS habitat map file
