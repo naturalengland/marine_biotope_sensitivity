@@ -80,11 +80,11 @@ db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_d
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
 
 # Define gis input for habitat map(s)
-input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_sbgr.gpkg"#this directory is for teh clipped sbgrs.
+input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs.gpkg"#this directory is for the clipped sbgrs.
 # Run this to see the available layers in the gis file
 sf::st_layers(input_habitat_map)
 # Now supply the layer name that you are interest in
-input_gis_layer <- "inshore_bsh_sbgr_3c"
+input_gis_layer <- "marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs"
 
 
 
@@ -95,13 +95,13 @@ folder <- "tmp_output/"
 
 # NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_sbgr") # name of geopackage file in final output
+dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_multiple_sbgr") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
 
 
 #set the THREE (of the four) layer names
 #1 sensitivity
-sens_layer_name_output <- "inshore_fishing_ops_3c_sens" # name of layer being produced (final output layer name)
+sens_layer_name_output <- "inshore_fishing_ops_multiple_sbgr_sens" # name of layer being produced (final output layer name)
 
 
 #Below prints the list of options for the user to read, and then make a selection to enter below
