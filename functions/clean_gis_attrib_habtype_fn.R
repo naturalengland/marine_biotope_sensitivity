@@ -6,12 +6,20 @@ clean_hab_type_dat <- function(dat = gis.attr){
         dat$pkey <- d
         #clean HAB_TYPE column from multiple entries
         dat$HAB_TYPE <- gsub(" or ", "/", dat$HAB_TYPE) # replace ; with / to make consistent
+        dat$HAB_TYPE <- gsub(".A", "/A", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "A" - these are often used in Mosaic habitats - which needs seperating
+        dat$HAB_TYPE <- gsub(".A", "/B", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "B" - these are often used in Mosaic habitats - which needs seperating
+        #dat$HAB_TYPE <- gsub(" /1", "/A1", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "A" - these are often used in Mosaic habitats - which needs seperating
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\/1)", "\\/A1") # replace instances like: "A1.1122/A1.213A/1.123" with "A1.1122/A1.213A/A1.123"
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\/ )", "\\/") # replace instances like: A2.2232/ A2.241 with A2.2232/A2.241 (remove sapce between)
         dat$HAB_TYPE <- gsub(";", "/", dat$HAB_TYPE) # replace ; with / to make consistent
         dat$HAB_TYPE <- gsub("(8)", "", dat$HAB_TYPE) # remove (8) to make consistent
         dat$HAB_TYPE <- gsub(" #", "", dat$HAB_TYPE) # remove " #" to make consistent
         dat$HAB_TYPE <- gsub("\\()$", "", dat$HAB_TYPE) # remove "()" 
         dat$HAB_TYPE <- gsub("^\\.|\\.$", "", dat$HAB_TYPE) # remove "()" 
         #gsub('^\\.|\\.$', '', test)
+        
+        #test %>% # jandy to replace wierd instances
+        #mutate(., text2 = str_replace_all(text, "(\\w+)", "alias.\\1"))
         
         # Separate HAB_TYPE into multiple columns where "/" appears to allow for the next step
         hab.types <- dat %>%
