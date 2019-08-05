@@ -34,9 +34,9 @@
 ## Issues: currently only a local copy of the MS Access database is available on my working hard drive, and this needs to be pointed at the network (eventually) when approved
 
 # START
-#clear workspace
-rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-#rm(list=setdiff(ls(), c("hab_map"))) #useful command to remove all but hte habitat map which takes long to read - useful during testing
+#clear workspace if not cleared!
+#rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+#rm(list=setdiff(ls(), c("hab_map"))) # useful command to remove all but the habitat map which takes long to read - useful during testing
 
 #-----
 # R libraries
@@ -193,10 +193,11 @@ eunis.lvl.assessed$level <- nchar(as.character(eunis.lvl.assessed$EUNISCode), ty
 
 #specify the function to run: columns of levels with Eunis codes under themn
 source(file = "./functions/eunis_code_per_level_fn.R")
+#output is eunis.lvl.assessed
 
 #specify temporary variable into which the data is tored before being bound to EunisAssessed
 ind.eunis.lvl.tmp <- eunis.levels()
-#bind data into a singel dataframe
+#bind data into a single dataframe
 EunisAssessed <- cbind(eunis.lvl.assessed, ind.eunis.lvl.tmp)
 #assign names to columns in the dataframe
 names(EunisAssessed) <- c(names(eunis.lvl.assessed), names(ind.eunis.lvl.tmp))
