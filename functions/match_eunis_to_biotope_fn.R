@@ -81,7 +81,7 @@ match_eunis_to_biotopes_fn <- function(x = x, y = bgr_dfs_lst, high_lvl = mx_lvl
                         result_tbl$sbgr <- as.character(sBGR)
                         result_tbl$h_lvl <- as.character(high_lvl)
                         result_tbl$l_lvl <- as.character(low_lvl)
-                        result_tbl$eunis.code.gis <- row.names(result_tbl)
+                        result_tbl$eunis_code_gis <- row.names(result_tbl)
                         row.names(result_tbl) <- c()
                         
                         # WRITE RESULTS:
