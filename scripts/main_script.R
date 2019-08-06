@@ -36,7 +36,7 @@
 # START
 #clear workspace if not cleared!
 #rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
-#rm(list=setdiff(ls(), c("hab_map"))) # useful command to remove all but the habitat map which takes long to read - useful during testing
+rm(list=setdiff(ls(), c("hab_map"))) # useful command to remove all but the habitat map which takes long to read - useful during testing
 
 #-----
 # R libraries
@@ -145,6 +145,19 @@ qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode)
 qryEUNIS_ActPressSens <- qryEUNIS_ActPressSens %>% 
         dplyr::rename(rank.value = SensPriority) #this renaming is legacy issue from code developement: coudl be kept as SensPriority - but then needs to be checked and changed back to this throughout all code
 
+# no habitat data available requires an "assessment" - needs adding 
+act_press_combos <- qryEUNIS_ActPressSens %>% distinct(OperationCode, ActivityCode, ActivityName, PressureCode, PressureName)
+dummy_no_data <- act_press_combos
+dummy_no_data$EUNISCode <- "na_hab"
+dummy_no_data$EUNISName <- "no_habitat_data_supplied"
+dummy_no_data$FARelevant <- "Yes"
+dummy_no_data$ActSenseRank <- "no_habitat_data_supplied"
+dummy_no_data$rank.value <- 9
+dummy_no_data <- dummy_no_data %>% select(ActivityCode, ActivityName, PressureCode, PressureName, EUNISCode, OperationCode, FARelevant, EUNISName,ActSenseRank, rank.value)
+
+# join rows to query data
+qryEUNIS_ActPressSens <- dplyr::bind_rows(qryEUNIS_ActPressSens, dummy_no_data)
+
 #--------------------------------
 #02
 
@@ -171,7 +184,7 @@ rm(qryEUNIS_ActPressSens)
 source(file = "./functions/read_gis_hab_input.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea, or read some email)
-hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
+#hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
 # TO CHANGE USING read_st(dsn = "", layer = "") as only data frame is needed at the start.
 
 #------------------------------
@@ -182,9 +195,13 @@ hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise proc
 source(file = "./functions/clean_gis_attrib_habtype_fn.R")
 gis.attr <- hab_map #create a copy of hab_map, which we can remove the geomoetry column from
 gis.attr$geom <- NULL #remove geometry column, so that it is easier to work with the data frame object rather than an S4 or sf object.
-hab.types <- clean_hab_type_dat(gis.attr)
+hab.types <- clean_hab_type_dat(gis.attr) # adds_hab_type to the environment which is the cleaned habitat codes data.
 rm(gis.attr)
 
+#-------------------------------
+#spread habitat types by second and third habitats listed to allow incorporation of mosaic habitats
+source("./functions/spread_hab_types_by_mosaic_habs.R")
+#this leaves a new variable hab_types, which is different from hab.types, as it includes ALL the habitats, including mosaic habitats. thgis was done to allow processing all the said habtiats and compare their senstivities within a polygon following the same process as previous.
 #-------------------------------
 #06 
 # Assign EUNIS levels based on number of characters in EUNISCode
@@ -220,27 +237,30 @@ source("./functions/match_eunis_to_biotope_fn.R") # loads function that will mat
 # SPATIAL data for join (y):
 # y - from spatial data; all possible EUNIS codes per BGR
 # in order to do so, define the EUNIS level of the hab.1 column
-eunis.lvl.less.2 <- nchar(as.character(hab.types$hab.1), type = "chars", allowNA = T, keepNA = T)
-eunis.lvl.more.2 <- nchar(as.character(hab.types$hab.1), type = "chars", allowNA = T, keepNA = T)-1
-hab.types$level <- ifelse(nchar(as.character(hab.types$hab.1), type = "chars", allowNA = T, keepNA = T) > 2, eunis.lvl.more.2, eunis.lvl.less.2) #only using the first stated habitat, could be made to include others later on
+eunis.lvl.less.2 <- nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T)
+eunis.lvl.more.2 <- nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T)-1
+hab_types$level <- ifelse(nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T) > 2, eunis.lvl.more.2, eunis.lvl.less.2) #only using the first stated habitat, could be made to include others later on
+
+
+hab_types$level[hab_types$HAB_TYPE == "na_habs"] <- 5
 rm(eunis.lvl.less.2, eunis.lvl.more.2) # housekeeping remove temporary vars
 
 
 # Define (unique) benthic habitats to allow the join between the GIS spatial mapped data and the sensitivity assessments (by EUNIS codes)
-distinct.mapped.habt.types <- hab.types %>%
-        distinct(hab.1,bgr_subreg_id, level) %>% drop_na() # hab.1 contains the worked/processed HAB_TYPE data (1st column)
+distinct_mapped_habt_types <- hab_types %>%
+        distinct(habs,bgr_subreg_id, level) %>% drop_na() # hab.1 contains the worked/processed HAB_TYPE data (1st column)
 
 #generate multiple dataframes in a list, for the various habitat types within subBGRs, per hab level. this holds the gis data used to generate cross tabulated data matrices in the "match_eunis_to_biotope_fn"
-bgr.dfs.lst <- split(distinct.mapped.habt.types, distinct.mapped.habt.types$bgr_subreg_id)
+bgr_dfs_lst <- split(distinct_mapped_habt_types, distinct_mapped_habt_types$bgr_subreg_id)
 
 
 #The below function is the main part to work on!
 # All EUNIS Biotopes that have been assessed 
 #this list of data tables holds the assessed level data from the Access database - all habitats assessed per habitat level. this will be used with the above to generate the cross tabulate matrices in the "match_eunis_to_biotope_fn"
-x.dfs.lst <- split(EunisAssessed,f = EunisAssessed$level)
+x_dfs_lst <- split(EunisAssessed,f = EunisAssessed$level)
 
-level.result.tbl <- vector("list", length(x.dfs.lst))
-names(level.result.tbl) <- paste0("h.lvl_",names(x.dfs.lst))
+level_result_tbl <- vector("list", length(x_dfs_lst))
+names(level_result_tbl) <- paste0("h.lvl_",names(x_dfs_lst))
 
 #Genreate a diroctory save temporary output files into
 mainDir <- getwd()#"C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure"
@@ -249,23 +269,23 @@ dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
 setwd(file.path(mainDir, subDir))
 
 # below is a for loop in which the EUNIsAssessed is split into a list of dataframes 1st being the most detailed biotope level (6), and then down to the broadest biotope level (4) that were assessed in the PD_AoO access database: outnames:bgr.dfs.lst is a list of habtypes within each subbgr, and the eunis level from the gis - it is used wihtin the for loop to write the sbgr file which is the match between gis and database
-for (g in seq_along(x.dfs.lst)) {
+for (g in seq_along(x_dfs_lst)) {
         #determine the number of characters for substring limit to feed into substring statement (5 characters = EUNIs level 4, and so on)
-        sbstr.nchr <- unique(nchar(as.character(x.dfs.lst[[g]]$EUNISCode)))
+        sbstr.nchr <- unique(nchar(as.character(x_dfs_lst[[g]]$EUNISCode)))
         #Obtain the EUNIs code by copying only the number of characters at the level assessed.
-        x <- substr(as.character(x.dfs.lst[[g]]$EUNISCode), 1,sbstr.nchr)
+        x <- substr(as.character(x_dfs_lst[[g]]$EUNISCode), 1,sbstr.nchr)
         
         #obtain the EUNIS level:
-        mx.lvl <- unique(x.dfs.lst[[g]]$level)
+        mx_lvl <- unique(x_dfs_lst[[g]]$level)
         
         #r obj to save results per level (generates a named matrix with length 1, in which the column names are the assessed EUNIS Codes for all levels; it adds sbgr, h.lvl (assessed eunis code-level); l.lvl (mapped eunis code-level). and the eunis.code.gis; eunis code is the mapped eunis code level which will come from hab.type; e.g. file output name: subBGR_2a_match_biotope_eunis_high_5_eunis_mapped_2)
-        level.result.tbl[[g]] <- data.frame(matrix(ncol = length(x)+4), stringsAsFactors = FALSE) # +4 to cater for the added columns, sbgr, etc
-        names(level.result.tbl[[g]]) <- c(as.character(x.dfs.lst[[g]][[1]]),"sbgr", "h.lvl", "l.lvl","eunis.code.gis") #names should be x (highest level assessed against) 
+        level_result_tbl[[g]] <- data.frame(matrix(ncol = length(x)+4), stringsAsFactors = FALSE) # +4 to cater for the added columns, sbgr, etc
+        names(level_result_tbl[[g]]) <- c(as.character(x_dfs_lst[[g]][[1]]),"sbgr", "h.lvl", "l.lvl","eunis.code.gis") #names should be x (highest level assessed against) 
         
         
         # specify a large table into which results can be written outside of for loops
         
-        match_eunis_to_biotopes_fn(x,bgr.dfs.lst,mx.lvl) # this calls the FUNCTION which generates the results tables which are written to CSV - this should rather be stored as R objects which can be removed in due course than saving files - but needs further work
+        match_eunis_to_biotopes_fn(x,bgr_dfs_lst,mx_lvl) # this calls the FUNCTION which generates the results tables which are written to CSV - this should rather be stored as R objects which can be removed in due course than saving files - but needs further work
         
         #level.result.tbl[[g]] <- out # this does not yet work...
         #OUTPUT: at this stage all results are being wriiten to Results table csv(s) and then read back in later as result.files
