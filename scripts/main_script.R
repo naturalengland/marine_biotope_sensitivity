@@ -145,18 +145,7 @@ qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode)
 qryEUNIS_ActPressSens <- qryEUNIS_ActPressSens %>% 
         dplyr::rename(rank.value = SensPriority) #this renaming is legacy issue from code developement: coudl be kept as SensPriority - but then needs to be checked and changed back to this throughout all code
 
-# no habitat data available requires an "assessment" - needs adding 
-act_press_combos <- qryEUNIS_ActPressSens %>% distinct(OperationCode, ActivityCode, ActivityName, PressureCode, PressureName)
-dummy_no_data <- act_press_combos
-dummy_no_data$EUNISCode <- "na_hab"
-dummy_no_data$EUNISName <- "no_habitat_data_supplied"
-dummy_no_data$FARelevant <- "Yes"
-dummy_no_data$ActSenseRank <- "no_habitat_data_supplied"
-dummy_no_data$rank.value <- 9
-dummy_no_data <- dummy_no_data %>% select(ActivityCode, ActivityName, PressureCode, PressureName, EUNISCode, OperationCode, FARelevant, EUNISName,ActSenseRank, rank.value)
 
-# join rows to query data
-qryEUNIS_ActPressSens <- dplyr::bind_rows(qryEUNIS_ActPressSens, dummy_no_data)
 
 #--------------------------------
 #02
@@ -195,11 +184,12 @@ source(file = "./functions/read_gis_hab_input.R")
 source(file = "./functions/clean_gis_attrib_habtype_fn.R")
 gis.attr <- hab_map #create a copy of hab_map, which we can remove the geomoetry column from
 gis.attr$geom <- NULL #remove geometry column, so that it is easier to work with the data frame object rather than an S4 or sf object.
-hab.types <- clean_hab_type_dat(gis.attr) # adds_hab_type to the environment which is the cleaned habitat codes data.
+hab.types <- suppressWarnings((clean_hab_type_dat(gis.attr))) # adds_hab_type to the environment which is the cleaned habitat codes data.
 rm(gis.attr)
 
 #-------------------------------
 #spread habitat types by second and third habitats listed to allow incorporation of mosaic habitats
+# the script also ads "A" to all HAB_TYPES with NO information in the HAB_TYPE column. This is not going to be correct for ALL the polygons n the map - but as they lack any sort of code - they either need to be completely exclued from the map at the start, orhave some sort of EUNIS code. To address this inconsistency temporarily, I have changed these to"A" Marine.
 source("./functions/spread_hab_types_by_mosaic_habs.R")
 #this leaves a new variable hab_types, which is different from hab.types, as it includes ALL the habitats, including mosaic habitats. thgis was done to allow processing all the said habtiats and compare their senstivities within a polygon following the same process as previous.
 #-------------------------------
@@ -242,7 +232,7 @@ eunis.lvl.more.2 <- nchar(as.character(hab_types$habs), type = "chars", allowNA 
 hab_types$level <- ifelse(nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T) > 2, eunis.lvl.more.2, eunis.lvl.less.2) #only using the first stated habitat, could be made to include others later on
 
 
-hab_types$level[hab_types$HAB_TYPE == "na_habs"] <- 5
+#hab_types$level[hab_types$HAB_TYPE == "na_habs"] <- 5 # remove - no longer neccesary to assign a level to missing habitats as these have been assigned to "A"
 rm(eunis.lvl.less.2, eunis.lvl.more.2) # housekeeping remove temporary vars
 
 
