@@ -4,6 +4,11 @@ clean_hab_type_dat <- function(dat = gis.attr){
         d <- rownames(dat)
         #if(is.null(dat$pkey)) # there are duplcaited pkeys - as this was a column in the GIS, which got split when intersected with sbgr...think about updating the pkey in the GIS
         dat$pkey <- d
+        # ensure HAB_TYPE is character
+        dat$HAB_TYPE <- as.character(dat$HAB_TYPE)
+        
+        #asign no_data to NA in HAB_TYPe column, to allow filtering to remove NA records where no mosiac records occur, but keep na data supplied and thereby retaining the polygon key (pkey) - thi soccurs further down the line
+        dat <- dat %>% mutate_at(vars(contains("HAB_TYPE")), ~replace(., is.na(.), "na_hab"))
         #clean HAB_TYPE column from multiple entries
         dat$HAB_TYPE <- gsub(" or ", "/", dat$HAB_TYPE) # replace ; with / to make consistent
         dat$HAB_TYPE <- gsub(".A", "/A", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "A" - these are often used in Mosaic habitats - which needs seperating
@@ -16,6 +21,10 @@ clean_hab_type_dat <- function(dat = gis.attr){
         dat$HAB_TYPE <- gsub(" #", "", dat$HAB_TYPE) # remove " #" to make consistent
         dat$HAB_TYPE <- gsub("\\()$", "", dat$HAB_TYPE) # remove "()" 
         dat$HAB_TYPE <- gsub("^\\.|\\.$", "", dat$HAB_TYPE) # remove "()" 
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ Mosaic)", "\\")
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ MOSAIC)", "\\")
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ //)", "\\/")
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\//)", "\\/")
         #gsub('^\\.|\\.$', '', test)
         
         #test %>% # jandy to replace wierd instances
@@ -25,8 +34,10 @@ clean_hab_type_dat <- function(dat = gis.attr){
         hab.types <- dat %>%
                 select(pkey, HAB_TYPE, bgr_subreg_id = SubReg_id) %>%
                 tidyr::separate(HAB_TYPE, into = c("hab.1", "hab.2", "hab.3", "hab.4"), sep = "/", remove = F)
+        
         # Remove any leading or trailing white spaces which could cause problems when matching the eunis columns between gis and database.
         hab.types <- purrr::map_df(hab.types, function(x) trimws(x, which = c("both")))
+        
         #str(hab.types) # changed integer top char for all!
         hab.types$pkey <- as.integer(hab.types$pkey)
               
