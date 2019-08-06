@@ -7,24 +7,26 @@ clean_hab_type_dat <- function(dat = gis.attr){
         # ensure HAB_TYPE is character
         dat$HAB_TYPE <- as.character(dat$HAB_TYPE)
         
-        #asign no_data to NA in HAB_TYPe column, to allow filtering to remove NA records where no mosiac records occur, but keep na data supplied and thereby retaining the polygon key (pkey) - thi soccurs further down the line
-        dat <- dat %>% mutate_at(vars(contains("HAB_TYPE")), ~replace(., is.na(.), "na_hab"))
+        #The below line has been disabled as it was decided to reaplce these with "A"...asign no_data to NA in HAB_TYPe column, to allow filtering to remove NA records where no mosiac records occur, but keep na data supplied and thereby retaining the polygon key (pkey) - thi soccurs further down the line
+        #dat <- dat %>% mutate_at(vars(contains("HAB_TYPE")), ~replace(., is.na(.), "na_hab"))
+        
         #clean HAB_TYPE column from multiple entries
         dat$HAB_TYPE <- gsub(" or ", "/", dat$HAB_TYPE) # replace ; with / to make consistent
         dat$HAB_TYPE <- gsub(".A", "/A", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "A" - these are often used in Mosaic habitats - which needs seperating
         dat$HAB_TYPE <- gsub(".A", "/B", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "B" - these are often used in Mosaic habitats - which needs seperating
-        #dat$HAB_TYPE <- gsub(" /1", "/A1", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "A" - these are often used in Mosaic habitats - which needs seperating
+        #dat$HAB_TYPE <- gsub(" /1", "/A1", dat$HAB_TYPE) #replace instances where a 1 follows a dash nca't be sure if it should be A or B though so ignore for now.
         dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\/1)", "\\/A1") # replace instances like: "A1.1122/A1.213A/1.123" with "A1.1122/A1.213A/A1.123"
         dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\/ )", "\\/") # replace instances like: A2.2232/ A2.241 with A2.2232/A2.241 (remove sapce between)
         dat$HAB_TYPE <- gsub(";", "/", dat$HAB_TYPE) # replace ; with / to make consistent
-        dat$HAB_TYPE <- gsub("(8)", "", dat$HAB_TYPE) # remove (8) to make consistent
+        dat$HAB_TYPE <- gsub("(8)", "", dat$HAB_TYPE) # remove (8) in brackets to make consistent
         dat$HAB_TYPE <- gsub(" #", "", dat$HAB_TYPE) # remove " #" to make consistent
         dat$HAB_TYPE <- gsub("\\()$", "", dat$HAB_TYPE) # remove "()" 
         dat$HAB_TYPE <- gsub("^\\.|\\.$", "", dat$HAB_TYPE) # remove "()" 
-        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ Mosaic)", "\\")
-        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ MOSAIC)", "\\")
-        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ //)", "\\/")
-        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\//)", "\\/")
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ Mosaic)", "\\")# drops the  space_Mosaic suffix
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ MOSAIC)", "\\")# as above
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\ //)", "\\/") #as below
+        dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\//)", "\\/") #turns double forward slashes into signles
+        
         #gsub('^\\.|\\.$', '', test)
         
         #test %>% # jandy to replace wierd instances
