@@ -16,16 +16,20 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 # Clean incoming data
                 
                 # Generates a list of unassessed biotope associations fro mmissing pressures codes:
-                Unassessed.biotopes <- x %>% filter(is.na(PressureCode))
-                
+                #Unassessed.biotopes <- x %>% filter(is.na(PressureCode))
+                #write.csv(Unassessed.biotopes, "./outputs/unassessed_biotopes.csv", sep = ",")
                 # To remove them:
-                x %<>% filter(!is.na(PressureCode)) #removes the NA pressure group; # Note that the data has unassessed biotopes that have been assocaited with habitats, they will show up as NA in database, and not be expanded to include all the PressureCodes per Activity
+                #x %<>% filter(!is.na(PressureCode)) #removes the NA pressure group; # Note that the data has unassessed biotopes that have been assocaited with habitats, they will show up as NA in database, and not be expanded to include all the PressureCodes per Activity
                 #------------
                 
                 # JOIN TO GIS HABITAT INFO:
                 # Join the (previously prepared) GIS based habitat information to the (sbgr-biotope-activity-pressure-sensitivity-assessments) dataframes coming from sbgr.BAP.max.sens (x) to obtain the ID number (pkey) for the individual polygons into the data set.
-                sbgr.hab.gis <- dplyr::left_join(hab.types, x, by = c("bgr_subreg_id" = "sbgr", "hab.1" = "eunis.code.gis")) %>% #  composite join, e.g.: left_join(d1, d2, by = c("x" = "x2", "y" = "y2"))
-                        dplyr::select(pkey, sbgr = bgr_subreg_id, eunis.code.gis = hab.1, eunis.match.assessed, ActivityCode, PressureCode, max.sens)
+                #sbgr.hab.gis <- dplyr::left_join(hab.types, x, by = c("bgr_subreg_id" = "sbgr", "hab.1" = "eunis.code.gis")) %>% #  composite join, e.g.: left_join(d1, d2, by = c("x" = "x2", "y" = "y2"))
+                #        dplyr::select(pkey, sbgr = bgr_subreg_id, eunis.code.gis = hab.1, eunis.match.assessed, ActivityCode, PressureCode, max.sens)
+                
+                sbgr.hab.gis <- dplyr::left_join(hab_types, x, by = c("bgr_subreg_id" = "sbgr", "habs" = "eunis_code_gis")) %>% #  composite join, e.g.: left_join(d1, d2, by = c("x" = "x2", "y" = "y2"))
+                                dplyr::select(pkey, sbgr = bgr_subreg_id, eunis.code.gis = habs, eunis.match.assessed, ActivityCode, PressureCode, max.sens)
+                        
                 # NB! note: at this point there are multiple sensitivity values associated with each polygon pkey, becuase there are multiple potential biotopes which could have sens assessments and be associated to mapped habitats per sbgr.
                 
                 #------------
@@ -33,9 +37,9 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 # DATA PRE-PROCESSING:
 
                 # Introduce dummy variable for values that are missing becuase the habitat has not been assessed.
-                sbgr.hab.gis$eunis.match.assessed[is.na(sbgr.hab.gis$eunis.match.assessed)] <- "no_biotope_assigned"
-                sbgr.hab.gis$PressureCode[is.na(sbgr.hab.gis$PressureCode)] <- "not_assessed"
-                sbgr.hab.gis$max.sens[is.na(sbgr.hab.gis$max.sens)] <- "not_assessed"
+                #sbgr.hab.gis$eunis.match.assessed[is.na(sbgr.hab.gis$eunis.match.assessed)] <- "no_biotope_assigned"
+                #sbgr.hab.gis$PressureCode[is.na(sbgr.hab.gis$PressureCode)] <- "not_assessed"
+                #sbgr.hab.gis$max.sens[is.na(sbgr.hab.gis$max.sens)] <- "not_assessed"
                 
                 #-------------
                 
@@ -46,7 +50,37 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                         dplyr::ungroup() %>%
                         dplyr::group_by(PressureCode, pkey) %>%# Point of error: this is where the polygons are removed - see tests.! we need to assign dummy values for NA or they will be removed!
                         dplyr::filter(max.sens == min(max.sens)) %>% #Note that the minimum rank value represents the highest sensitivity level 1 = high, 6 = not sensitive
-                        dplyr::rename(max.sens.consolidate = max.sens) # at this point, there should be only one maximum sensitivity associated with each of the unique combinations of pkey, pressure
+                        dplyr::rename(max.sens.consolidate = max.sens) 
+                
+                # This removes the duplicated maximum sensitivities where a pkey (polygon) had more than one habitat (mosaic habitats)
+                #microbenchmark({
+                 #       sbgr_hab_max_sens_assessed_duplicates_removed <- sbgr.hab.max.sens.assessed %>% # at this point, there should be only one maximum sensitivity associated with each of the unique combinations of pkey, pressure
+                  #              ungroup() %>% 
+                   #             mutate(press_code_pkey = str_c(PressureCode,"_",pkey,"_")) %>%  #this was added to allow detection of DUPLICATE psensitivities per polygon (which could arise when there are TIED/EQUAL sensitivity values coming from different MOASIAC habitats.)
+                    #            group_by(press_code_pkey) %>% 
+                     #           arrange(press_code_pkey) %>%
+                      #          slice(1)
+                #})
+                #or is this faster?
+                #library(microbenchmark)
+                #microbenchmark({
+                        sbgr_hab_max_sens_assessed_duplicates_removed <- sbgr.hab.max.sens.assessed %>% # at this point, there should be only one maximum sensitivity associated with each of the unique combinations of pkey, pressure
+                                ungroup() %>% 
+                                #mutate(press_code_pkey = str_c(PressureCode,"_",pkey,"_", max.sens.consolidate, "_", "eunis.code.gis")) %>%  #this was added to allow detection of DUPLICATE psensitivities per polygon (which could arise when there are TIED/EQUAL sensitivity values coming from different MOASIAC habitats.)
+                                group_by(PressureCode, pkey) %>% 
+                                arrange(PressureCode, pkey, eunis.code.gis) %>%
+                                slice(1)
+                 #       })
+                
+                #diagnose <- sbgr_hab_max_sens_assessed_duplicates_removed %>% dplyr::filter(PressureCode == "o1" & pkey == "488022")
+                #the below could be saved to an external file for future use - it was used to diagnose the duplcaites: the outcomes was that in the case of maosaic habitat, sometimes thre are values with the same leevl oof sensitivity, thereby creating duplicates per polygopn.
+                #tmp <- sbgr.hab.max.sens.assessed %>% 
+                 #       mutate(press_code_pkey = str_c(PressureCode,"_",pkey,"_", max.sens.consolidate))
+                #tail(tmp$press_code_pkey)
+                #head(tmp$press_code_pkey)
+                #duplicated_press_key <- tmp[duplicated(tmp$press_code_pkey) | duplicated(tmp$press_code_pkey, fromLAst = TRUE),]
+                #duplicated_press_key
+                #diagnose <- tmp %>% dplyr::filter(press_code_pkey == "O1_488022_5")
                 
                 #------------------------
                 # ASSOCIATE CONFIDENCE SCORES WITH SENSITIVITY ASSESSMENTS:
@@ -81,7 +115,7 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 #------------------------------------
                 
                 # Join confidence of eunis habitats to the assessed eunis habitat:
-                sbgr.hab.max.sens.assessed.conf <- dplyr::left_join(sbgr.hab.max.sens.assessed, confidence_sens_eunis, by = c("PressureCode" = "PressureCode", "eunis.match.assessed" = "EUNISCode")) # confidence of sensitivity varies with only the pressure - so only these two are needed as grouping variables.
+                sbgr.hab.max.sens.assessed.conf <- dplyr::left_join(sbgr_hab_max_sens_assessed_duplicates_removed, confidence_sens_eunis, by = c("PressureCode" = "PressureCode", "eunis.match.assessed" = "EUNISCode")) # confidence of sensitivity varies with only the pressure - so only these two are needed as grouping variables.
                 rm(sbgr.hab.max.sens.assessed) # remove pre-curser (no longer needed), sbgr.hab.max.sens.assessed.conf is passed onto next steps
                 
                 #------------------------------------
