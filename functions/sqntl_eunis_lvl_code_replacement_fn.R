@@ -7,7 +7,7 @@ sbgr.matched.btpt.w.rpl <- results.files %>%
                 
                 # Do for each sbgr df: split accoring to h.lvl
                 #split(x,f = h.lvl)
-                y <- split(x,f = x$h.lvl) # split is apropriate as we want to access the dataframes per sbgr simultanously
+                y <- split(x,f = x$h_lvl) # split is apropriate as we want to access the dataframes per sbgr simultanously
                 
                 #now feed each component of the list 
                 
@@ -29,7 +29,7 @@ sbgr.matched.btpt.w.rpl <- results.files %>%
                 #-----------------------
                 
                 # replace NA values in eunis level matrix, with actual eunis values at level 5, to obtain as comprehensive as possible a data matrix
-                # i used two embedded for loops to ensure that element for element is being compared, and I get a table of the same dimensions as output. I am certain that there are smoother ways of doing this!
+                # I used two embedded for loops to ensure that element for element is being compared, and I get a table of the same dimensions as output. I am certain that there are smoother ways of doing this!
                 for (i in seq_along(l6.tmp)) { # go along columns
                         for (j in 1:nrow(l6.tmp)) { # go along rows
                                 l.tmp[j,i] <- ifelse(l6.tmp[j,i] == "NA" | l6.tmp[j,i] == "<NA>"| is.na(l6.tmp[j,i]),l5.tmp[j,i],l6.tmp[j,i])#compare and replace
