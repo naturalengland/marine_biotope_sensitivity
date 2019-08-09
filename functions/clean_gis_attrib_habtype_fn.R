@@ -13,7 +13,7 @@ clean_hab_type_dat <- function(dat = gis.attr){
         #clean HAB_TYPE column from multiple entries
         dat$HAB_TYPE <- gsub(" or ", "/", dat$HAB_TYPE) # replace ; with / to make consistent
         dat$HAB_TYPE <- gsub(".A", "/A", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "A" - these are often used in Mosaic habitats - which needs seperating
-        dat$HAB_TYPE <- gsub(".A", "/B", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "B" - these are often used in Mosaic habitats - which needs seperating
+        dat$HAB_TYPE <- gsub(".B", "/B", dat$HAB_TYPE) #replace instances where a dot "." preceedes a letter "B" - these are often used in Mosaic habitats - which needs seperating
         #dat$HAB_TYPE <- gsub(" /1", "/A1", dat$HAB_TYPE) #replace instances where a 1 follows a dash nca't be sure if it should be A or B though so ignore for now.
         dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\/1)", "\\/A1") # replace instances like: "A1.1122/A1.213A/1.123" with "A1.1122/A1.213A/A1.123"
         dat$HAB_TYPE <- str_replace_all(dat$HAB_TYPE, "(\\/ )", "\\/") # replace instances like: A2.2232/ A2.241 with A2.2232/A2.241 (remove sapce between)
