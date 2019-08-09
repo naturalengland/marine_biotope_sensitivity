@@ -18,8 +18,11 @@
 ## Your working directory can be seen by typing "getwd()"
 
 # Project directory requirements
+## CREATE A WORKING DIRECTORY ON YOUR MACHINE IF YOU ARE COPYING THESE FILES FROM GITHUB OR TAKEN A LOCAL COPY
 ## Within the working directory "> getwd()" ensure that there is a directory called "scripts" with R scripts in it, "functions" with R files, and "outputs" which may or may not be empty
+## COPY ALL THE FUNCTIONS INTO THE FUNCTIONS FOLDER, AND MAKE SURE THAT MAIN SCRIPT IN THE SCRIPTS FOLDER IS ALSO IN YOUR FOLDER.
 ## Make sure to look at and complete the list of variables that the user HAS to DEFINE, or it maky not work if your system configuration is different (e.g. the database is housed in a new directory) at the time of writing.
+
 
 #------
 # System requirements
@@ -27,7 +30,7 @@
 # Install a microsoft access driver if not already on PC/machine, available from e.g. https://www.microsoft.com/en-us/download/details.aspx?id=54920
 # The driver version (64/32) has to match the system and R version 64 bit or 32 bit
 # QGIS or equivalne to view the final product in the output folder when complete
-
+# INSTALL R STUDIO - NOT COMPULSORY, BUT HIGHLY RECOMMENDED
 #------
 # Notes 
 ## Biotopes which have been assessed for sensitivity in the conservation Advice database only include Eunis levels 4 to 6 at this stage.
@@ -55,20 +58,17 @@ library(sp)# to allow for multiple layers being written - not sure tha tthis is 
 
 # USER INPUT REQUIRED BELOW
 #-----
-#PHIL TO REMOVE THIS FROM USER INPUT
-# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
-group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
 
-# TO DO: Phil remove this user input - and provide the user with a message of where the folder is.
-#  USER: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
-final_output <- "outputs"
-
-
+#  USER TO DO: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
+final_output <- "outputs" # no need to change this, uless you name the output folder differently-  they need to match!
+#ALSO  MAKE SURE THAT THE MAIN SCRIPT ("Main)
 
 ## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
 
 # setwd("F:/projects/marine_biotope_sensitivity")
 
+# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
+group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
 
 
 # User to specify the path to the database file activate the below and comment out the default paths
@@ -95,7 +95,7 @@ folder <- "tmp_output/"
 
 # NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_multiple_sbgr") # name of geopackage file in final output
+dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_multiple_sbgr_mosaic") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
 
 
@@ -173,7 +173,7 @@ rm(qryEUNIS_ActPressSens)
 source(file = "./functions/read_gis_hab_input.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea, or read some email)
-#hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
+hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
 # TO CHANGE USING read_st(dsn = "", layer = "") as only data frame is needed at the start.
 
 #------------------------------
@@ -230,7 +230,7 @@ source("./functions/match_eunis_to_biotope_fn.R") # loads function that will mat
 eunis.lvl.less.2 <- nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T)
 eunis.lvl.more.2 <- nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T)-1
 hab_types$level <- ifelse(nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T) > 2, eunis.lvl.more.2, eunis.lvl.less.2) #only using the first stated habitat, could be made to include others later on
-
+#rm(hab.types)
 
 #hab_types$level[hab_types$HAB_TYPE == "na_habs"] <- 5 # remove - no longer neccesary to assign a level to missing habitats as these have been assigned to "A"
 rm(eunis.lvl.less.2, eunis.lvl.more.2) # housekeeping remove temporary vars
@@ -326,7 +326,7 @@ source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renam
 #--------------
 #12 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
 
-source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") # this takes a while - get a cup of tea, read emails,or stare out the window.
+source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") # this takes a while - get a cup of tea, read emails, or file expenses.
 # Output stored as: act.sbgr.bps.gis
 
 
@@ -348,16 +348,16 @@ rm(sbgr.BAP.max.sens)
 sens_dat <- hab.types %>% 
         left_join(act.sbgr.bps.gis, by = "pkey")
 
-#attach the geometry column from hab_map
+#attach the geometry column from hab_map to the sens_dat variable: this allows us to map the outputs (and is possble as we have preserved the id of the polygons, named "pkey")
 sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 
 
-sf::st_layers(paste0(dsn_path_output, ".GPKG", sep = '')) # run this to check which ones have been completed
+#sf::st_layers(paste0(dsn_path_output, ".GPKG", sep = '')) # run this to check which ones have been completed
 #write the sens_dat to file, stored in the output folder in the R project file
 sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, update = TRUE)
 
-
-
+#the end------------------------------------------------
+#annex: output division
 # If seperate layer are required for each, the following can be used: # separate the three components (sensitivity score, confidence assessment and the assessed biotope) into three data.frames to allow binding them as seperate layers to the geopackage - for easier opening.
 
 #sens_dat <- act.sbgr.bps.gis.clean %>% 
