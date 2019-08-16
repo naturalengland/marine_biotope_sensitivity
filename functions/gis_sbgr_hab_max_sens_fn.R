@@ -110,6 +110,15 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 #remove the database table
                 rm(tblEUNISPressure)
                 
+                # traslate confidence values to scores - so that the outputs can be rasterised (for quicker map making)
+                confidence_sens_eunis$qoe_score <- 0 # creates the column and assigns 0 to all
+                #based on QUE string value, assign numerical value
+                confidence_sens_eunis$qoe_score[confidence_sens_eunis$SensitivityQoE == "High"] <- 1
+                confidence_sens_eunis$qoe_score[confidence_sens_eunis$SensitivityQoE == "Medium"] <- 2
+                confidence_sens_eunis$qoe_score[confidence_sens_eunis$SensitivityQoE == "Low"] <- 3
+                confidence_sens_eunis$qoe_score[confidence_sens_eunis$SensitivityQoE == "NR"] <- 4
+                
+                
                 # Note: The "confidence_sens_eunis" is the object containing the confiedence assessments that will be passed on.
                 
                 #------------------------------------
@@ -140,8 +149,8 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 
                 # Repeating again...this time for the confidence of assessed habitat with max sensitivity
                 sbgr.hab.conf.spread  <-  sbgr.hab.max.sens.assessed.conf %>% # see the comments from the previous two paragraphs - it works the same
-                        dplyr::select(PressureCode, pkey, SensitivityQoE) %>%
-                        tidyr::spread(key = PressureCode, value = SensitivityQoE)
+                        dplyr::select(PressureCode, pkey, qoe_score) %>%
+                        tidyr::spread(key = PressureCode, value = qoe_score)
                 sbgr.hab.conf.spread <- column_naming_fn(x = x, w = sbgr.hab.conf.spread, prfix = "conf")
                 
                 rm(sbgr.hab.max.sens.assessed.conf) #house-keeping, no longer need this.
@@ -167,7 +176,7 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 
         }, .progress = "text") %>% # provides an indication of progress in executing the code. 
         bind_cols() %>% # binds the results (columns) from each list, keeping the original identifier as the main id.
-        dplyr::select(-one_of("pkey1", "pkey2", "pkey3", "pkey4", "pkey5", "pkey6", "pkey7","pkey8"))
+        dplyr::select(-one_of("pkey1", "pkey2", "pkey3", "pkey4", "pkey5", "pkey6", "pkey7","pkey8", "pkey9", "pkey10", "pkey11", "pkey12", "pkey13"))
 
 
 
