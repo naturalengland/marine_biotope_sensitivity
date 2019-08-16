@@ -20,9 +20,9 @@ xap.ls <- act.press.list %>% # the below statement splits the activitiy_pressure
                                 x.df <- x %>% dplyr::select(-h_lvl, -l_lvl) %>% #drop the h.lvl and l.lvl columns as they are no longer needed, and will cuase problems if carried forward
                                         dplyr::select(eunis_code_gis, sbgr, 1:eval(sbgr_pos), eval(sbgr_pos):eval(total_columns)) %>% #select columns in the order in which I want them, putting eunis.code.gis, sbgr first. (using eval command to detect the name as set above to detect its position, and using it to denote from:to in the slect command)
                                         tidyr::gather(3:eval(total_columns),key = "eunis.assessed",value = "eunis.gis") %>% # this makes the data "tidy" 
-                                        filter(eunis.gis != "<NA>" | eunis.gis != "NA") %>% #this removes NA values in the MAPPED eunis GIs column - becuase they cannot be assigned biotopes - they are unknown afterall
-                                        select(sbgr, eunis_code_gis, eunis.match.assessed = eunis.assessed) %>%
-                                        arrange(sbgr, eunis_code_gis,eunis.match.assessed)
+                                        dplyr::filter(eunis.gis != "<NA>" | eunis.gis != "NA") %>% #this removes NA values in the MAPPED eunis GIs column - becuase they cannot be assigned biotopes - they are unknown afterall
+                                        dplyr::select(sbgr, eunis_code_gis, eunis.match.assessed = eunis.assessed) %>%
+                                        dplyr::arrange(sbgr, eunis_code_gis, eunis.match.assessed)
                                 
                                 #----------------------------
                                 #Join the reordered dataframe to the activity-pressure dataframe based on the EUNIs code (which was selected ) (Note this happens multiple times - i.e. for each of the dataframes in the list)
