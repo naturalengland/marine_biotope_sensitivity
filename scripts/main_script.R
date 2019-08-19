@@ -310,7 +310,7 @@ do.call(file.remove, list(list.files(paste(getwd(),folder, sep = "/"), full.name
 #--------------------------
 # 10: UNCERTAINTY ESTIMATE
 
-# uncertainty of assigning biotopes to mapped habitats per sub-bioregion
+# uncertainty of assigning (multiple) biotopes to mapped habitats per sub-bioregion (which differ according to their EUNIS levels)
 
 source("./functions/uncertainty_calcs_biotope_proxies.R")
 
