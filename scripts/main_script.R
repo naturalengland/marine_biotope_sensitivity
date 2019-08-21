@@ -58,18 +58,17 @@ library(sp)# to allow for multiple layers being written - not sure tha tthis is 
 
 # USER INPUT REQUIRED BELOW
 #-----
+# 1. Select the marine planning area in which you would like to work (they have different algorithms)
+waters <- "inshore" # has to be "inshore" or "offshore"
 
-#  USER TO DO: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
-final_output <- "outputs" # no need to change this, uless you name the output folder differently-  they need to match!
-#ALSO  MAKE SURE THAT THE MAIN SCRIPT ("Main)
+# 2. Select to filter/or not to filter the potenital biotopes (proxies biotopes from which sensitivity assessments scores are taken and assocaited with broad-scale habitats.) 
+sbgr_filter <- FALSE # has to be TRUE or FALSE; NB! TRUE is only available for the inshore at this stage.
+# A check will be run later in the script - if waters is set to "offshore", sbgr_filter will be overwritten to FALSE
 
-## DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
+# 3. USER TO DO: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
+final_output <- "outputs" # no need to change this, unless you name the output folder different, then change this folder name too: NB! They need to match!
 
-# setwd("F:/projects/marine_biotope_sensitivity")
-
-# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
-group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
-
+# DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
 
 # User to specify the path to the database file activate the below and comment out the default paths
 #db.path <- file.choose()
@@ -79,7 +78,7 @@ group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique ide
 db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
 
-# Define gis input for habitat map(s)
+# Define GIS input for habitat map(s)
 input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs.gpkg"#this directory is for the clipped sbgrs.
 # Run this to see the available layers in the gis file
 sf::st_layers(input_habitat_map)
@@ -91,7 +90,7 @@ input_gis_layer <- "marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs"
 ## USER DEFINED OUTPUT
 
 # USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
-folder <- "tmp_output/"
+folder <- "tmp_output/" # this folder will be created in your working directory - files will go into it temporarily, and then be deleted. You may delete the empty folder if you like after completing the running of the scripts if you like.
 
 # NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
@@ -119,6 +118,12 @@ ops.number <- 11
 source(file = "./functions/set_user_ops_act_choice.R")
 
 # END OF USER INPUT REQUIREMENT, you can now run scripts below to produce biotope sensitivity data.
+
+# NB! RUN ALL THE SCRIPTS IN THE SEQUENCE THAT THEY ARE WRITTEN FROM HERE ON TO THE END IF YOU WANT A GIS OUTPUT.
+#-------------------------------------------------
+# Programmed variables - no need fo ruser to change this
+# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
+group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
 
 #---------------------------------
 # 01_connect_to_access_db.R: read sensitivity assessments
@@ -216,15 +221,22 @@ names(EunisAssessed) <- c(names(eunis.lvl.assessed), names(ind.eunis.lvl.tmp))
 rm(eunis.lvl.assessed, ind.eunis.lvl.tmp)
 
 #----------------------------
-# 07 SUB-BIOREGIONAL BIOTOPES
+# 07 Determine the VALID list of BIOTOPES which may be assocaited to mapped habitats in the next steps using the SUB-BIOREGIONAL filter OR No filter
 
-#Imports a table of valid biotopes in each sub-Biogeoregion from the Access database
+# NB! check user input parameters, and overwrite sbgr_filter to FALSE if offshore waters were selected.
+if(waters == "offshore") {
+        sbgr_filter <- FALSE
+}
+# NB! This will have to be changed along with teh filtering codes when the JNCC offshore biotope filter becomes available.
 
-source("./functions/sbgr_biotopes_from_db.R")
-tbl_eunis_sbgr <- read.sbgr.db(db.path,drv.path) # this tbl is fed into the match_eunis_to_biotope_fn.R where it filters out invalid combinations of biotope and sbgr:
-
+# Function with if else statements to call call one of the two biotope reading functions (with or without filter). (this allows having all the scripts in the same place - i.e. no seperate script is needed for the offshore any longer.)
+source("./functions/direct_analysis_filter.R")
+tbl_eunis_sbgr <- read_biotopes_with_or_without_filter(apply_filter = sbgr_filter) # sbgr_filter was set by the user in the first at the start of the main script.
+# The internal functions imports a table of valid biotopes in each sub-Biogeoregion from the Access database (or all the biotopes wihtout using a sub-bioregional filter)
+# Output stored as tbl_eunis_sbgr
 #-------------------------------
-#08 Match biotopes (using the sbgr filter imported above)
+#08 Match biotopes
+
 source("./functions/match_eunis_to_biotope_fn.R") # loads function that will match the biotopes
 #this function will be passed through a loop below to repeat it for each Activity grup
 
@@ -332,11 +344,8 @@ source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renamed this to be more accurate reflection of the function.
 # Output stored as: sbgr.BAP.max.sens - key output - this can be translated into min, max, range etc. NE is currently only taking the MAXIMUM value forward, but this can be changed inside of this function/or preferbaly creating a new function based on this one.
 
-# housekeeping - remove temporary object (list) now
-#rm(xap.ls)
-
 #housekeeping
-#rm(x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
+#rm(xap.ls, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
 
 #--------------
 #13 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
