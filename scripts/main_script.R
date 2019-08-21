@@ -87,11 +87,27 @@ drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driv
 
 
 # 5. Define GIS input for habitat map(s)
+
+# 5a. With sub-biogeoregions:
 input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs.gpkg"#this directory is for the clipped sbgrs.
 # Run this to see the available layers in the gis file (useful if running for individual sbgrs)
 sf::st_layers(input_habitat_map)
 # Now supply the layer name that you are interest in
 input_gis_layer <- "marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs"
+
+
+# 5b. Without sub-biogeoregions
+# Define gis input for habitat map(s)
+input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence.gpkg"#"D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/Marine habitat/hab_clip_to_mmo_plan_areas/marine_habitat_bsh_internal_evidence.gpkg" #D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\hab_clip_to_mmo_plan_areas//marine_habitat_bsh_internal_evidence_sbgr.gpkg"#this directory is for teh clipped sbgrs.
+# Run this to see the available layers in the gis file
+sf::st_layers(input_habitat_map)
+# Now supply the layer name that you are interest in
+input_gis_layer <- "inshore_bsh_English_waters_wgs84"
+
+
+
+
+
 
 ## USER DEFINED OUTPUT
 
@@ -101,12 +117,12 @@ folder <- "tmp_output/" # this folder will be created in your working directory 
 
 # 7. NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_inshore_mosaic") # name of geopackage file in final output
+dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_mosaic_unfiltered") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
 
 
 # 8. Provide an OUTPUT layer name within the the Geopackage specified above
-sens_layer_name_output <- "inshore_fishing_ops_inshore_sens_conf" # name of layer being produced (final output layer name)
+sens_layer_name_output <- "inshore_fishing_ops_inshore_sens_unfiltered" # name of layer being produced (final output layer name)
 
 
 # 9. Below prints the list of options for the user to read, and then make a selection to enter below
@@ -195,6 +211,8 @@ hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise proc
 source(file = "./functions/clean_gis_attrib_habtype_fn.R")
 gis.attr <- hab_map #create a copy of hab_map, which we can remove the geomoetry column from
 gis.attr$geom <- NULL #remove geometry column, so that it is easier to work with the data frame object rather than an S4 or sf object.
+gis.attr$SubReg_id <- waters
+
 hab.types <- suppressWarnings((clean_hab_type_dat(gis.attr))) # adds_hab_type to the environment which is the cleaned habitat codes data.
 rm(gis.attr)
 
@@ -335,6 +353,14 @@ do.call(file.remove, list(list.files(paste(getwd(),folder, sep = "/"), full.name
 
 source("./functions/uncertainty_calcs_biotope_proxies.R")
 
+#this is to counter the case where only inshore or offshore result in a matrix/list rather than a data.frame output
+if (class(uncertainty_of_biotope_proxy) == "matrix") {
+uncertainty_of_biotope_proxy <- data.frame(matrix(unlist((uncertainty_of_biotope_proxy)), nrow=length(uncertainty_of_biotope_proxy[[1]]), byrow=F), stringsAsFactors = FALSE)
+names(uncertainty_of_biotope_proxy) <- c("sbgr","eunis_code_gis","uncertainty_sim")
+} else paste0("The uncertainty output is a ", class(uncertainty_of_biotope_proxy))
+
+#output: uncertainty_of_biotope_proxy and should be a dataframe
+
 #-------------
 # 11: JOIN ACTIVITY-PRESSURE TO SENSITIVITY ASESSMENTS
 
@@ -355,7 +381,7 @@ source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renam
 # Output stored as: sbgr.BAP.max.sens - key output - this can be translated into min, max, range etc. NE is currently only taking the MAXIMUM value forward, but this can be changed inside of this function/or preferbaly creating a new function based on this one.
 
 #housekeeping
-rm(xap.ls, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
+rm(xap.ls, x_dfs_lst, results.files, distinct_mapped_habt_types, x.dfs.lst, level_result_tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed)
 
 #--------------
 # 13: ASSOCIATE MAXIMUM SENSITIVITY WITH GIS 
