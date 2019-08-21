@@ -190,9 +190,9 @@ rm(gis.attr)
 #-------------------------------
 #06 MOSAIC HABITATS
 
-#spread habitat types by second and third habitats listed to allow incorporation of mosaic habitats
+# Gather the habitat types into a single column with hab.1 (1st listed habitat) and second and third habitats listed to allow incorporation of mosaic habitats
 # the script also ads "A" to all HAB_TYPES with NO information in the HAB_TYPE column. This is not going to be correct for ALL the polygons n the map - but as they lack any sort of code - they either need to be completely exclued from the map at the start, orhave some sort of EUNIS code. To address this inconsistency temporarily, I have changed these to"A" Marine.
-source("./functions/spread_hab_types_by_mosaic_habs.R")
+source("./functions/gather_hab_types_by_mosaic_habs.R")
 #this leaves a new variable hab_types, which is different from hab.types, as it includes ALL the habitats, including mosaic habitats. thgis was done to allow processing all the said habtiats and compare their senstivities within a polygon following the same process as previous.
 
 #-------------------------------
