@@ -13,12 +13,14 @@ uncertainty_of_biotope_proxy <- results.files %>%
                 
                 sbgr_pos <- grep("sbgr", colnames(x))
                 eunis_code_gis_pos <- grep("eunis_code_gis", colnames(x))
+                
                 #reorder the table to a easier to understand format
                 x_rearrange <- x %>% dplyr::select(
                         sbgr, 
                         lvl_dif,
-                        eunis_code_gis, 1:(eval(sbgr)-1),
-                        (eval(eunis_code_gis_pos)+1):length(colnames(x))
+                        eunis_code_gis, 
+                        1:(eval(sbgr_pos)-1),# captures the columns preceeding sbgr
+                        (eval(eunis_code_gis_pos)+1):length(colnames(x)) #captures the oclumns following sbgr
                         )
                 
                 unfilterd_biotope_candidates <- x_rearrange %>% 
