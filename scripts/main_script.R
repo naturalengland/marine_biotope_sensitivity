@@ -1,6 +1,7 @@
-# Project Title: Biotope sensitivity
+# Project Title: Marine benthic habitat sensitivity
 
-# Objective:
+# AIM: Develop sensitivity maps for the benthic substrate to a range of activities takling palce inteh marine environment
+
 # Author: Philip Haupt
 # Date: 2018-08-28 to 2018-11-28
 
@@ -9,51 +10,55 @@
 
 # Script source pages:
 ## The scripts are based in a GITHUB repository: https://github.com/naturalengland/biotope-sensitivity
-## In the case of serious problems contact Philip.Haupt@naturalengland.org.uk
+## In the case of problems contact Philip.Haupt@naturalengland.org.uk
 
 # Important information:
-## Read the System requirements to make sure that you have the require software and data installed to run this R script (below)
-## When you are sure it is correctly configured, press "Alt Cntrl R" to run the entire script. It will take a while as it has to millions and millions of calculations
+## Read the System requirements (below) to make sure that you have the required software installed and access to the data to run this R script.
+## When you are sure it is correctly configured, you may press "Alt Cntrl R" to run the entire script. It will take a while as it has to do millions and millions of calculations.
 ## The final product is a geopackage (open source GIS file) which should be in a directory called "output" in your working directory.
-## Your working directory can be seen by typing "getwd()"
+## Your working directory can be seen by typing "getwd()" in the Console below. 
 
 # Project directory requirements
-## CREATE A WORKING DIRECTORY ON YOUR MACHINE IF YOU ARE COPYING THESE FILES FROM GITHUB OR TAKEN A LOCAL COPY
-## Within the working directory "> getwd()" ensure that there is a directory called "scripts" with R scripts in it, "functions" with R files, and "outputs" which may or may not be empty
+## CREATE A WORKING DIRECTORY ON YOUR MACHINE IF YOU ARE COPYING THESE FILES FROM GITHUB OR TAKEN A LOCAL COPY (i.e. in Windows explorer or equivalent if using Linux)
+## Within the working directory type "getwd()" ensure that there is a directory called "scripts" with R scripts in it, "functions" with R files, and "outputs" (the latter may or may not be empty)
 ## COPY ALL THE FUNCTIONS INTO THE FUNCTIONS FOLDER, AND MAKE SURE THAT MAIN SCRIPT IN THE SCRIPTS FOLDER IS ALSO IN YOUR FOLDER.
 ## Make sure to look at and complete the list of variables that the user HAS to DEFINE, or it maky not work if your system configuration is different (e.g. the database is housed in a new directory) at the time of writing.
+## Make sure that if there are files in the output folder that you have them backed up elswhere in case yo uoverwright them incorrectly
 
 
 #------
 # System requirements
 # R v3.5.1 was used to construct the code, but may work with earlier version such as 3.3.3
-# Install a microsoft access driver if not already on PC/machine, available from e.g. https://www.microsoft.com/en-us/download/details.aspx?id=54920
+# Install a Microsoft Access driver if not already on PC/machine, available from e.g. https://www.microsoft.com/en-us/download/details.aspx?id=54920
 # The driver version (64/32) has to match the system and R version 64 bit or 32 bit
-# QGIS or equivalne to view the final product in the output folder when complete
-# INSTALL R STUDIO - NOT COMPULSORY, BUT HIGHLY RECOMMENDED
+# QGIS or equivalent to view the final product in the output folder when complete
+# INSTALL and work in R STUDIO - NOT COMPULSORY, BUT HIGHLY RECOMMENDED
+
 #------
 # Notes 
-## Biotopes which have been assessed for sensitivity in the conservation Advice database only include Eunis levels 4 to 6 at this stage.
+## Biotopes which have been assessed for sensitivity in the Conservation Advice database only include Eunis levels 4 to 6 at this stage.
 ## Issues: currently only a local copy of the MS Access database is available on my working hard drive, and this needs to be pointed at the network (eventually) when approved
 
 # START
 #clear workspace if not cleared!
-#rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+
+# If you are editing the code, I have left commented out pieces of code, like the below, in which may be useful in future. Remove the comment and run if you know what you are doing.
 #rm(list=setdiff(ls(), c("hab_map"))) # useful command to remove all but the habitat map which takes long to read - useful during testing
 
 #-----
 # R libraries
-## Below the list of R libraries to load into R (in sequence). If they are now already installed you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them as below.
-library(RODBC)
-library(DBI)
-library(tidyverse)
-library(plyr)
-library(reshape2)
-library(rgdal)
-library(magrittr)
-library(stringr)
-library(sf)
-library(sp)# to allow for multiple layers being written - not sure tha tthis is being used any longer.
+## Below the list of R libraries to load into R (in sequence). If they are not already installed on your machine you will have to do so first. This can be done using the command like install.packages("RODBC"), for each of the libraries. Then load them by running the commands below.
+library(RODBC) # allows connecting to databases
+library(DBI) # allows connecting to databases
+library(tidyverse) # data wrangling scripts
+library(plyr) # more data wrangling scripts
+library(reshape2) # more data wrangling scripts
+library(rgdal) # gis scripts
+library(magrittr) # piping scripts, loaded again and here to ensure that some funtions run as they are written
+library(stringr) # text manipulation library
+library(sf) # key GI library
+#library(sp)# to allow for multiple layers being written - not sure tha this is being used any longer.
 
 
 # USER INPUT REQUIRED BELOW
@@ -70,51 +75,52 @@ final_output <- "outputs" # no need to change this, unless you name the output f
 
 # DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
 
-# User to specify the path to the database file activate the below and comment out the default paths
-#db.path <- file.choose()
-# e.g. laptop path
-#db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
+# 4. User to specify the path to the database file activate the below and comment out the default paths
+
 #power pc path specified below
 db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
 
-# Define GIS input for habitat map(s)
+#db.path <- file.choose()
+# e.g. laptop path
+#db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
+
+
+# 5. Define GIS input for habitat map(s)
 input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs.gpkg"#this directory is for the clipped sbgrs.
-# Run this to see the available layers in the gis file
+# Run this to see the available layers in the gis file (useful if running for individual sbgrs)
 sf::st_layers(input_habitat_map)
 # Now supply the layer name that you are interest in
 input_gis_layer <- "marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs"
 
-
-
 ## USER DEFINED OUTPUT
 
-# USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
+# 6. USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
 folder <- "tmp_output/" # this folder will be created in your working directory - files will go into it temporarily, and then be deleted. You may delete the empty folder if you like after completing the running of the scripts if you like.
 
-# NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
+
+# 7. NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_multiple_sbgr_mosaic") # name of geopackage file in final output
+dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_inshore_mosaic") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
 
 
-#set the THREE (of the four) layer names
-#1 sensitivity
-sens_layer_name_output <- "inshore_fishing_ops_multiple_sbgr_sens_conf" # name of layer being produced (final output layer name)
+# 8. Provide an OUTPUT layer name within the the Geopackage specified above
+sens_layer_name_output <- "inshore_fishing_ops_inshore_sens_conf" # name of layer being produced (final output layer name)
 
 
-#Below prints the list of options for the user to read, and then make a selection to enter below
-#see key below
+# 9. Below prints the list of options for the user to read, and then make a selection to enter below
 source(file = "./functions/read_access_operations_and_activities.R")
 OpsAct <- try(suppressWarnings(read.access.op.act())) #suppressWarnings(expr) turns warnigns off, as this warning will just tell you which data were not selected, and may be unneccessarily confusing.
 if("try-error" %in% class(OpsAct)){print("Choice could not be set. Make sure your your Access Driver software is set-up correctly. Defaulting to 11. Fishing (Z10)")}
 if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
+#see key below
 
-# Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
+# 10. NB! Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
 #USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
 ops.number <- 11
 
-# Run this to save your choice, and see what was saved
+# 11. Run this to save your choice, and see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
 
 # END OF USER INPUT REQUIREMENT, you can now run scripts below to produce biotope sensitivity data.
@@ -221,9 +227,11 @@ names(EunisAssessed) <- c(names(eunis.lvl.assessed), names(ind.eunis.lvl.tmp))
 rm(eunis.lvl.assessed, ind.eunis.lvl.tmp)
 
 #----------------------------
-# 07 Determine the VALID list of BIOTOPES which may be assocaited to mapped habitats in the next steps using the SUB-BIOREGIONAL filter OR No filter
+# 08 FILTER BIOTOPE CANDIDATES
 
-# NB! check user input parameters, and overwrite sbgr_filter to FALSE if offshore waters were selected.
+# Determine the list of BIOTOPES which may be assocaited to mapped habitats in the next steps using the SUB-BIOREGIONAL filter OR No filter
+
+# NB! This below checks user input parameters, and overwrites sbgr_filter to FALSE if offshore waters were selected (waters = offshore), as there is no offshore sbgr filter at present.
 if(waters == "offshore") {
         sbgr_filter <- FALSE
 }
@@ -234,11 +242,12 @@ source("./functions/direct_analysis_filter.R")
 tbl_eunis_sbgr <- read_biotopes_with_or_without_filter(apply_filter = sbgr_filter) # sbgr_filter was set by the user in the first at the start of the main script.
 # The internal functions imports a table of valid biotopes in each sub-Biogeoregion from the Access database (or all the biotopes wihtout using a sub-bioregional filter)
 # Output stored as tbl_eunis_sbgr
+
 #-------------------------------
-#08 Match biotopes
+# 09 Match biotopes
 
 source("./functions/match_eunis_to_biotope_fn.R") # loads function that will match the biotopes
-#this function will be passed through a loop below to repeat it for each Activity grup
+# this function will be passed through a loop below to repeat it for each Activity grup
 
 # THE NEEDS TO BE FURTHER FUNCTIONALISED: but currently runs as a long section of code
 
@@ -306,7 +315,7 @@ setwd(file.path(mainDir))
 
 
 #---------------
-#09 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
+# 10 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
 # loads and runs the function: read in all the restuls generated in a single file as lists of dataframes: r object output name: results.files
 source(file = "./functions/read_temporary_sbgr_results_fn.R")
 # Output stored as result.files (note that this contains biotope candidates for EUNIS levels 4,5,6 which are cross-tabulated with the GIS habitat type, BUT ONLY ones which are knwon to occur within each of the sub-biogeoregions (sbgr))
@@ -327,7 +336,7 @@ do.call(file.remove, list(list.files(paste(getwd(),folder, sep = "/"), full.name
 source("./functions/uncertainty_calcs_biotope_proxies.R")
 
 #-------------
-#11 JOIN ACTIVITY-PRESSURE TO SENSITIVITY ASESSMENTS
+# 11: JOIN ACTIVITY-PRESSURE TO SENSITIVITY ASESSMENTS
 
 #loads and runs script to join pressures to sbgr generated above
 source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
@@ -335,24 +344,26 @@ source(file = "./functions/join_pressure_to_sbgr_list_fn.R")
 # Consider saving the output into a database - from here minimum, range etc can be calculated (and should be more or less in line with the process that JNCC followed to aggeregate its EUNIS data.
 
 # housekeeping: remove objects no longer required
-#rm(sbgr.matched.btpt.w.rpl)
+rm(sbgr.matched.btpt.w.rpl)
 
 #----------------
-# 12
+# 12: MAXIMUM SENSITIVITY PER POLYGON
+
 # compare the biotope sensitivity assessment values associated with each broad-scale habitat, and keep only maximum values for each biotope-pressure-activity-sub-biogeographic region combination.
 # Below reads and runs the function
 source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renamed this to be more accurate reflection of the function.
 # Output stored as: sbgr.BAP.max.sens - key output - this can be translated into min, max, range etc. NE is currently only taking the MAXIMUM value forward, but this can be changed inside of this function/or preferbaly creating a new function based on this one.
 
 #housekeeping
-#rm(xap.ls, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
+rm(xap.ls, x.dfs.lst, level.result.tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed,sens.act.rank)
 
 #--------------
-#13 associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
+# 13: ASSOCIATE MAXIMUM SENSITIVITY WITH GIS 
 
-source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") # this takes a while - get a cup of tea, read emails, or file expenses.
+#Associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
+
+source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") # this takes a while - get a cup of tea.
 # Output stored as: act.sbgr.bps.gis
-
 
 
 #housekeeping
@@ -367,24 +378,37 @@ rm(sbgr.BAP.max.sens)
 #        dplyr::select(-contains("not_assessed"))
 
 #--------------
-# join uncertainty to hab.types - may need a line to IF not hab.1 then hab.2 then... for mosaic habs?
+# 14 JOIN CONFIDENCE OF BIOTOPE ASSIGNEMENT TO HABITAT ATTRIBUTES
+
+# Join uncertainty to hab.types - may need a line to IF not hab.1 then hab.2 then... for mosaic habs?
 hab.types.unc <- left_join(hab.types, uncertainty_of_biotope_proxy, by = c("bgr_subreg_id" = "sbgr", "hab.1" = "eunis_code_gis"))
 
+#--------------
+# 15 JOIN HABITAT ATTRIBUTES TO SENSITIVITY ASSESSMENTS
 
-#14
-# Joins the habitat type information to the sensitivity assessments
+# Joins the habitat type information (with confidence scores) to the sensitivity assessments
 sens_dat <- hab.types.unc %>% 
         left_join(act.sbgr.bps.gis, by = "pkey")
+
+#---------------
+# 16 PROVIDE GEOMETRY DATA 
 
 #attach the geometry column from hab_map to the sens_dat variable: this allows us to map the outputs (and is possble as we have preserved the id of the polygons, named "pkey")
 sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 
+#---------------
+# WRITE GIS OUTPUT
 
 #sf::st_layers(paste0(dsn_path_output, ".GPKG", sep = '')) # run this to check which ones have been completed
 #write the sens_dat to file, stored in the output folder in the R project file
 sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, update = TRUE)
 
 #the end------------------------------------------------
+
+
+
+
+#-------------------
 #annex: output division
 # If seperate layer are required for each, the following can be used: # separate the three components (sensitivity score, confidence assessment and the assessed biotope) into three data.frames to allow binding them as seperate layers to the geopackage - for easier opening.
 
