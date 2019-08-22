@@ -86,7 +86,7 @@ drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driv
 #db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
 
 
-# 5. Define GIS input for habitat map(s)
+# 5. Define GIS input for habitat map(s): Only select 5a or 5b
 
 # 5a. With sub-biogeoregions:
 input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs.gpkg"#this directory is for the clipped sbgrs.
@@ -357,6 +357,7 @@ source("./functions/uncertainty_calcs_biotope_proxies.R")
 if (class(uncertainty_of_biotope_proxy) == "matrix") {
 uncertainty_of_biotope_proxy <- data.frame(matrix(unlist((uncertainty_of_biotope_proxy)), nrow=length(uncertainty_of_biotope_proxy[[1]]), byrow=F), stringsAsFactors = FALSE)
 names(uncertainty_of_biotope_proxy) <- c("sbgr","eunis_code_gis","uncertainty_sim")
+uncertainty_of_biotope_proxy$uncertainty_sim <- as.numeric(uncertainty_of_biotope_proxy$uncertainty_sim)
 } else paste0("The uncertainty output is a ", class(uncertainty_of_biotope_proxy))
 
 #output: uncertainty_of_biotope_proxy and should be a dataframe
@@ -381,7 +382,7 @@ source(file = "./functions/max_sens_sbgr_bap_fn.R") #recently (2019-07-10) renam
 # Output stored as: sbgr.BAP.max.sens - key output - this can be translated into min, max, range etc. NE is currently only taking the MAXIMUM value forward, but this can be changed inside of this function/or preferbaly creating a new function based on this one.
 
 #housekeeping
-rm(xap.ls, x_dfs_lst, results.files, distinct_mapped_habt_types, x.dfs.lst, level_result_tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed)
+rm(xap.ls, bgr_dfs_lst, x_dfs_lst, results.files, distinct_mapped_habt_types, x.dfs.lst, level_result_tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed)
 
 #--------------
 # 13: ASSOCIATE MAXIMUM SENSITIVITY WITH GIS 
@@ -432,7 +433,13 @@ sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer =
 #the end------------------------------------------------
 
 
+#Plottingt - move to new function
+# to view plots in R
+#sf::st_sf(sens_dat,agr = c("identity", rep("constant", 5), rep("aggeregate", 17), rep("identity", 513)))
+#plot(st_geometry(sens_dat$geom), col = sf.colors(9, categorical = TRUE), border = 'grey', axes = TRUE)
 
+#sens_dat_sp = as(sens_dat, Class = "Spatial")
+#sens_dat_sf = st_as_sf(sens_dat_sp)
 
 #-------------------
 #annex: output division
