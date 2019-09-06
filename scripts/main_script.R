@@ -41,7 +41,7 @@
 
 # START
 #clear workspace if not cleared!
-rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+#rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
 
 # If you are editing the code, I have left commented out pieces of code, like the below, in which may be useful in future. Remove the comment and run if you know what you are doing.
 #rm(list=setdiff(ls(), c("hab_map"))) # useful command to remove all but the habitat map which takes long to read - useful during testing
@@ -67,7 +67,7 @@ library(sf) # key GI library
 waters <- "inshore" # has to be "inshore" or "offshore"
 
 # 2. Select to filter/or not to filter the potenital biotopes (proxies biotopes from which sensitivity assessments scores are taken and assocaited with broad-scale habitats.) 
-sbgr_filter <- FALSE # has to be TRUE or FALSE; NB! TRUE is only available for the inshore at this stage.
+sbgr_filter <- TRUE # has to be TRUE or FALSE; NB! TRUE is only available for the inshore at this stage.
 # A check will be run later in the script - if waters is set to "offshore", sbgr_filter will be overwritten to FALSE
 
 # 3. USER TO DO: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
@@ -102,7 +102,7 @@ input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data
 # Run this to see the available layers in the gis file
 sf::st_layers(input_habitat_map)
 # Now supply the layer name that you are interest in
-input_gis_layer <- "inshore_bsh_English_waters_wgs84"
+input_gis_layer <- "inshore_bsh_English_waters_wgs84" #inshore or offshore?
 
 
 
@@ -117,12 +117,12 @@ folder <- "tmp_output/" # this folder will be created in your working directory 
 
 # 7. NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_fishing_mosaic_unfiltered") # name of geopackage file in final output
+dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_dredging_Z10_5__d2_d5_d6_filtered") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
 
 
 # 8. Provide an OUTPUT layer name within the the Geopackage specified above
-sens_layer_name_output <- "inshore_fishing_ops_inshore_sens_unfiltered" # name of layer being produced (final output layer name)
+sens_layer_name_output <- "inshore_hab_sens_dredging_Z10_5__d2_d5_d6_filtered" # name of layer being produced (final output layer name)
 
 
 # 9. Below prints the list of options for the user to read, and then make a selection to enter below
@@ -200,7 +200,7 @@ rm(qryEUNIS_ActPressSens)
 source(file = "./functions/read_gis_hab_input.R")
 
 # calls the function which will read the habitat file. (This will take 10 minutes -  have a cup of tea, or read some email)
-hab_map <- read_hab_map()  #temporarily set to a sample dataset to minimise processing time, go to the funciton and replace the sample layer with the actual layer you want to read in.
+hab_map <- read_hab_map()  # reads in the habitat map specified by the user
 # TO CHANGE USING read_st(dsn = "", layer = "") as only data frame is needed at the start.
 
 #------------------------------
