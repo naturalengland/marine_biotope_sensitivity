@@ -1,4 +1,7 @@
 #genereate a list of biotopes matched to the mapped habitat (based on EUNIS codes) within sub-biogeoregions from the results files. The function sequentially assesses the EUNIS levels from 6 to 4. Where an empty value at a higher EUNIS level is found it will look in the next lower level, until it runs out at level four, when it leaves the value at NA.
+library(foreach)
+library(doMC)
+registerDoMC(cores = 12)
 
 sbgr.matched.btpt.w.rpl <- results.files %>% 
         plyr::llply(function(x){ 
@@ -31,7 +34,8 @@ sbgr.matched.btpt.w.rpl <- results.files %>%
                 # replace NA values in eunis level matrix, with actual eunis values at level 5, to obtain as comprehensive as possible a data matrix
                 # I used two embedded for loops to ensure that element for element is being compared, and I get a table of the same dimensions as output. I am certain that there are smoother ways of doing this!
                 for (i in seq_along(l6.tmp)) { # go along columns
-                        for (j in 1:nrow(l6.tmp)) { # go along rows
+                        #for (j in 1:nrow(l6.tmp)) { 
+                                foreach(j = 1:nrow(l6.tmp), .combine = c) %do% {# go along rows (in parallel)
                                 l.tmp[j,i] <- ifelse(l6.tmp[j,i] == "NA" | l6.tmp[j,i] == "<NA>"| is.na(l6.tmp[j,i]),l5.tmp[j,i],l6.tmp[j,i])#compare and replace
                                 
                         }
