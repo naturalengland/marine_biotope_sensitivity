@@ -391,6 +391,8 @@ rm(xap.ls, bgr_dfs_lst, x_dfs_lst, results.files, distinct_mapped_habt_types, x.
 
 source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") # this takes a while - get a cup of tea.
 # Output stored as: act.sbgr.bps.gis
+write_rds(act.sbgr.bps.gis, "./outputs/act_sbgr_bps_gis.R")
+
 
 
 #housekeeping
