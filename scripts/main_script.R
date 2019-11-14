@@ -64,10 +64,10 @@ library(sf) # key GI library
 # USER INPUT REQUIRED BELOW
 #-----
 # 1. Select the marine planning area in which you would like to work (they have different algorithms)
-waters <- "inshore" # has to be "inshore" or "offshore"
+waters <- "offshore" # has to be "inshore" or "offshore"
 
 # 2. Select to filter/or not to filter the potenital biotopes (proxies biotopes from which sensitivity assessments scores are taken and assocaited with broad-scale habitats.) 
-sbgr_filter <- TRUE # has to be TRUE or FALSE; NB! TRUE is only available for the inshore at this stage.
+sbgr_filter <- FALSE # has to be TRUE or FALSE; NB! TRUE is only available for the inshore at this stage.
 # A check will be run later in the script - if waters is set to "offshore", sbgr_filter will be overwritten to FALSE
 
 # 3. USER TO DO: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
@@ -88,7 +88,7 @@ drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driv
 
 # 5. Define GIS input for habitat map(s): Only select 5a or 5b
 
-# 5a. With sub-biogeoregions:
+# 5a. INSHORE With sub-biogeoregions:
 input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs.gpkg"#this directory is for the clipped sbgrs.
 # Run this to see the available layers in the gis file (useful if running for individual sbgrs)
 sf::st_layers(input_habitat_map)
@@ -102,7 +102,7 @@ input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data
 # Run this to see the available layers in the gis file
 sf::st_layers(input_habitat_map)
 # Now supply the layer name that you are interest in
-input_gis_layer <- "inshore_bsh_English_waters_wgs84" #inshore or offshore?
+input_gis_layer <- "offshore_bsh_English_waters_wgs84" #inshore or offshore?
 
 
 
@@ -117,12 +117,12 @@ folder <- "tmp_output/" # this folder will be created in your working directory 
 
 # 7. NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
 #dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn_path_output <- paste0(getwd(),"/",final_output,"/habitat_sensitivity_dredging_Z10_5__d2_d5_d6_filtered") # name of geopackage file in final output
+dsn_path_output <- paste0(getwd(),"/",final_output,"/offshore_habitat_sensitivity_dredging_unfiltered__test_master") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
 
 
 # 8. Provide an OUTPUT layer name within the the Geopackage specified above
-sens_layer_name_output <- "inshore_hab_sens_dredging_Z10_5__d2_d5_d6_filtered" # name of layer being produced (final output layer name)
+sens_layer_name_output <- "offshore_hab_sens_dredging_unfiltered" # name of layer being produced (final output layer name)
 
 
 # 9. Below prints the list of options for the user to read, and then make a selection to enter below
@@ -432,14 +432,13 @@ sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 #write the sens_dat to file, stored in the output folder in the R project file
 sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, update = TRUE)
 
+
 #the end------------------------------------------------
 
 
-#Plottingt - move to new function
+#Plotting - move to new function
 # to view plots in R
-#sf::st_sf(sens_dat,agr = c("identity", rep("constant", 5), rep("aggeregate", 17), rep("identity", 513)))
-#plot(st_geometry(sens_dat$geom), col = sf.colors(9, categorical = TRUE), border = 'grey', axes = TRUE)
-
+#convert to sf object
 #sens_dat_sp = as(sens_dat, Class = "Spatial")
 #sens_dat_sf = st_as_sf(sens_dat_sp)
 
