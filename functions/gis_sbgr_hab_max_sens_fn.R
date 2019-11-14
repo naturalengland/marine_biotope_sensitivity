@@ -7,6 +7,9 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 require(tidyr)
                 require(RODBC)
                 require(DBI)
+                library(foreach)
+                library(doMC)
+                registerDoMC(cores = 8)
                 source("./functions/name_column_fn.R") # this is function that renames the columns in a bespoke way
                 
                 
@@ -48,20 +51,11 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 # Filter rows keeping the ones associated with the maximum value for sensitivity (for each polygon/pressure), retaining the additional row information (such as assessed habitat)
                 sbgr.hab.max.sens.assessed  <-  sbgr.hab.gis %>%
                         dplyr::ungroup() %>%
-                        dplyr::group_by(PressureCode, pkey) %>%# Point of error: this is where the polygons are removed - see tests.! we need to assign dummy values for NA or they will be removed!
+                        dplyr::group_by(PressureCode, pkey) %>%# Point of error: this is where the polygons are removed - see tests.! we need to assign dummy values for NA or they will be removed! Resolved.
                         dplyr::filter(max.sens == min(max.sens)) %>% #Note that the minimum rank value represents the highest sensitivity level 1 = high, 6 = not sensitive
                         dplyr::rename(max.sens.consolidate = max.sens) 
                 
-                # This removes the duplicated maximum sensitivities where a pkey (polygon) had more than one habitat (mosaic habitats)
-                #microbenchmark({
-                 #       sbgr_hab_max_sens_assessed_duplicates_removed <- sbgr.hab.max.sens.assessed %>% # at this point, there should be only one maximum sensitivity associated with each of the unique combinations of pkey, pressure
-                  #              ungroup() %>% 
-                   #             mutate(press_code_pkey = str_c(PressureCode,"_",pkey,"_")) %>%  #this was added to allow detection of DUPLICATE psensitivities per polygon (which could arise when there are TIED/EQUAL sensitivity values coming from different MOASIAC habitats.)
-                    #            group_by(press_code_pkey) %>% 
-                     #           arrange(press_code_pkey) %>%
-                      #          slice(1)
-                #})
-                #or is this faster?
+               
                 #library(microbenchmark)
                 #microbenchmark({
                         sbgr_hab_max_sens_assessed_duplicates_removed <- sbgr.hab.max.sens.assessed %>% # at this point, there should be only one maximum sensitivity associated with each of the unique combinations of pkey, pressure
@@ -72,15 +66,6 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                                 slice(1)
                  #       })
                 
-                #diagnose <- sbgr_hab_max_sens_assessed_duplicates_removed %>% dplyr::filter(PressureCode == "o1" & pkey == "488022")
-                #the below could be saved to an external file for future use - it was used to diagnose the duplcaites: the outcomes was that in the case of maosaic habitat, sometimes thre are values with the same leevl oof sensitivity, thereby creating duplicates per polygopn.
-                #tmp <- sbgr.hab.max.sens.assessed %>% 
-                 #       mutate(press_code_pkey = str_c(PressureCode,"_",pkey,"_", max.sens.consolidate))
-                #tail(tmp$press_code_pkey)
-                #head(tmp$press_code_pkey)
-                #duplicated_press_key <- tmp[duplicated(tmp$press_code_pkey) | duplicated(tmp$press_code_pkey, fromLAst = TRUE),]
-                #duplicated_press_key
-                #diagnose <- tmp %>% dplyr::filter(press_code_pkey == "O1_488022_5")
                 
                 #------------------------
                 # ASSOCIATE CONFIDENCE SCORES WITH SENSITIVITY ASSESSMENTS:
@@ -155,13 +140,6 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 
                 rm(sbgr.hab.max.sens.assessed.conf) #house-keeping, no longer need this.
                 
-                # REMOVED  CODE - kept here for legacy sake, but can remove in master copy
-                #--------------------------
-                # Calculate HEAT MAP values - sum of all pressures maximum sensitivity scores (per activity) (not presently used, as the additivity of these pressures is questionable)
-                #heatmap.vls <- sbgr.hab.max.sens.assessed.conf %>%
-                #        dplyr::ungroup() %>%
-                #        dplyr::group_by(pkey) %>%
-                #        dplyr::summarise(heat.sum = sum(max.sens, na.rm=TRUE))
                 #--------------------------------
                 
                 # JOIN THE SENSITIVITY ASSESSMENTS, CONFIDENCE & BIOTOPES ASSESSED INTO A TABLE
