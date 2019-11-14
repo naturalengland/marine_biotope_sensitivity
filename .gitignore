@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+marine_biotope_sensitivity.Rproj
+outputs
+act.sbgr.bps.gis.R
+archive
+input
+work_notes
+hab_typ_not_assessed.csv
+percent_area_senstivity_cat_filtered_inshore_D2D5D6.csv
+percent_area_senstivity_cat_filtered_inshore_D2.csv
+Rplot.png
+Area_per_senstivity_category_offshore_unfiltered.png
+Area_per_senstivity_category_inshore_unfiltered.png
+Area_per_senstivity_category_inshore_filtered.png
