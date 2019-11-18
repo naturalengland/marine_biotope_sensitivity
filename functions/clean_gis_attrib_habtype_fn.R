@@ -29,7 +29,7 @@ clean_hab_type_dat <- function(dat = gis.attr){
         
         #gsub('^\\.|\\.$', '', test)
         
-        #test %>% # jandy to replace wierd instances
+        #test %>% # handy to replace wierd instances
         #mutate(., text2 = str_replace_all(text, "(\\w+)", "alias.\\1"))
         
         # Separate HAB_TYPE into multiple columns where "/" appears to allow for the next step
