@@ -32,13 +32,7 @@ sbgr.BAP.max.sens <- xap.ls %>%
                         ldply(function(y){ #splits list by sub_biogeoregion - and returns a dataframe (per activity - see above), becuase we want to match the senstivities to GIS in one go for all biogeoregions (per activity)
                                 y
                         })
-        }, .progress = "text")
+        },  .progress = "text")
 
 
-#REMOVE - this produced incorrect result - the slice method to obtain one record per grouping cuased problems - the max_sens was not the corresponding value with the biotope selected
-#max.sens.tbl <- as_tibble(y) %>% 
-#        dplyr::group_by(eunis_code_gis, PressureCode) %>% # want to obtain the minimum and maximum values (comparing betwween eunis.match.assessed) for each for each eunis_code_gis within its sbgr (data is grouped by sbgr, so no need to group_by sbgr here)
-#        dplyr::mutate(max.sens = max(rank.value))%>%
-#        select(ActivityCode, sbgr, PressureCode, eunis_code_gis, eunis.match.assessed, max.sens)%>%#, # maximum sensitivity value, done using mutate to preserve the "eunis.match.assessed" column
-#        slice(1)%>%
-#       ungroup() %>% 
+
