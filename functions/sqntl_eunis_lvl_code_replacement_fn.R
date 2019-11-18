@@ -1,8 +1,4 @@
 #genereate a list of biotopes matched to the mapped habitat (based on EUNIS codes) within sub-biogeoregions from the results files. The function sequentially assesses the EUNIS levels from 6 to 4. Where an empty value at a higher EUNIS level is found it will look in the next lower level, until it runs out at level four, when it leaves the value at NA.
-library(foreach)
-library(doMC)
-registerDoMC(cores = 12)
-
 sbgr.matched.btpt.w.rpl <- results.files %>% 
         plyr::llply(function(x){ 
                 print(paste("Start of a list",attr(x,"split_labels")))
@@ -34,19 +30,18 @@ sbgr.matched.btpt.w.rpl <- results.files %>%
                 # replace NA values in eunis level matrix, with actual eunis values at level 5, to obtain as comprehensive as possible a data matrix
                 # I used two embedded for loops to ensure that element for element is being compared, and I get a table of the same dimensions as output. I am certain that there are smoother ways of doing this!
                 for (i in seq_along(l6.tmp)) { # go along columns
-                        #for (j in 1:nrow(l6.tmp)) { 
-                                foreach(j = 1:nrow(l6.tmp), .combine = c) %do% {# go along rows (in parallel)
+                        for (j in 1:nrow(l6.tmp)) { # go along rows
                                 l.tmp[j,i] <- ifelse(l6.tmp[j,i] == "NA" | l6.tmp[j,i] == "<NA>"| is.na(l6.tmp[j,i]),l5.tmp[j,i],l6.tmp[j,i])#compare and replace
                                 
                         }
-                }        
+                } 
                 
                 #repeat the above, but now use eunis level 4 to replace any remaning NA values
                 for (i in seq_along(l.tmp)) { # go along columns
                         for (j in 1:nrow(l.tmp)) { # go along rows
                                 l.consolidated[j,i] <- ifelse(l.tmp[j,i] == "NA" | l.tmp[j,i] == "<NA>"| is.na(l.tmp[j,i]),l4.tmp[j,i],l.tmp[j,i])       
                         }
-                }
+                } 
                 
                 
                 # Future improvement?
@@ -66,4 +61,4 @@ sbgr.matched.btpt.w.rpl <- results.files %>%
                 
                 
                 #sbgr.matched.btpt.w.rpl <- rbind(sbgr.matched.btpt.w.rpl, l.consolidated) # bind the resulting tables
-        }, .progress = "text") # %>% saveRDS(sbgr.matched.btpt.w.rpl, paste0("./sbgr_matched_btpt_w_rpl.rds")) # activate you want to save as an independent R object for later use.
+        }, .parallel = TRUE, .paropts = list(.options.snow=opts), .progress = "text") # %>% saveRDS(sbgr.matched.btpt.w.rpl, paste0("./sbgr_matched_btpt_w_rpl.rds")) # activate you want to save as an independent R object for later use.
