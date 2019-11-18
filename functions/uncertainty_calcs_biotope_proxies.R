@@ -3,7 +3,7 @@
 
 uncertainty_of_biotope_proxy <- results.files %>% 
         plyr::ldply(function(x){ 
-                
+                library(magrittr)
                 #find positions of columns to make selecting to columns for reordering them
                 sbgr <- unique(x$sbgr) # which sub-bioregion are we working in? this wil lbe used to populate into table
                 
@@ -33,7 +33,7 @@ uncertainty_of_biotope_proxy <- results.files %>%
                 #-----------------------------------
                 # bind/filter with sub-bioregional validated biotope list
                 #tbl_eunis_sbgr is in global environment - already read in, so just called here
-                sbgr_filtered_tbl_eunis_sbgr <- tbl_eunis_sbgr %>% 
+                sbgr_filtered_tbl_eunis_sbgr <- tbl_eunis_sbgr %>% #eval(quote(tbl_eunis_sbgr), env = .GlobalEnv) %>% 
                         dplyr::filter(SRCode == sbgr)
                 
                 sbgr_filtered_biotope_candidates <- left_join(unfilterd_biotope_candidates, sbgr_filtered_tbl_eunis_sbgr, by = c("eunis_biotope_value"  = "EUNISCode")) %>% 
@@ -61,4 +61,5 @@ uncertainty_of_biotope_proxy <- results.files %>%
                         dplyr::group_by(sbgr,
                                  eunis_code_gis) %>% 
                         dplyr::summarise(uncertainty_sim = 1/sum(log_tally))
-        }, .progress = "text")
+        }, .parallel = TRUE, .paropts = list(.export=c("tbl_eunis_sbgr"), .options.snow=opts), .progress = "text") #.parallel = TRUE, .paropts = list(.options.snow=opts),
+
