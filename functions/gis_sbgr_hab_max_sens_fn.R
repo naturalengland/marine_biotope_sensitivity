@@ -7,9 +7,9 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 require(tidyr)
                 require(RODBC)
                 require(DBI)
-                library(foreach)
-                library(doMC)
-                registerDoMC(cores = 8)
+                # library(foreach)
+                # library(doMC)
+                # registerDoMC(cores = 8)
                 source("./functions/name_column_fn.R") # this is function that renames the columns in a bespoke way
                 
                 
@@ -149,7 +149,7 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
                 
                 rm(sbgr.hab.gis.spread, sbgr.hab.assessed.spread, sbgr.hab.conf.spread, sbgr.hab.gis.tmp) #house-keeping, no longer need this.
                 
-                # NB TIP! Call the final result as the las tline of the code in the function becase this is what gets stored as output from the function.
+                # NB TIP! Call the final result as the last line of the code in the function becase this is what gets stored as output from the function.
                 sbgr.hab.gis.assessed.conf.spread
                 
         }, .progress = "text") %>% # provides an indication of progress in executing the code. 
