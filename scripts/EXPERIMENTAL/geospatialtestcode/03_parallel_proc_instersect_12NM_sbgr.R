@@ -70,8 +70,8 @@ hab_map_raw_utm38s <- st_transform(hab_map_raw, 27700)
 hab_map_raw_utm38s <- st_as_sf(hab_map_raw_utm38s)
 hab_map_raw_utm38s <- hab_map_raw_utm38s %>% 
         dplyr::select(POLYGON, HAB_TYPE)
-hab_map_raw_utm38s_m_polygon <- st_cast(hab_map_raw_utm38s, "MULTIPOLYGON")
-hab_map_raw_utm38s_polygon <- st_cast(hab_map_raw_utm38s, "POLYGON")
+hab_map_raw_utm38s_polygon <-
+        st_cast(hab_map_raw_utm38s, to = "MULTIPOLYGON") %>%  st_cast(hab_map_raw_utm38s, to = "POLYGON", group_or_split = TRUE, do_split = TRUE)
 sbgr_utm38s <- st_transform(sbgr, 27700) 
 sbgr_utm38s <- st_as_sf(sbgr_utm38s)
 boundaries_utm38s <- st_transform(boundaries, 27700)
@@ -81,8 +81,20 @@ boundaries_utm38s <- st_as_sf(boundaries_utm38s)
 rm(hab_map_raw, boundaries, sbgr)
 
 # Geoprocessing of maps to restrict data to inshore and offshore boundaries, as well as sub-biogeoregional boundaries
-hab_offshore_utm38s <- st_intersection(sbgr_utm38s, hab_map_raw_utm38s_polygon)
-hab_inshore_utm38s <- st_difference(sbgr_utm38s, hab_map_raw_utm38s_polygon)
-hab_inshore_sbgr_utm38s <- st_intersection(hab_inshore, sbgr_utm38s)
+hab_offshore_utm38s <- st_intersection(boundaries_utm38s, hab_map_raw_utm38s_polygon)
+hab_inshore_utm38s <- st_difference(boundaries_utm38s, hab_map_raw_utm38s_polygon)
+hab_inshore_sbgr_utm38s <- st_intersection(hab_inshore_utm38s, sbgr_utm38s)
+
+# Error in CPL_geos_op2(op, st_geometry(x), st_geometry(y)) : 
+#         Evaluation error: TopologyException: Input geom 1 is invalid: Self-intersection at or near point 229176.36326515686 165648.09355025849 at 229176.36326515686 165648.09355025849.
+#
+
+library(RSAGA)
+rsaga.env()
+rsaga.get.libraries()
 
 
+res <- rsaga.intersect.polygons(layer_a = hab_map_raw_utm38s_polygon,
+                                layer_b = boundaries_utm38s,
+                                result = dir_tmp,
+                                load = TRUE)
