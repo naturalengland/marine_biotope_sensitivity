@@ -23,7 +23,7 @@ hab_map_dir <-
 hab_map_raw <-
         sf::read_sf(dsn = paste0(
                 hab_map_dir,
-                "HABMAP_INSERT_20180517_.gdb",)
+                "HABMAP_INSERT_20180517_.gdb"),
                 layer = "C20180517_Combined_9_6_4"
         )
 
@@ -75,29 +75,42 @@ hab_map_raw_utm38s <- hab_map_raw_utm38s %>%
         dplyr::select(HAB_TYPE) #Select only HAB_TYPE, to reduce number of columns
 
 hab_map_raw_utm38s$HAB_TYPE[is.na(hab_map_raw_utm38s$HAB_TYPE)] <- "A-NA" # assign this value to NA's in the data set: Otherwise I get this error running SAGA intersect: Error in val[nchar(val) > 0] <- shQuote(val[nchar(val) > 0]) : 
-#NAs are not allowed in subscripted assignments
+# NAs are not allowed in subscripted assignments
 hab_map_raw_utm38s_polygon <-
         st_cast(hab_map_raw_utm38s, to = "MULTIPOLYGON") %>%  
         st_cast(hab_map_raw_utm38s, to = "POLYGON", group_or_split = TRUE, do_split = TRUE) %>% 
         st_as_sf() # make sure it is a sf oject
 
-# write_rds(hab_map_raw_utm38s_polygon, "hm.rds")
 
+# Read data: currently saved a copy to save time recreate this:
+# write_rds(hab_map_raw_utm38s_polygon, "./data/preprocessed_input/hm.rds")
+# hab_map_raw_utm38s_polygon <- read_rds("./data/preprocessed_input/hm.rds")
 
-sbgr_utm38s <- st_transform(sbgr, 27700) #Reproject to British National Grid (EPSG: 27700)
-sbgr_utm38s <- st_as_sf(sbgr_utm38s) # make sure it is a sf oject
-boundaries_utm38s <- st_transform(boundaries, 27700)  #Reproject to British National Grid (EPSG: 27700)
-boundaries_utm38s <- st_as_sf(boundaries_utm38s) # make sure it is a sf oject
+# REPAIR geometry: required as it fails
+hab_map_raw_utm38s_polygon_valid <- hab_map_raw_utm38s_polygon %>% 
+        st_set_precision(1000) %>% # simplifies geometry prior to carrying out complex task - speeds it up
+        lwgeom::st_make_valid() # fixes topology errors
 
+# Sub-biogeoregions
+sbgr_utm38s <- st_transform(sbgr, 27700) %>% #Reproject to British National Grid (EPSG: 27700)
+        lwgeom::st_make_valid() %>% #make sure geometry is valid
+        sf::st_as_sf(sbgr_utm38s) # make sure it is a sf oject
+# Boundaries
+boundaries_utm38s <- sf::st_transform(boundaries, 27700) %>% #Reproject to British National Grid (EPSG: 27700)
+        lwgeom::st_make_valid() %>% #make sure geometry is valid
+        sf::st_as_sf(boundaries_utm38s) # make sure it is a sf oject
+        
 # 2c. Housekeeping: Remove unwanted objects to free up memory
-rm(hab_map_raw, boundaries, sbgr)
+rm(hab_map_raw, boundaries, sbgr, hab_map_raw_utm38s_polygon)
 
 #-------------------------------------------------
 # 3. Geoprocessing of maps to restrict data to inshore and offshore boundaries, as well as sub-biogeoregional boundaries
 
 # 3a. Geoprocessing using sf
-hab_offshore_utm38s <- st_intersection(boundaries_utm38s, hab_map_raw_utm38s_polygon)
-hab_inshore_utm38s <- st_difference(boundaries_utm38s, hab_map_raw_utm38s_polygon)
+# COMPLETE TAKES A WHILE TO RERUN _ SO DECIDE IF NEEDED: hab_offshore_utm38s <- st_intersection(boundaries_utm38s, hab_map_raw_utm38s_polygon_valid)
+# write_rds(hab_offshore_utm38s, "./data/preprocessed_input/hab_offshore_utm38s.rds") write file to save to recreating this.
+hab_inshore_utm38s <- st_difference(boundaries_utm38s, hab_map_raw_utm38s_polygon_valid)
+
 hab_inshore_sbgr_utm38s <- st_intersection(hab_inshore_utm38s, sbgr_utm38s)
 
 # result - runs into an error caused by topology issues in the GI data
@@ -105,15 +118,17 @@ hab_inshore_sbgr_utm38s <- st_intersection(hab_inshore_utm38s, sbgr_utm38s)
 # Error in CPL_geos_op2(op, st_geometry(x), st_geometry(y)) : 
 #         Evaluation error: TopologyException: Input geom 1 is invalid: Self-intersection at or near point 229176.36326515686 165648.09355025849 at 229176.36326515686 165648.09355025849.
 #
+# Seems to have fixed the topology error - but runs out of memory
+
 
 # rerun tool in RSAGA as I have had previous success using this despite topology error
-env.saga <- rsaga.env()
-rsaga.get.libraries()
-
-dir_tmp <- paste0(tempdir(), "/out.shp") #creates a temporary output location
-res <- rsaga.intersect.polygons(layer_a = hab_map_raw_utm38s_polygon,
-                                layer_b = boundaries_utm38s,
-                                result = dir_tmp,
-                                split = TRUE,
-                                load = TRUE,
-                                env = env.saga)
+# env.saga <- rsaga.env()
+# rsaga.get.libraries()
+# 
+# dir_tmp <- paste0(tempdir(), "/out.shp") #creates a temporary output location
+# res <- rsaga.intersect.polygons(layer_a = hab_map_raw_utm38s_polygon,
+#                                 layer_b = boundaries_utm38s,
+#                                 result = dir_tmp,
+#                                 split = TRUE,
+#                                 load = TRUE,
+#                                 env = env.saga)
