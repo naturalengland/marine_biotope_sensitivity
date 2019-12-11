@@ -12,6 +12,12 @@ library(RSAGA)
 library(lwgeom) # correct geommetries
 # library(foreach) # parallel processing
 
+# Comnied habiat map:
+# https://hub.jncc.gov.uk/ then 
+###Available under the Open Government Licence v3. Attribution statement "Contains JNCC data © copyright and database right 2019"
+# Jordan Pinder 01733 866925
+# explained that Tim had simplified the map before sending it to JNCC: AWS and then diced in ESRI, simplified to reduce memory size
+# Duplicate features: 
 
 #---------------------------------------------------------
 #  1. Read in the data
@@ -92,9 +98,9 @@ hab_map_raw_utm38s_polygon_valid <- hab_map_raw_utm38s_polygon %>%
         lwgeom::st_make_valid() # fixes topology errors
 
 # Sub-biogeoregions
-sbgr_utm38s <- st_transform(sbgr, 27700) %>% #Reproject to British National Grid (EPSG: 27700)
+sbgr_bng <- st_transform(sbgr, 27700) %>% #Reproject to British National Grid (EPSG: 27700)
         lwgeom::st_make_valid() %>% #make sure geometry is valid
-        sf::st_as_sf(sbgr_utm38s) # make sure it is a sf oject
+        sf::st_as_sf(sbgr_bng) # make sure it is a sf oject
 # Boundaries
 boundaries_utm38s <- sf::st_transform(boundaries, 27700) %>% #Reproject to British National Grid (EPSG: 27700)
         lwgeom::st_make_valid() %>% #make sure geometry is valid
