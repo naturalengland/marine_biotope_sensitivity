@@ -12,4 +12,4 @@ act.press.list <- qryEUNIS_ActPressSens %>%
                 
                 
         })
-cat("The output variable is `act.press.list`, which is a list containing separate dataframes with sensititivty assessments for each activity within the selected operation")
+cat("The output variable is `act.press.list`, which is a list containing separate dataframes with sensitivity assessments for each activity within the selected operation")
