@@ -33,6 +33,7 @@ uncertainty_of_biotope_proxy <- results.files %>%
                 #-----------------------------------
                 # bind/filter with sub-bioregional validated biotope list
                 #tbl_eunis_sbgr is in global environment - already read in, so just called here
+                
                 sbgr_filtered_tbl_eunis_sbgr <- tbl_eunis_sbgr %>% #eval(quote(tbl_eunis_sbgr), env = .GlobalEnv) %>% 
                         dplyr::filter(SRCode == sbgr)
                 
@@ -61,5 +62,7 @@ uncertainty_of_biotope_proxy <- results.files %>%
                         dplyr::group_by(sbgr,
                                  eunis_code_gis) %>% 
                         dplyr::summarise(uncertainty_sim = 1/sum(log_tally))
-        }, .parallel = TRUE, .paropts = list(.export=c("tbl_eunis_sbgr"), .options.snow=opts), .progress = "text") #.parallel = TRUE, .paropts = list(.options.snow=opts),
+        }, .progress = "text")
+# Statements to use paralel not working - becuase it cannot call tbl_eunis_sbgr
+#.parallel = TRUE, .paropts = list(.export=c("tbl_eunis_sbgr"), .options.snow=opts), .progress = "text") #.parallel = TRUE, .paropts = list(.options.snow=opts),
 
