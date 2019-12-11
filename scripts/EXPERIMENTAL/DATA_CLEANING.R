@@ -25,7 +25,7 @@ sample_hab <- read_sf(paste0(sample_dir, "sample_hab_data_3a_20190429_wgs84.gpkg
 # NAs are not allowed in subscripted assignments
 sample_hab_single_polys <-
         st_cast(sample_hab, to = "MULTIPOLYGON") %>%  
-        st_cast(sample_hab, to = "POLYGON", group_or_split = TRUE, do_split = TRUE) %>% 
+        st_cast(to = "POLYGON", group_or_split = TRUE, do_split = TRUE) %>% 
         st_as_sf() %>% 
         lwgeom::st_make_valid() # make sure it is a sf oject
 
@@ -58,9 +58,19 @@ sample_hab_diss_s_poly_BNG <- st_transform(sample_hab_diss_s_poly, 27700)
 
 # see maptools for dissovling polygons below a certain size:
 
-#fill holes below threshold
-sample_hab_diss_s_poly_BNG_filled <- smoothr::fill_holes(sample_hab_diss_s_poly_BNG, threshold = 1)
+# drop polys below 1 m2
+sample_hab_diss_s_poly_BNG_l1 <- smoothr::drop_crumbs(x = sample_hab_diss_s_poly_BNG, threshold = 1, drop_empty = TRUE)
 
+
+#fill holes below threshold
+sample_hab_diss_s_poly_BNG_filled <- smoothr::fill_holes(sample_hab_diss_s_poly_BNG_l1, threshold = 1)
+
+write_rds(sample_hab_diss_s_poly_BNG_filled, "./data/sample_flat_hab_map.rds")
+
+# end of section: cleaned flat habitat map
+#-----------------------------------
+
+# Start of attempt to intersect with boundaries
 # Load designated areas
 desig_dir <- "D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/designated_areas/"
 # spa <- read_sf(paste0(desig_dir, "Special_Protection_Areas.gdb"), layer = "SPA_England")
@@ -103,17 +113,35 @@ sussex_mczs_bng <- sf::st_intersection(sussex_bng, mcz_bng)
 #         tm_borders(col = "black") +
 #         tm_text("MCZ_NAME")
 
-# union habitat with desigated areas
+
 # mcz intersection:
-hab_mcz_union <- sf::st_union(sample_hab_diss_s_poly_BNG_filled, sussex_mczs_bng, by_feature = TRUE)
-        # st_cast(hab_mcz_union, to = "POLYGON", group_or_split = TRUE, do_split = TRUE) %>% 
-        # st_as_sf() %>% 
-        # lwgeom::st_make_valid() # fix any topological errors
+hab_mcz_intersect <- sf::st_intersection(sample_hab_diss_s_poly_BNG_filled, sussex_mczs_bng)
+
+# remainder of the habitats outside of MCZs: done to be added to the intersection
+hab_mcz_diff <- sf::st_difference(sample_hab_diss_s_poly_BNG_filled, sussex_mczs_bng)
+
+
+# Prepare a list of layers
+hab_mcz_lst <- list(hab_mcz_intersect, hab_mcz_diff)
+
+# combine geometries to arrive at a single object
+hab_combine_mcz <-
+        mapedit:::combine_list_of_sf(hab_mcz_lst, crs = 27700) %>%
+        lwgeom::st_make_valid()
+
+hab_combine_mcz_disslv <-
+        hab_combine_mcz %>% 
+        dplyr::select(HAB_TYPE, MCZ_CODE) %>% 
+        dplyr::group_by(HAB_TYPE, MCZ_CODE) %>%
+        summarise()
 
 # test output - visual inspection
 tmap_mode("view")
-tm_shape(hab_mcz_intersect) +
-        tm_polygons()
+tm_shape(hab_combine_mcz) +
+        tm_polygons()#+
+        tm_shape(sussex_mczs_bng)+
+        tm_borders(col = "forestgreen")
+
 
 # Bigger questions: Can we reverse the deisgnated site boundary inclusion?
 # What are the practicalities having a single flat file which is only clipped by protected areas after the fact?
