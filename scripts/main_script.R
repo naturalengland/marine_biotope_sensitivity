@@ -118,7 +118,7 @@ drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driv
 #db.path <- file.choose()
 # e.g. laptop path
 #db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
-
+#-------------------------------------------
 source(file = "./functions/specify_dir_for_habitat_map_on_user_input_of_boundaries_and_filter.R")
 
 #--------------
