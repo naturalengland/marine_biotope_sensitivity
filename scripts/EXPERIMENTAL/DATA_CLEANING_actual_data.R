@@ -32,13 +32,12 @@ library(maptools)
 #         )
 
 # read_file short-cut as r object
-
 hab_map_raw <- read_rds("F:/projects/marine_biotope_sensitivity/data/preprocessed_input/hm.rds")
 
 # Step 2:  multipart to single parts
 # note NAs are not allowed in subscripted assignments
-hab_single_polys <- # 2 step casting to single polygon required as format from source first needs conversion to multipart polygon
-        st_cast(hab_map_raw, to = "MULTIPOLYGON") %>%  # cast to multipolygon
+hab_single_polys <- hab_map_raw %>% # 2 step casting to single polygon required as format from source first needs conversion to multipart polygon
+        #st_cast(to = "MULTIPOLYGON") %>%  # cast to multipolygon
         st_cast(to = "POLYGON", group_or_split = TRUE, do_split = TRUE) %>% # cast from here to single polygon
         st_as_sf() %>% # make sure it is a sf oject
         lwgeom::st_make_valid() # ensure geometry is valid at this point
@@ -48,27 +47,27 @@ hab_single_polys <- # 2 step casting to single polygon required as format from s
 hab_dissolved <- hab_single_polys %>% 
         dplyr::select(HAB_TYPE) %>% # retain only HAB_TYPE column - this is all that is needed for my project
         dplyr::group_by(HAB_TYPE) %>% # this sets the variables by which to dissolve
-        summarise() %>%
+        dplyr::summarize() %>%
         lwgeom::st_make_valid() # ensure geometry is valid at this point
 
 #-----------------------------
 # multipart poly to single part
-sample_hab_diss_s_poly <- sample_hab_dissovled %>% 
-        st_cast(sample_hab_dissovled, to = "MULTIPOLYGON") %>%  
+hab_diss_s_poly <- hab_dissovled %>% 
+        #st_cast(sample_hab_dissovled, to = "MULTIPOLYGON") %>%  
         st_cast(sample_hab_dissovled, to = "POLYGON", group_or_split = TRUE, do_split = TRUE) %>% 
         st_as_sf() %>% 
         lwgeom::st_make_valid() 
 
 #reproject to BNG
-sample_hab_diss_s_poly_BNG <- st_transform(sample_hab_diss_s_poly, 27700)
+hab_diss_s_poly_BNG <- st_transform(hab_diss_s_poly, 27700)
 
-# see maptools for dissovling polygons below a certain size:
+# see maptools for dissolving polygons below a certain size:
 
 # drop polys below 1 m2
-sample_hab_diss_s_poly_BNG_l1 <- smoothr::drop_crumbs(x = sample_hab_diss_s_poly_BNG, threshold = 1, drop_empty = TRUE)
+hab_diss_s_poly_BNG_l1 <- smoothr::drop_crumbs(x = hab_diss_s_poly_BNG, threshold = 1, drop_empty = TRUE)
 
 
 #fill holes below threshold
-sample_hab_diss_s_poly_BNG_filled <- smoothr::fill_holes(sample_hab_diss_s_poly_BNG_l1, threshold = 1)
+hab_diss_s_poly_BNG_filled <- smoothr::fill_holes(sample_hab_diss_s_poly_BNG_l1, threshold = 1)
 
 write_rds(sample_hab_diss_s_poly_BNG_filled, "./data/sample_flat_hab_map.rds")
