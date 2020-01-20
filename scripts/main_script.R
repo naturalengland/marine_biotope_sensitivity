@@ -26,25 +26,55 @@
 ## Make sure that if there are files in the output folder that you have them backed up elswhere in case yo uoverwright them incorrectly
 ## See the list of R libraries that are used
 
-#------
-# System requirements
-# R v3.5.1 was used to construct the code, but may work with earlier version such as 3.3.3
+#---------------------------------------------
+# System requirements:
+
+#---------------------------------------------
+# System info for R-script construction:
+# > Sys.info()
+# sysname           release           version          nodename           machine 
+# "Windows"          "10 x64"     "build 18362" "DESKTOP-SMKHM6P"          "x86-64" 
+# login              user    effective_user 
+# "The Fishes"      "The Fishes"      "The Fishes"
+
+# R version used:
+# > version()
+# platform       x86_64-w64-mingw32          
+# arch           x86_64                      
+# os             mingw32                     
+# system         x86_64, mingw32             
+# status                                     
+# major          3                           
+# minor          6.1                         
+# year           2019                        
+# month          07                          
+# day            05                          
+# svn rev        76782                       
+# language       R                           
+# version.string R version 3.6.1 (2019-07-05)
+# nickname       Action of the Toes  
+
+# Driver software: 
 # Install a Microsoft Access driver if not already on PC/machine, available from e.g. https://www.microsoft.com/en-us/download/details.aspx?id=54920
 # The driver version (64/32) has to match the system and R version 64 bit or 32 bit
-# QGIS or equivalent to view the final product in the output folder when complete
+
+# Tips
+# NB! If you are planning to run this script for a large area, for example all English inshore waters, you will need at least 16 GB RAM - so use a PowerPC!
+
+# QGIS is recomended to view the final product in the output folder when complete
 # INSTALL and work in R STUDIO - NOT COMPULSORY, BUT HIGHLY RECOMMENDED
 
-#------
+#------------------------------------------------
 # Notes 
 ## Biotopes which have been assessed for sensitivity in the Conservation Advice database only include Eunis levels 4 to 6 at this stage.
 ## Issues: currently only a local copy of the MS Access database is available on my working hard drive, and this needs to be pointed at the network (eventually) when approved
 
 # START
-#clear workspace if not cleared!
+# Clear workspace if not cleared! i.e. there should be nothing int he Global Environment at this point: you will need all the RAM available to you to process the script
 # rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
 
 # If you are editing the code, I have left commented out pieces of code, like the below, in which may be useful in future. Remove the comment and run if you know what you are doing.
-#rm(list=setdiff(ls(), c("hab_map"))) # useful command to remove all but the habitat map which takes long to read - useful during testing
+# rm(list=setdiff(ls(), c("hab_map"))) # useful command to remove all but the habitat map which takes long to read - useful during testing
 
 #-----
 # R libraries
@@ -60,8 +90,8 @@ library(stringr) # text manipulation library
 library(sf) # key GI library
 library(doParallel)
 
-# Enable parallel processing
-cl <- makeCluster(4) # testing with 4 processors
+# Enable parallel processing using 4 processors
+cl <- makeCluster(4) # testing with 4 processors (the more, the greater the amount of RAM needed.)
 registerDoParallel(4)
 opts <- list(preschedule=TRUE)
 clusterSetRNGStream(cl, 123) # for reproducible results, using a constant set seed value.
@@ -449,12 +479,6 @@ sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer =
 
 #the end------------------------------------------------
 
-
-#Plotting - move to new function
-# to view plots in R
-#convert to sf object
-#sens_dat_sp = as(sens_dat, Class = "Spatial")
-#sens_dat_sf = st_as_sf(sens_dat_sp)
 
 #-------------------
 #annex: output division
