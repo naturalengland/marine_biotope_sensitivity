@@ -68,9 +68,15 @@ qryEUNIS_ActPressSens <- qryEUNIS_ActPressSens %>%
         dplyr::rename(rank.value = SensPriority) #this renaming is legacy issue from code developement: coudl be kept as SensPriority - but then needs to be checked and changed back to this throughout all code
 
 # Make table of unique combinations of Activity and Pressure
-qryEUNIS_ActPressSens %>% dplyr::select(ActivityCode,
+activity_pressure_combs <- qryEUNIS_ActPressSens %>% dplyr::select(ActivityCode,
                                         ActivityName,
                                         PressureCode,
-                                        PressureName)
+                                        PressureName) %>% 
+        dplyr::distinct()
+
+# Append the rest of characters to the codes to allow joining this table with a table of column names
+source("./functions/name_column_fn.R")
 
 # Establish a correlation between the GIS and SEnstivity Assessments names
+
+   
