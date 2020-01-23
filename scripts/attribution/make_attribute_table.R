@@ -8,75 +8,50 @@ library(DBI) # allows connecting to databases
 library(tidyverse) # data wrangling scripts
 library(plyr) # more data wrangling scripts
 
-# Variables from Main script - used as input to decide which GI file to read:
+# Read in Habitat senstivity data: USER INPUT REQUIRED!
 
-# Database: Senstivity assessments
-## Define Path to Access database on Power pc specified below
-db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
-drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
+# README: Script to read in Habitat sensitivty assessment data based on user selection - assuming that all other user selections made in the "main script" suchas the location of the files etc is correct. I only leave the type of operation to be selected by the user, such as fishing operations.
+source("./scripts/attribution/read_sens_assess_tbl_into_R_print_operations.R") # a list of operations are printed on the screen with Operation numbers - make sure the terminal is set as wide as possible to read the info.
 
-# 9. Below prints the list of options for the user to read, and then make a selection to enter below
-source(file = "./functions/read_access_operations_and_activities.R")
-OpsAct <- try(suppressWarnings(read.access.op.act())) #suppressWarnings(expr) turns warnigns off, as this warning will just tell you which data were not selected, and may be unneccessarily confusing.
-if("try-error" %in% class(OpsAct)){print("Choice could not be set. Make sure your your Access Driver software is set-up correctly. Defaulting to 11. Fishing (Z10)")}
-if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
-#see key below
+# Choose an operation by selecting one OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
+# USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
+ops.number <- 11 # leave as 11 for fishing
 
-# 10. NB! Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
-#USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
-ops.number <- 11
-
-# 11. Run this to save your choice, and see what was saved
+# Run this to save your choice, and print a message to see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
 
-
-
-# sbgr_filter <- FALSE
-# waters <- "offshore" # has to be "inshore" or "offshore"
-# final_output <- "outputs"
-# driver.choice <- "GPKG"
-# dsn_path_output <- paste0("/",final_output,"/",waters,"_habitat_sensitivity_")
-# sens_layer_name_output <- "inshore_hab_sens_dredging_delete_test"
-# 
-# # read in the output GIS atribute table
-# # sens_dat <- read_sf(dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output)
-# sens_dat <- read_sf(dsn = "F:/projects/marine_biotope_sensitivity/outputs/habitat_sensitivity_fishing_mosaic_unfiltered.GKPG")
-
-
-# Read in the Senstivity Assessments (MS Access table) with activities and pressures
-
 # Load the function that reads the Access database
-# ** This was added to error check  - line below - which overwrites the orignial function in the line above - remove if not happy
-source(file = "./functions/read_access_db.R") # #beta version: removes the filters and adds two variables !
+source(file = "./functions/read_access_db.R") # see main script for details
 
-# Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
-qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path))
-if("try-error" %in% class(qryEUNIS_ActPressSens)) {
-        qryEUNIS_ActPressSens <- read.csv("./input/qryEUNIS_ActPressSens.txt") # should find an older copy of the query for the fishing activity from the database to replaceC:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/qryhabsens
-        cat(paste0("The R script that obtains the senstivity data appears was UNABLE to connect to the database from the specified file location ",db.path, ", in the user input section above."))
-        cat("An older back-up copy stored as a text file was read in, and is limited to sensititivity to Fishing operations data only! The text file is:", (Sys.time() - file.info("./input/qryEUNIS_ActPressSens.txt")$mtime), "days old. Make sure you are using the latest version if you are updating formal outputs.")
-}
-if(class(qryEUNIS_ActPressSens) == "data.frame") {
-        cat(paste0("The R script that obtains the senstivity data appears to have connected and read the senstivity data from the specified file location ",db.path, ", created: ", file.info(db.path)$ctime, ", selected according to the user input section above."))
-        cat("The Access database file is:", (Sys.time() - file.info(db.path)$mtime), "days old. Make sure you are using the latest version if you are updating formal outputs.")
-}
+# Run function that generates the R object for the specified operation
+source(file = "./scripts/attribution/generate_habitat_sens_tbl_for_eunis_codes_fn.R") 
 
-# ensure EUNISCode is a character, as it reads converts to factor (which is incorrectand cannot join to other objects)
-qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode) # ensure EUNIS codes are character not factors, as this will cause trouble when joining to other tables with a mismatch in the number of eunis codes
-# rename SensPriority: When sens.act.rank was dropped by simply keeping this column, it no longer needed joining to the sensitivty table - but the old code used rank.value as the field name - and to keep it consistent 
-qryEUNIS_ActPressSens <- qryEUNIS_ActPressSens %>% 
-        dplyr::rename(rank.value = SensPriority) #this renaming is legacy issue from code developement: coudl be kept as SensPriority - but then needs to be checked and changed back to this throughout all code
+# Make table of unique combinations of Activity and Pressure (not for each EUNIS habitat cateogry)
+source("./scripts/attribution/make_table_unique_activity_pressure_codes_fn.R")
+act_press_combinations <- unique_activity_pressure_codes(x = qryEUNIS_ActPressSens)
 
-# Make table of unique combinations of Activity and Pressure
-activity_pressure_combs <- qryEUNIS_ActPressSens %>% dplyr::select(ActivityCode,
-                                        ActivityName,
-                                        PressureCode,
-                                        PressureName) %>% 
-        dplyr::distinct()
+# Concatenate a prefix = e.g. "sens_" to activity and pressures codes with a "_" separrator  to and the the rest of characters to the codes to allow joining this table with a table of column names
+source("./scripts/attribution/concat_act_press_codes_fn.R")
+act_press_attribution_columns <- concat_prefix_act_press_codes_fn(x = act_press_combinations, prfix = c("sens", "conf", "assess"))
 
-# Append the rest of characters to the codes to allow joining this table with a table of column names
-source("./functions/name_column_fn.R")
+# Add the attribution columns to the Activity Pressure table in a new table.
+act_press_attribution_results <- dplyr::mutate(.data = act_press_combinations, 
+                                               sens_attrb = act_press_attribution_columns$sens,
+                                               conf_attrb = act_press_attribution_columns$conf,
+                                               assess_attrb = act_press_attribution_columns$assess,
+                                               ) %>% 
+        tidyr::gather(key = "attrb_type", value = "attrb_name", -c(ActivityCode, PressureCode, ActivityName, PressureName)) # reshape the table into a long format ( as opposed values of attributes spread over three columns. Note this should be the same number of rows as in the GIS File!)
 
-# Establish a correlation between the GIS and SEnstivity Assessments names
+# Housekeeping: remove unneccssary R objects
+rm(qryEUNIS_ActPressSens, act_press_combinations, act_press_attribution_columns)
 
-   
+
+# Add attributes for the first six (standard) columns that will appear in every Habitat Sensitivity layer output as produced by my scripts.
+source("./scripts/attribution/attribute_description_standard_six_cols.R") # produces a 
+
+# Bind all attributes from standard 6 and act_press_attribution_results
+source("./scripts/attribution/bind_all_attributes.R")   
+
+# Save the attribution output file as a csv and Excel table to the outputs folder
+write_excel_csv(attribution_table, paste0("./outputs/attribution_table_habitat_sensitivity_to_", as.character(choice[,2]),"_",Sys.Date(),".csv"))
+        
