@@ -35,7 +35,8 @@ clean_hab_type_dat <- function(dat = gis.attr){
         # Separate HAB_TYPE into multiple columns where "/" appears to allow for the next step
         hab.types <- dat %>%
                 select(pkey, HAB_TYPE, bgr_subreg_id = SubReg_id) %>%
-                tidyr::separate(HAB_TYPE, into = c("hab.1", "hab.2", "hab.3", "hab.4"), sep = "/", remove = F)
+                tidyr::separate(HAB_TYPE, into = c("hab_1", "hab_2", "hab_3", "hab_4"), sep = "/", remove = F)
+        #tidyr::separate(HAB_TYPE, into = c("hab.1", "hab.2", "hab.3", "hab.4"), sep = "/", remove = F)
         
         # Remove any leading or trailing white spaces which could cause problems when matching the eunis columns between gis and database.
         hab.types <- purrr::map_df(hab.types, function(x) trimws(x, which = c("both")))
