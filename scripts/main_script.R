@@ -257,7 +257,7 @@ rm(gis.attr)
 #-------------------------------
 #06 MOSAIC HABITATS
 
-# Gather the habitat types into a single column with hab.1 (1st listed habitat) and second and third habitats listed to allow incorporation of mosaic habitats
+# Gather the habitat types into a single column with hab_1 (1st listed habitat) and second and third habitats listed to allow incorporation of mosaic habitats
 # the script also ads "A" to all HAB_TYPES with NO information in the HAB_TYPE column. This is not going to be correct for ALL the polygons n the map - but as they lack any sort of code - they either need to be completely exclued from the map at the start, orhave some sort of EUNIS code. To address this inconsistency temporarily, I have changed these to"A" Marine.
 source("./functions/gather_hab_types_by_mosaic_habs.R")
 #this leaves a new variable hab_types, which is different from hab.types, as it includes ALL the habitats, including mosaic habitats. thgis was done to allow processing all the said habtiats and compare their senstivities within a polygon following the same process as previous.
@@ -307,7 +307,7 @@ tbl_eunis_sbgr <- read_biotopes_with_or_without_filter(apply_filter = sbgr_filte
 # input data
 # SPATIAL data for join (y):
 # y - from spatial data; all possible EUNIS codes per BGR
-# in order to do so, define the EUNIS level of the hab.1 column
+# in order to do so, define the EUNIS level of the hab_1 column
 eunis.lvl.less.2 <- nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T)
 eunis.lvl.more.2 <- nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T)-1
 hab_types$level <- ifelse(nchar(as.character(hab_types$habs), type = "chars", allowNA = T, keepNA = T) > 2, eunis.lvl.more.2, eunis.lvl.less.2) #only using the first stated habitat, could be made to include others later on
@@ -318,7 +318,7 @@ rm(eunis.lvl.less.2, eunis.lvl.more.2) # housekeeping remove temporary vars
 
 # Define (unique) benthic habitats to allow the join between the GIS spatial mapped data and the sensitivity assessments (by EUNIS codes)
 distinct_mapped_habt_types <- hab_types %>%
-        distinct(habs,bgr_subreg_id, level) %>% drop_na() # hab.1 contains the worked/processed HAB_TYPE data (1st column)
+        distinct(habs,bgr_subreg_id, level) %>% drop_na() # hab_1 contains the worked/processed HAB_TYPE data (1st column)
 
 #generate multiple dataframes in a list, for the various habitat types within subBGRs, per hab level. this holds the gis data used to generate cross tabulated data matrices in the "match_eunis_to_biotope_fn"
 bgr_dfs_lst <- split(distinct_mapped_habt_types, distinct_mapped_habt_types$bgr_subreg_id)
@@ -453,8 +453,8 @@ rm(sbgr.BAP.max.sens)
 #--------------
 # 14 JOIN CONFIDENCE OF BIOTOPE ASSIGNEMENT TO HABITAT ATTRIBUTES
 
-# Join uncertainty to hab.types - may need a line to IF not hab.1 then hab.2 then... for mosaic habs?
-hab.types.unc <- left_join(hab.types, uncertainty_of_biotope_proxy, by = c("bgr_subreg_id" = "sbgr", "hab.1" = "eunis_code_gis"))
+# Join uncertainty to hab.types - may need a line to IF not hab_1 then hab.2 then... for mosaic habs?
+hab.types.unc <- left_join(hab.types, uncertainty_of_biotope_proxy, by = c("bgr_subreg_id" = "sbgr", "hab_1" = "eunis_code_gis"))
 
 #--------------
 # 15 JOIN HABITAT ATTRIBUTES TO SENSITIVITY ASSESSMENTS
