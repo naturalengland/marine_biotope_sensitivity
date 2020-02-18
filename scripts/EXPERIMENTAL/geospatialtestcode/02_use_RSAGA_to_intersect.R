@@ -15,7 +15,7 @@ rsaga.env() # this searches the harddrive for SAGA algorithms
         #rsaga.env()
 rsaga.get.libraries()#To find out which libraries are available, run:
 
-#Here is a template ffor the intersection using RSAGA:
+#Here is a template for the intersection using RSAGA:
 #res <- rsaga.intersect.polygons(layer_a = poly_1,
 #                                layer_b = poly_2,
 #                                result = dir_tmp,
