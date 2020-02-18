@@ -476,9 +476,10 @@ sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 #write the sens_dat to file, stored in the output folder in the R project file
 sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, update = TRUE)
 
-
-#the end------------------------------------------------
-
+# run file attribution main script - this makes the attribution data file that descibes the columns for the habitatsenstivity outputs
+source("./scripts/attribution/make_attribute_table.R")
+#the end---------------------------
+---------------------
 
 #-------------------
 #annex: output division
