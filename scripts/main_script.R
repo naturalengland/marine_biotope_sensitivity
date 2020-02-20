@@ -8,70 +8,10 @@
 # Script name: Main script
 ## This is the main script which runs the support functions, sequentially, making objects available to coming/sequential functions. I.e. The user should only have to run this script
 
-# Script source pages:
-## The scripts are based in a GITHUB repository: https://github.com/naturalengland/biotope-sensitivity
-## In the case of problems contact Philip.Haupt@naturalengland.org.uk or marineGI@naturalengland.org.uk
-
-# Important information:
-## Read the System requirements (below) to make sure that you have the required software installed and access to the data to run this R script.
-## When you are sure it is correctly configured, you may press "Alt Cntrl R" to run the entire script. It will take a while as it has to do millions and millions of calculations.
-## The final product is a geopackage (open source GIS file) which should be in a directory called "output" in your working directory.
-## Your working directory can be seen by typing "getwd()" in the Console below. 
-
-# Project directory requirements
-## CREATE A WORKING DIRECTORY ON YOUR MACHINE IF YOU ARE COPYING THESE FILES FROM GITHUB OR TAKEN A LOCAL COPY (i.e. in Windows explorer or equivalent if using Linux)
-## Within the working directory type "getwd()" ensure that there is a directory called "scripts" with an R script called "main_script.R" in it. A second folder called "functions" with 21 of R files (at the time of writing). You must have a third folder called "outputs" (the latter may or may not be empty) - this is where you results will be stored.
-## If the R files are not there create the folders and COPY ALL THE FUNCTIONS (from GITHUB) INTO THE FUNCTIONS FOLDER, AND MAKE SURE THAT MAIN SCRIPT IN THE SCRIPTS FOLDER IS ALSO IN YOUR FOLDER.
-## Make sure to look at and complete the list of variables that the user HAS to DEFINE, or it maky not work if your system configuration is different (e.g. the database is housed in a new directory) at the time of writing.
-## Make sure that if there are files in the output folder that you have them backed up elswhere in case yo uoverwright them incorrectly
-## See the list of R libraries that are used
-
-#---------------------------------------------
-# System requirements:
-
-#---------------------------------------------
-# System info for R-script construction:
-# > Sys.info()
-# sysname           release           version          nodename           machine 
-# "Windows"          "10 x64"     "build 18362" "DESKTOP-SMKHM6P"          "x86-64" 
-# login              user    effective_user 
-# "The Fishes"      "The Fishes"      "The Fishes"
-
-# R version used:
-# > version()
-# platform       x86_64-w64-mingw32          
-# arch           x86_64                      
-# os             mingw32                     
-# system         x86_64, mingw32             
-# status                                     
-# major          3                           
-# minor          6.1                         
-# year           2019                        
-# month          07                          
-# day            05                          
-# svn rev        76782                       
-# language       R                           
-# version.string R version 3.6.1 (2019-07-05)
-# nickname       Action of the Toes  
-
-# Driver software: 
-# Install a Microsoft Access driver if not already on PC/machine, available from e.g. https://www.microsoft.com/en-us/download/details.aspx?id=54920
-# The driver version (64/32) has to match the system and R version 64 bit or 32 bit
-
-# Tips
-# NB! If you are planning to run this script for a large area, for example all English inshore waters, you will need at least 16 GB RAM - so use a PowerPC!
-
-# QGIS is recomended to view the final product in the output folder when complete
-# INSTALL and work in R STUDIO - NOT COMPULSORY, BUT HIGHLY RECOMMENDED
-
-#------------------------------------------------
-# Notes 
-## Biotopes which have been assessed for sensitivity in the Conservation Advice database only include Eunis levels 4 to 6 at this stage.
-## Issues: currently only a local copy of the MS Access database is available on my working hard drive, and this needs to be pointed at the network (eventually) when approved
-
+#-------------------------------------------------
 # START
-# Clear workspace if not cleared! i.e. there should be nothing int he Global Environment at this point: you will need all the RAM available to you to process the script
-# rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
+# Clear workspace if not cleared! i.e. there should be nothing in the Global Environment at this point: you will need all the RAM available to you to process the script
+rm(list = ls()) # this will remove all objects inthe R environment. Run this to ensure a clean start.
 
 # If you are editing the code, I have left commented out pieces of code, like the below, in which may be useful in future. Remove the comment and run if you know what you are doing.
 # rm(list=setdiff(ls(), c("hab_map"))) # useful command to remove all but the habitat map which takes long to read - useful during testing
@@ -90,105 +30,79 @@ library(stringr) # text manipulation library
 library(sf) # key GI library
 library(doParallel)
 
-# Enable parallel processing using 4 processors
-cl <- makeCluster(4) # testing with 4 processors (the more, the greater the amount of RAM needed.)
-registerDoParallel(4)
+# Enable parallel processing using 8 processors
+cl <- makeCluster(8) # set laptopts to 3 (depending the number of processors available. Note that more processoirs speeds up the calculations, but the more processors you apply, the greater the amount of RAM needed.
+registerDoParallel(8)
 opts <- list(preschedule=TRUE)
-clusterSetRNGStream(cl, 123) # for reproducible results, using a constant set seed value.
+clusterSetRNGStream(cl, 123) # for reproducible results, using a constant set "seed value".
 
+#-----------------------------------------
 # USER INPUT REQUIRED BELOW
-#-----
 # 1. Select the marine planning area in which you would like to work (they have different algorithms)
-waters <- "offshore" # has to be "inshore" or "offshore"
+waters <- "inshore" # has to be "inshore" or "offshore"
 
 # 2. Select to filter/or not to filter the potenital biotopes (proxies biotopes from which sensitivity assessments scores are taken and assocaited with broad-scale habitats.) 
-# TRUE or FALSE: Are there MULTIPLE sub-biogeoregions inthe habitat file that you are wanting to calculate sensitivity for?
-sbgr_filter <- FALSE # has to be TRUE or FALSE; NB! TRUE is only available for the inshore at this stage.
-# A check will be run later in the script - if waters is set to "offshore", sbgr_filter will be overwritten to FALSE
+# Only enter: TRUE or FALSE: Are there MULTIPLE sub-biogeoregions inthe habitat file that you are wanting to calculate sensitivity for?
+sbgr_filter <- FALSE # has to be TRUE or FALSE; NB! TRUE is only available for the "inshore" waters at this stage - it will automatically be overwritten if yo uselect offshore.
 
-# 3. USER TO DO: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
-final_output <- "outputs" # no need to change this, unless you name the output folder different, then change this folder name too: NB! They need to match!
+# 3. USER DEFINED OUTPUT FOLDER: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
+final_output <- "packaged_outputs" # Create an output directory and specify the name here, and place it in the the working directory (run "getwd()" to see the working directory. 
 
 # DEFINE THE FOLLOWING VARIABLES OR AT LEAST CHECK THAT THEY MAKE SENSE ACCORDING TO YOUR COMPUTER CONFIGURATION!!!!
-
-# 4. User to specify the path to the database file activate the below and comment out the default paths
-## Path to Access database on Power pc specified below
-db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
+# 4. User to specify the path to the Microsoft Access database file
+db.path <- "./input/PD_AoO.accdb" # relative path entered or specify exact path, like: #D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database; OR make this your active command: #db.path <- file.choose()
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
-#db.path <- file.choose()
-# e.g. laptop path
-#db.path <- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/database/PD_AoO.accdb"
-#-------------------------------------------
-source(file = "./functions/specify_dir_for_habitat_map_on_user_input_of_boundaries_and_filter.R")
 
-#--------------
-# REMOVE FROM HERE IF CODE which uses if statements based on boundaries to assign files to read in WORKS
-# # 5. Define GIS input for habitat map(s): Only select 5a or 5b
-# 
-# # 5a. INSHORE With sub-biogeoregions:
-# input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs.gpkg"#this directory is for the clipped sbgrs.
-# 
-# #"D:/projects/fishing_displacement/2_subprojects_and_data/2_GIS_DATA/Marine habitat/hab_clip_to_mmo_plan_areas/marine_habitat_bsh_internal_evidence.gpkg" #D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\Marine habitat\\hab_clip_to_mmo_plan_areas//marine_habitat_bsh_internal_evidence_sbgr.gpkg"#this directory is for the clipped sbgrs.
-# # Run this to see the available layers in the gis file (useful if running for individual sbgrs)
-# sf::st_layers(input_habitat_map)
-# # Now supply the layer name that you are interest in
-# input_gis_layer <- "marine_habitat_bsh_internal_evidence_inshore_multiple_sbgrs"
-
-
-# # 5b. Without sub-biogeoregions
-# # Define gis input for habitat map(s)
-# input_habitat_map <- "D:\\projects\\fishing_displacement\\2_subprojects_and_data\\2_GIS_DATA\\marine_habitat\\hab_clip_to_mmo_plan_areas\\marine_habitat_bsh_internal_evidence.gpkg"
-# # Run this to see the available layers in the gis file
-# sf::st_layers(input_habitat_map)
-# # Now supply the layer name that you are interest in
-# input_gis_layer <- "offshore_bsh_English_waters_wgs84" #inshore or offshore?
-# REMOVE UP TO HERE IF CODE WORKS---------
-## USER DEFINED OUTPUT
-
-# 6. USER: Provide a name for the temporary output folder. NOte that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
-folder <- "tmp_output/" # this folder will be created in your working directory - files will go into it temporarily, and then be deleted. You may delete the empty folder if you like after completing the running of the scripts if you like.
-
-
-# 7. NB! USER DEFINED VARIABLE: GIS output file name. Please specify one per activity: The idea is to house all activities for a sub-biogeoregion in one file, and to have four layers within that structure: 1) containing the original habitat data, 2) the sensitivity assessments, 3) confidence assessments and 4) the biotope assessed. this structure is supported by geopackages, and may well be in a number of others like geodatabases
-#dsn.path<- "C:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/4_R/sensitivities_per_pressure/habitat_sensitivity_test.gpkg"#specify the domain server name (path and geodatabase name, including the extension)
-dsn_path_output <- paste0(getwd(),"/",final_output,"/",waters,"_habitat_sensitivity_",if(sbgr_filter == TRUE) {"filtered"} else {"unfiltered"}, "DELETE_TEST") # name of geopackage file in final output
-driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
-
-
-# 8. Provide an OUTPUT layer name within the the Geopackage specified above
-sens_layer_name_output <- "inshore_hab_sens_dredging_delete_test" # name of layer being produced (final output layer name)
-
-
-# 9. Below prints the list of options for the user to read, and then make a selection to enter below
-source(file = "./functions/read_access_operations_and_activities.R")
-OpsAct <- try(suppressWarnings(read.access.op.act())) #suppressWarnings(expr) turns warnigns off, as this warning will just tell you which data were not selected, and may be unneccessarily confusing.
+# User to choose Activities/operation which will be used in the model to assess habitat sensitivity
+## 5. Below prints the list of options for the user to read, and then makes a selection to enter below
+source(file = "./functions/read_access_operations_and_activities.R") # Note that this list is obtained from the database specified above
+OpsAct <- try(suppressWarnings(read.access.op.act()))
 if("try-error" %in% class(OpsAct)){print("Choice could not be set. Make sure your your Access Driver software is set-up correctly. Defaulting to 11. Fishing (Z10)")}
 if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
-#see key below
 
-# 10. NB! Choose an operation by selecting an OperationCode from the conservation advice database. Choose 1 - 18, and set the variable ops.choice to this.
-#USER selection of operation code: Set the ops.number to which you are interested, e.g. ops.number <- 13
+# USER: Choose an operation by entering one OperationCode ( an integer number ranging from 1 - 18) which corresponds to the operation numbers just printed on the screen. These reflect the ID number assigned to activities in the Microsoft Access conservation advice database (PD_AoO.accdb).
+# e.g. ops.number <- 13 (renewable energy)
 ops.number <- 11
 
-# 11. Run this to save your choice, and see what was saved
+# END OF USER INPUT REQUIREMENT
+
+# RUN ALL THE SCRIPTS IN THE SEQUENCE THAT THEY ARE WRITTEN FROM HERE ON TO THE END IF YOU WANT A GIS OUTPUT.
+# Press "Control + ENTER" repeatedly to run each command, one at a time (this needs doing if an error occurs so you can find the mistake). Alternatively press "Cntrl + Alt + ENTER" to run from start to finish.
+
+#-------------------------------------------------
+# Programmed variables - no need for user to change this, but can be altered (with care) if required:
+
+# 6. Run this to save your choice, and see what was saved
 source(file = "./functions/set_user_ops_act_choice.R")
 
-# END OF USER INPUT REQUIREMENT, you can now run scripts below to produce biotope sensitivity data.
-
-# NB! RUN ALL THE SCRIPTS IN THE SEQUENCE THAT THEY ARE WRITTEN FROM HERE ON TO THE END IF YOU WANT A GIS OUTPUT.
-#-------------------------------------------------
-# Programmed variables - no need fo ruser to change this
-# No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
+# 7. No user input required if happy with the polygons being assigned an id called pkey. Define variables: variable to group results by in script #11 - this should be the primary key in the gis habitat attribute file
 group.by <- parse(text = "pkey") ## Set text = "ogc_fid" or any other unique identifier in the GIS file. It generates a field name taht is easy to cahnge - unique ID for polygons.
 
+# 8.  specify the habitat map/geodata input files based on the inshore offshore boundary and sub-biogeoregional specified by the user 
+source(file = "./functions/specify_dir_for_habitat_map_on_user_input_of_boundaries_and_filter.R")
+
+# 9. Name for the temporary output folder. Note that this is not permanent! files here will automatically be deleted! So do not name it the same as any folder which has valuable data in it.
+folder <- "tmp_output/" # this folder will be created in your working directory - files will go into it temporarily, and then be deleted. You may delete the empty folder if you like after completing the running of the scripts if you like.
+
+# 10. GIS output file name. 
+dsn_path_output <- paste0(getwd(),"/",final_output,"/","BenthicHabitatSensitivity_Fishing_wgs84") # name of geopackage file in final output
+driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
+
+# 11. Provide an OUTPUT layer name within the the Geopackage specified above
+sens_layer_name_output <- paste0("BenHabSens_",as.character(choice[,2]),"_",if(sbgr_filter == TRUE) {"Filtered"} else {"Unfiltered"}, "_", waters) # name of geopackage file in final output"BHS_Fishing_Offshore_Unfiltered" # name of layer being produced (final output layer name)
+
+# 12. print User selected variables
+cat(paste0("Mesage for the user to check: The Habitat Sensitivity model is set to run for ",eval(as.character(choice[[2]]))," activities in ", waters, " waters. The model will apply the sub-biogeoregional filter: ", sbgr_filter, ".",
+"The input habitat file used is:", input_habitat_map, " using layer: ", input_gis_layer,".",
+"The output file is ",dsn_path_output, " and the output layer name is: ", sens_layer_name_output, "."))
+
 #---------------------------------
-# 01_connect_to_access_db.R: read sensitivity assessments
+# 13. Connect to the MS Access conservation Advice database, and read in the relevant tables.
 
-# Load the function that reads the Access database
-# ** This was added to error check  - line below - which overwrites the orignial function in the line above - remove if not happy
-source(file = "./functions/read_access_db.R") # #beta version: removes the filters and adds two variables !
+# Load the function that reads the Access database (the function is run within an If statement below)
+source(file = "./functions/read_access_db.R")
 
-# Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
+# 14. Populate qryEUNIS_ActPressureSens using the read access function above, if it fails it will attempt to read a stored csv copy (note that this may not be the most up to date version)
 qryEUNIS_ActPressSens <- try(read.access.db(db.path,drv.path))
 if("try-error" %in% class(qryEUNIS_ActPressSens)) {
         qryEUNIS_ActPressSens <- read.csv("./input/qryEUNIS_ActPressSens.txt") # should find an older copy of the query for the fishing activity from the database to replaceC:/Users/M996613/Phil/PROJECTS/Fishing_effort_displacement/2_subprojects_and_data/3_Other/NE/Habitat_sensitivity/qryhabsens
@@ -368,8 +282,6 @@ setwd(file.path(mainDir))
 #getwd()
 #rm(mainDir, subDir, bgr.dfs.lst)
 
-
-
 #---------------
 # 10 populate the sbgr biotope codes and replacing NA values with eunis codes in a sequential order, starting at eunis level 6, then 5 then 4, leaving the rest as NA. this is becuase the sensitivity assessments typically only include eunis levels 6,5,4 only.
 # loads and runs the function: read in all the restuls generated in a single file as lists of dataframes: r object output name: results.files
@@ -420,7 +332,7 @@ system.time(source(file = "./functions/max_sens_sbgr_bap_fn.R") )#recently (2019
 # Output stored as: sbgr.BAP.max.sens - key output - this can be translated into min, max, range etc. NE is currently only taking the MAXIMUM value forward, but this can be changed inside of this function/or preferbaly creating a new function based on this one.
 
 #housekeeping
-rm(xap.ls, bgr_dfs_lst, x_dfs_lst, results.files, distinct_mapped_habt_types, x.dfs.lst, level_result_tbl, gis.attr, choice, OpsAct, EunisAssessed, eunis.lvl.assessed)
+rm(bgr_dfs_lst, results.files, distinct_mapped_habt_types, x.dfs.lst, level_result_tbl, choice, OpsAct, EunisAssessed)
 
 #--------------
 # 13: ASSOCIATE MAXIMUM SENSITIVITY WITH GIS 
@@ -428,27 +340,8 @@ rm(xap.ls, bgr_dfs_lst, x_dfs_lst, results.files, distinct_mapped_habt_types, x.
 #Associate maximum sensitivity with gis polygon Ids (and the habitat type assessed and the confidence of the assessments)
 system.time(source(file = "./functions/gis_sbgr_hab_max_sens_fn.R") )# this takes a while - get a cup of tea.
 
-# It takes about an hour! without parallel processing for the INSHORE SBGR FILTERED
-#   user  system elapsed 
-# 3020.44  100.21 3122.50 
-
-# OFFHSORE UNFILTERED TIME ELAPSED: JUST OVER 5 AND HALF MINUTES
-# user  system elapsed 
-# 329.73   10.52  339.48 
-
-# Output stored as: act.sbgr.bps.gis
-# write_rds(act.sbgr.bps.gis, "./outputs/act_sbgr_bps_gis.R")
-
 #housekeeping
 rm(sbgr.BAP.max.sens)
-
-#--------------
-#11 remove not assessed columns to reduce the size of the data
-#not_all_na <- function(x) any(!is.na(x))
-#not_any_na <- function(x) all(!is.na(x))
-#act.sbgr.bps.gis.clean <- act.sbgr.bps.gis %>% 
-#        dplyr::select_if(not_all_na) %>% 
-#        dplyr::select(-contains("not_assessed"))
 
 #--------------
 # 14 JOIN CONFIDENCE OF BIOTOPE ASSIGNEMENT TO HABITAT ATTRIBUTES
@@ -470,32 +363,18 @@ sens_dat <- hab.types.unc %>%
 sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 
 #---------------
-# WRITE GIS OUTPUT
+# 17. WRITE GIS OUTPUT
 
 #sf::st_layers(paste0(dsn_path_output, ".GPKG", sep = '')) # run this to check which ones have been completed
-#write the sens_dat to file, stored in the output folder in the R project file
-sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, update = TRUE)
+# write the sens_dat to file, stored in the output folder in the R project file
+sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, delete_layer = TRUE, update = TRUE)
 
 # run file attribution main script - this makes the attribution data file that descibes the columns for the habitatsenstivity outputs
 source("./scripts/attribution/make_attribute_table.R")
-#the end---------------------------
----------------------
 
-#-------------------
-#annex: output division
-# If seperate layer are required for each, the following can be used: # separate the three components (sensitivity score, confidence assessment and the assessed biotope) into three data.frames to allow binding them as seperate layers to the geopackage - for easier opening.
+# the end---------------------------
 
-#sens_dat <- act.sbgr.bps.gis.clean %>% 
-#        dplyr::select(pkey, contains("sens"))
-#qoe_dat <- act.sbgr.bps.gis.clean %>% 
-#        dplyr::select(pkey, contains("conf"))
-#hab_info <- hab.types %>% 
-#        select(HAB_TYPE,pkey) %>% 
-#        filter(!is.na(HAB_TYPE)) %>%
-#        distinct() %>% arrange(pkey)
 
-#biotope_dat <- act.sbgr.bps.gis.clean %>% 
-#        dplyr::select(pkey, contains("assessed")) #%>%
 
 
 
