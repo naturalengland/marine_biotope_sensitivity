@@ -31,15 +31,15 @@ library(sf) # key GI library
 library(doParallel)
 
 # Enable parallel processing using 8 processors
-cl <- makeCluster(8) # set laptopts to 3 (depending the number of processors available. Note that more processoirs speeds up the calculations, but the more processors you apply, the greater the amount of RAM needed.
-registerDoParallel(8)
+cl <- makeCluster(4) # set powerpc  = 8 or more, laptopts about 3 (depending the number of processors available. Note that more processoirs speeds up the calculations, but the more processors you apply, the greater the amount of RAM needed.
+registerDoParallel(4) # same as above
 opts <- list(preschedule=TRUE)
 clusterSetRNGStream(cl, 123) # for reproducible results, using a constant set "seed value".
 
 #-----------------------------------------
 # USER INPUT REQUIRED BELOW
 # 1. Select the marine planning area in which you would like to work (they have different algorithms)
-waters <- "inshore" # has to be "inshore" or "offshore"
+waters <- "offshore" # has to be "inshore" or "offshore"
 
 # 2. Select to filter/or not to filter the potenital biotopes (proxies biotopes from which sensitivity assessments scores are taken and assocaited with broad-scale habitats.) 
 # Only enter: TRUE or FALSE: Are there MULTIPLE sub-biogeoregions inthe habitat file that you are wanting to calculate sensitivity for?
@@ -61,7 +61,7 @@ if("try-error" %in% class(OpsAct)){print("Choice could not be set. Make sure you
 if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
 
 # USER: Choose an operation by entering one OperationCode ( an integer number ranging from 1 - 18) which corresponds to the operation numbers just printed on the screen. These reflect the ID number assigned to activities in the Microsoft Access conservation advice database (PD_AoO.accdb).
-# e.g. ops.number <- 13 (renewable energy)
+# e.g. ops.number <- 10 (renewable energy)
 ops.number <- 11
 
 # END OF USER INPUT REQUIREMENT
@@ -136,9 +136,6 @@ eunis.lvl.assessed$EUNISCode <- as.character(eunis.lvl.assessed$EUNISCode) # ens
 # Obtain sensitvity tables, one for each acitivity, with each EUNIS code assessed against each pressure code: 
 # a list of data frames called "act.press.list" is created, which contains the unique combinations of ranked sensivities to pressure for each activity for each of the assessed biotope (i.e. from the Access database)
 source(file = "./functions/unique_combs_sens_per_press_per_eunis_fn.R")
-
-# housekeeping: remove the initial database query, and keep only the last R object
-rm(qryEUNIS_ActPressSens)
 
 #-------------------------------
 # 04 Read GIS habitat map file
@@ -332,7 +329,7 @@ system.time(source(file = "./functions/max_sens_sbgr_bap_fn.R") )#recently (2019
 # Output stored as: sbgr.BAP.max.sens - key output - this can be translated into min, max, range etc. NE is currently only taking the MAXIMUM value forward, but this can be changed inside of this function/or preferbaly creating a new function based on this one.
 
 #housekeeping
-rm(bgr_dfs_lst, results.files, distinct_mapped_habt_types, x.dfs.lst, level_result_tbl, choice, OpsAct, EunisAssessed)
+rm(x_dfs_lst, bgr_dfs_lst, results.files, distinct_mapped_habt_types, level_result_tbl, OpsAct, EunisAssessed)
 
 #--------------
 # 13: ASSOCIATE MAXIMUM SENSITIVITY WITH GIS 
@@ -356,6 +353,12 @@ hab.types.unc <- left_join(hab.types, uncertainty_of_biotope_proxy, by = c("bgr_
 sens_dat <- hab.types.unc %>% 
         left_join(act.sbgr.bps.gis, by = "pkey")
 
+# run file attribution main script - this makes the attribution data file that descibes the columns for the habitatsenstivity outputs
+source("./scripts/attribution/make_attribute_table.R")
+
+
+
+
 #---------------
 # 16 PROVIDE GEOMETRY DATA 
 
@@ -368,9 +371,6 @@ sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
 #sf::st_layers(paste0(dsn_path_output, ".GPKG", sep = '')) # run this to check which ones have been completed
 # write the sens_dat to file, stored in the output folder in the R project file
 sf::st_write(sens_dat, dsn = paste0(dsn_path_output, ".GPKG", sep = ''), layer = sens_layer_name_output, delete_layer = TRUE, update = TRUE)
-
-# run file attribution main script - this makes the attribution data file that descibes the columns for the habitatsenstivity outputs
-source("./scripts/attribution/make_attribute_table.R")
 
 # the end---------------------------
 
