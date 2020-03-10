@@ -30,20 +30,19 @@ library(stringr) # text manipulation library
 library(sf) # key GI library
 library(doParallel)
 
-# Enable parallel processing using 8 processors
-cl <- makeCluster(4) # set powerpc  = 8 or more, laptopts about 3 (depending the number of processors available. Note that more processoirs speeds up the calculations, but the more processors you apply, the greater the amount of RAM needed.
+# Parallel processing set-up ----------------------------------------------
+cl <- makeCluster(4) # set Power PC  = 8 or more, laptops about 3 (depending the number of processors available. Note that more processoirs speeds up the calculations, but the more processors you apply, the greater the amount of RAM needed.
 registerDoParallel(4) # same as above
 opts <- list(preschedule=TRUE)
 clusterSetRNGStream(cl, 123) # for reproducible results, using a constant set "seed value".
 
-#-----------------------------------------
-# USER INPUT REQUIRED BELOW
+# USER INPUT SECTION -----------------------------------------
 # 1. Select the marine planning area in which you would like to work (they have different algorithms)
-waters <- "offshore" # has to be "inshore" or "offshore"
+waters <- "inshore" # has to be "inshore" or "offshore"
 
 # 2. Select to filter/or not to filter the potenital biotopes (proxies biotopes from which sensitivity assessments scores are taken and assocaited with broad-scale habitats.) 
 # Only enter: TRUE or FALSE: Are there MULTIPLE sub-biogeoregions inthe habitat file that you are wanting to calculate sensitivity for?
-sbgr_filter <- FALSE # has to be TRUE or FALSE; NB! TRUE is only available for the "inshore" waters at this stage - it will automatically be overwritten if yo uselect offshore.
+sbgr_filter <- TRUE # has to be TRUE or FALSE; NB! TRUE is only available for the "inshore" waters at this stage - it will automatically be overwritten if yo uselect offshore.
 
 # 3. USER DEFINED OUTPUT FOLDER: Create a folder in the working directory. (to see the working directory type: 'getwd()' into the R console). type the name of the final output folder for GIS geopackage below (it has to be exactly the same as the folde just created:) 
 final_output <- "packaged_outputs" # Create an output directory and specify the name here, and place it in the the working directory (run "getwd()" to see the working directory. 
@@ -62,7 +61,7 @@ if(!"try-error" %in% class(OpsAct)){print(OpsAct)}
 
 # USER: Choose an operation by entering one OperationCode ( an integer number ranging from 1 - 18) which corresponds to the operation numbers just printed on the screen. These reflect the ID number assigned to activities in the Microsoft Access conservation advice database (PD_AoO.accdb).
 # e.g. ops.number <- 10 (renewable energy)
-ops.number <- 11
+ops.number <- 10
 
 # END OF USER INPUT REQUIREMENT
 
@@ -85,11 +84,12 @@ source(file = "./functions/specify_dir_for_habitat_map_on_user_input_of_boundari
 folder <- "tmp_output/" # this folder will be created in your working directory - files will go into it temporarily, and then be deleted. You may delete the empty folder if you like after completing the running of the scripts if you like.
 
 # 10. GIS output file name. 
-dsn_path_output <- paste0(getwd(),"/",final_output,"/","BenthicHabitatSensitivity_Fishing_wgs84") # name of geopackage file in final output
+dsn_path_output <- paste0(getwd(),"/",final_output,"/","BenthicHabitatSensitivity_","RENEWABLE_ENERGY","_wgs84") # name of geopackage file in final output
 driver.choice <- "GPKG" # TYPE OF GIS OUTPUT SET TO geopackage, chosen here as it is open source and sopports the file struture which may be effecient for viewing o laptops
 
 # 11. Provide an OUTPUT layer name within the the Geopackage specified above
-sens_layer_name_output <- paste0("BenHabSens_",as.character(choice[,2]),"_",if(sbgr_filter == TRUE) {"Filtered"} else {"Unfiltered"}, "_", waters) # name of geopackage file in final output"BHS_Fishing_Offshore_Unfiltered" # name of layer being produced (final output layer name)
+#sens_layer_name_output <- paste0("BenHabSens_",as.character(choice[,2]),"_",if(sbgr_filter == TRUE) {"Filtered"} else {"Unfiltered"}, "_", waters) # name of geopackage file in final output"BHS_Fishing_Offshore_Unfiltered" # name of layer being produced (final output layer name)
+sens_layer_name_output <- paste0("BenHabSens_","RENEWABLE_ENERGY","_",if(sbgr_filter == TRUE) {"Filtered"} else {"Unfiltered"}, "_", waters) # name of geopackage file in final output"BHS_Fishing_Offshore_Unfiltered" # name of layer being produced (final output layer name)
 
 # 12. print User selected variables
 cat(paste0("Mesage for the user to check: The Habitat Sensitivity model is set to run for ",eval(as.character(choice[[2]]))," activities in ", waters, " waters. The model will apply the sub-biogeoregional filter: ", sbgr_filter, ".",
@@ -119,8 +119,6 @@ qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode)
 # rename SensPriority: When sens.act.rank was dropped by simply keeping this column, it no longer needed joining to the sensitivty table - but the old code used rank.value as the field name - and to keep it consistent 
 qryEUNIS_ActPressSens <- qryEUNIS_ActPressSens %>% 
         dplyr::rename(rank.value = SensPriority) #this renaming is legacy issue from code developement: coudl be kept as SensPriority - but then needs to be checked and changed back to this throughout all code
-
-
 
 #--------------------------------
 #02 DISTINCT EUNIS CODES in  SENS ASSESS:
@@ -353,14 +351,12 @@ hab.types.unc <- left_join(hab.types, uncertainty_of_biotope_proxy, by = c("bgr_
 sens_dat <- hab.types.unc %>% 
         left_join(act.sbgr.bps.gis, by = "pkey")
 
+# 16 Make and save attribution description table -----------------------------
 # run file attribution main script - this makes the attribution data file that descibes the columns for the habitatsenstivity outputs
 source("./scripts/attribution/make_attribute_table.R")
 
-
-
-
 #---------------
-# 16 PROVIDE GEOMETRY DATA 
+# 17 PROVIDE GEOMETRY DATA 
 
 #attach the geometry column from hab_map to the sens_dat variable: this allows us to map the outputs (and is possble as we have preserved the id of the polygons, named "pkey")
 sens_dat$geom <- st_geometry(obj = hab_map, value = hab_map$geom, x = sens_dat)
