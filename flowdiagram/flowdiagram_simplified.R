@@ -14,8 +14,7 @@ grViz("
         style = filled        
         fillcolor = SteelBlue3
         alpha = 50]
-        
-        Sensivity_Assessment_Data;
+        Sensivity_Assessment_Data; Sub_biogeoregional_biotopes
 
         # Habitat map source
         node [shape = circle
@@ -68,6 +67,7 @@ grViz("
         Assign_EUNIS_Levels_1_to_6->Match_biotopes_to_mapped_habitats
         Assign_EUNIS_Levels_4_to_6->Match_biotopes_to_mapped_habitats
         Match_biotopes_to_mapped_habitats->Filter_using_sub_biogeoregion_info->Combine_data_matrices->Maximum_senstivity_per_mapped_habitat->Calculate_Confidence
+        Sub_biogeoregional_biotopes->Filter_using_sub_biogeoregion_info
         Combine_data_matrices->Calculate_Confidence
         Calculate_Confidence->Join_sensitivity_and_confidence_to_habitat_map->Habitat_Sensitivity_Map
         Habitat_Map->Habitat_Sensitivity_Map
