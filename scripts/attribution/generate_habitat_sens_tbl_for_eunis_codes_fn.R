@@ -16,4 +16,4 @@ qryEUNIS_ActPressSens$EUNISCode <- as.character(qryEUNIS_ActPressSens$EUNISCode)
 qryEUNIS_ActPressSens <- qryEUNIS_ActPressSens %>% 
         dplyr::rename(rank.value = SensPriority) #this renaming is legacy issue from code developement: coudl be kept as SensPriority - but then needs to be checked and changed back to this throughout all code
 
-cat("A new R object was created and stored in the R environment named: qryEUNIS_ActPressSens. This object containsall the habitat senstivity assessments for each activity and pressure combination for each of the eunis categories contained in teh NE database." )
+cat("A new R object was created and stored in the R environment named: qryEUNIS_ActPressSens. This object containsall the habitat senstivity assessments for each activity and pressure combination for each of the eunis categories contained in the NE database." )

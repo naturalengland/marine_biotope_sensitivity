@@ -28,7 +28,7 @@ act_press_attribution_results$attrb_descr[act_press_attribution_results$attrb_ty
 # Confidence of sensitivity assessment:
 act_press_attribution_results$attrb_descr[act_press_attribution_results$attrb_type == "conf_attrb"] <-
         paste0(
-                "Confidence in (MarESA) habitat senstivity assessment to ",
+                "Confidence in (MarESA) habitat sensitivity assessment to ",
                 act_press_attribution_results$PressureName[act_press_attribution_results$attrb_type == "conf_attrb"],
                 " (",
                 act_press_attribution_results$PressureCode[act_press_attribution_results$attrb_type == "conf_attrb"],
@@ -45,7 +45,7 @@ act_press_attribution_results$attrb_descr[act_press_attribution_results$attrb_ty
 # Assessed biotope:
 act_press_attribution_results$attrb_descr[act_press_attribution_results$attrb_type == "assess_attrb"] <-
         paste0(
-                "The ASSIGNED BIOTOPE (EUNIS level 4 - 6) which was used in the (MarESA) habitat senstivity assessment to ",
+                "The ASSIGNED BIOTOPE (EUNIS level 4 - 6) which was used in the (MarESA) habitat sensitivity assessment to ",
                 act_press_attribution_results$PressureName[act_press_attribution_results$attrb_type == "assess_attrb"],
                 " (",
                 act_press_attribution_results$PressureCode[act_press_attribution_results$attrb_type == "assess_attrb"],
@@ -58,6 +58,7 @@ act_press_attribution_results$attrb_descr[act_press_attribution_results$attrb_ty
                 as.character(choice[, 2]),
                 " operations."
         )
+
 
 #---------# To do: functionalise! (not neccesary but a challenge)
 # 

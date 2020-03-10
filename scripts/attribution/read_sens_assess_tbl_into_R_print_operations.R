@@ -3,7 +3,7 @@
 # Database: Senstivity assessments
 
 # Define Path to Access database on Power pc specified below
-db.path <- "D:/projects/fishing_displacement/2_subprojects_and_data/5_internal_data_copies/database/PD_AoO.accdb"
+db.path <- "./input/PD_AoO.accdb"
 drv.path <- "Microsoft Access Driver (*.mdb, *.accdb)" #"this relies on the driver specified above for installation, and will not work without it!
 
 # Below prints the list of options for the user to read, and then make a selection to enter below
