@@ -46,13 +46,13 @@ clean_hab_type_dat <- function(dat = gis.attr){
               
         #check if there are values in all columns, and drop columns with no values
         hab.types %>%
-                distinct(hab.4)
+                distinct(hab_4)
         #remove column 5 hab.4
         hab.types <- hab.types %>% 
-                select(-hab.4)
+                select(-hab_4)
         #only na values - so can be removed
         hab.types %>%
-                distinct(hab.3)
+                distinct(hab_3)
         #has multiple values - keep
         hab.types
 }
