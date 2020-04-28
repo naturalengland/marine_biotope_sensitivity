@@ -33,3 +33,5 @@ xap.ls <- act.press.list %>% # the below statement splits the activitiy_pressure
                 
                 return(sbgr.bap) #sbgr.bap is again nested within a plyr loop, and therefore needs calling here to ensure that this value is passed into xap.ls as a dataframe. It is repeated for each dataframe in the list.
         }, .progress = "text")
+
+cat("The output is, xap.ls, a list for containing the dataframes, one for each sub-biogeoregion. With its mapped EUNIS codes, candidate biotopes for each Activity-Pressure combination")

@@ -157,6 +157,6 @@ act.sbgr.bps.gis <- sbgr.BAP.max.sens %>%
         dplyr::select(-one_of("pkey1", "pkey2", "pkey3", "pkey4", "pkey5", "pkey6", "pkey7","pkey8", "pkey9", "pkey10", "pkey11", "pkey12", "pkey13"))
 
 
-
+cat("The output is stored as, act.sbgr.bps.gis, a list with")
 
 

@@ -9,3 +9,5 @@ hab_types$habs <- str_replace(hab_types$habs, "^$","A")#  this should turn empty
 #hab_types$habs <- sub("^$", "A", hab_types$HAB_TYPE)
 #drop empty rows
 hab_types <-  hab_types[!(hab_types$habs==""), ]
+
+cat("This leaves a new variable, hab_types, which is different from the GIS-object, hab.types, as it includes ALL the habitats, including mosaic habitats. This was done to allow processing all the said habitats and compare their sensitivities within a polygon following the same process as previous.")

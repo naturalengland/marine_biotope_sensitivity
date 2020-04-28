@@ -64,8 +64,9 @@ source("./scripts/attribution/assign_class.R")
 source("./scripts/attribution/bind_all_attributes.R")   
 
 # Save the attribution output file as a csv and Excel table to the outputs folder
-write_excel_csv(attribution_table, paste0("./packaged_outputs/attribution_table_habitat_sensitivity_to_", as.character(choice[,2]),"_",Sys.Date(),".csv"))
+write_excel_csv(attribution_table, paste0("./packaged_outputs/attribution_table_habitat_sensitivity_to_", file_name_choice,"_",Sys.Date(),".csv"))
 
 # Housekeeping: remove unneccessary R objects
-rm(act_press_combinations, act_press_attribution_columns, act_press_attribution_results, format, attribution_table)
+rm(act_press_combinations, act_press_attribution_columns, act_press_attribution_results, format)
 
+cat("The final attribution data, (R o-object) attribute_table, was saved file as", eval(paste0(getwd(),"/packaged_outputs/attribution_table_habitat_sensitivity_to_", file_name_choice,"_",Sys.Date(),".csv. You may wish to add the licensing and otehr metadata to this file to save with the GIS outputs.")))

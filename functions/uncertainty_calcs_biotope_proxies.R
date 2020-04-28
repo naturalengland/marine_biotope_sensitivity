@@ -1,5 +1,7 @@
+
 # combine the results and transpose into a more suitable format
 # join sbgr to filter out irrelevant combinations from the results.files
+
 
 uncertainty_of_biotope_proxy <- results.files %>% 
         plyr::ldply(function(x){ 
@@ -21,13 +23,14 @@ uncertainty_of_biotope_proxy <- results.files %>%
                         eunis_code_gis, 
                         1:(eval(sbgr_pos)-1),# captures the columns preceeding sbgr
                         (eval(eunis_code_gis_pos)+1):length(colnames(x)) #captures the oclumns following sbgr
-                        )
+                )
                 
                 unfilterd_biotope_candidates <- x_rearrange %>% 
                         tidyr::gather(key = "eunis_biotope_key", value = "eunis_biotope_value", -sbgr, -lvl_dif, -eunis_code_gis) %>% 
                         dplyr::arrange(sbgr, eunis_code_gis, eunis_biotope_key)
                 
-
+                
+                
                 rm(x, x_rearrange) #housekeeping
                 
                 #-----------------------------------
@@ -60,9 +63,8 @@ uncertainty_of_biotope_proxy <- results.files %>%
                 uncertainty_per_eunis_code_per_sbgr <- uncertainty_per_eunis_per_lvl %>% 
                         dplyr::ungroup() %>% 
                         dplyr::group_by(sbgr,
-                                 eunis_code_gis) %>% 
+                                        eunis_code_gis) %>% 
                         dplyr::summarise(uncertainty_sim = 1/sum(log_tally))
         }, .progress = "text")
-# Statements to use paralel not working - becuase it cannot call tbl_eunis_sbgr
+# Statements to use parallel not working - because it cannot call tbl_eunis_sbgr
 #.parallel = TRUE, .paropts = list(.export=c("tbl_eunis_sbgr"), .options.snow=opts), .progress = "text") #.parallel = TRUE, .paropts = list(.options.snow=opts),
-
